@@ -12,12 +12,12 @@
 
 ### 목차
 
-- :book: [주요 기능](#:book: 주요 기능)
-- :books: [세부 기능](#:books: 세부 기능)
-- :computer: [개발 환경](#:computer: 개발 환경)
-- :classical_building: [아키텍쳐](#:classical_building: 아키텍처)
-- :bookmark_tabs: [산출물](#:bookmark_tabs: 산출물)
-- :family: [팀 소개](#:family: 팀 소개 (쓰레깅))
+- :book: [주요 기능](#book-주요-기능)
+- :books: [세부 기능](#books-세부-기능)
+- :computer: [개발 환경](#computer-개발-환경)
+- :classical_building: [아키텍쳐](#classical_building-아키텍처)
+- :bookmark_tabs: [산출물](#bookmark_tabs-산출물)
+- :family: [팀 소개](#family-팀-소개)
 
 <br>
 
@@ -122,16 +122,11 @@
 
 <br>
 
-## :family: 팀 소개 (쓰레깅)
+## :family: 팀 소개
 
-박승원
-
-이진곤
-
-지수연
-
-이수환
-
-이재희
-
-이종현
+- 박승원 (팀장) : Back-End
+- 이진곤 : Back-End, Unity
+- 지수연 : Back-End
+- 이수환 : Front-End, Unity
+- 이재희 : Front-End
+- 이종현 : Front-End
