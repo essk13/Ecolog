@@ -17,6 +17,7 @@ pipeline {
 			steps {
 				script {
                     	try {
+							sh 'cp /var/jenkins_home/ecolog-secrets/application-secret.yml ./backend/src/main/resources/'
                             sh 'docker-compose build'
 					}catch(e) {
                         				mattermostSend (
