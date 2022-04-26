@@ -1,11 +1,23 @@
+server:
+  port: 8080
+  servlet:
+    contextPath: /
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css
+
 spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ecologdb?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
-    username: root
-    password: ssafy
-  jpa: #database
-    show-sql: true #show hibernate sql
+  profiles:
+    include: secret
+  devtools:
+    livereload:
+      enabled: true
+  jpa:
+    show-sql: true
     hibernate:
       naming:
         implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
@@ -14,4 +26,18 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL57Dialect
-        format_sql: true #pretty formatting
+        format_sql: true
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true
+
+springfox:
+  documentation:
+    swagger:
+      use-model-v3: false
+
+logging:
+  level:
+    root: INFO
+    com.thedebuggers.backend: DEBUG
