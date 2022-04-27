@@ -31,6 +31,9 @@ public class CommunityController {
 
     ){
         List<Community> result = communityService.getCommunityList();
+
+//        Community res = Community.builder().title("ex").description("ex2").build();
+
         return ResponseEntity.ok(result);
     }
 }

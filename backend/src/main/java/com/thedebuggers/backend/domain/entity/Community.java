@@ -26,15 +26,27 @@ public class Community {
     @Column(name = "description")
     private String description;
 
-//    @ManyToOne(cascade = CascadeType.MERGE, targetEntity = User.class)
-//    @JoinColumn(name = "no", updatable = false)
-//    private User user;
+    @ManyToOne(cascade = CascadeType.MERGE, targetEntity = User.class)
+    @JoinColumn(name = "manager", updatable = false)
+    private User manager;
 
-    @Column(name = "manager")
-    private long manager;
+//    @Column(name = "manager")
+//    private long manager;
 
     @Column(name = "image")
     private String image;
 
+    @Builder
+    public Community(long no, String title, String description, User manager, String image) {
+        this.no = no;
+        this.title = title;
+        this.description = description;
+        this.manager = manager;
+        this.image = image;
+    }
 
+
+    public Community() {
+
+    }
 }
