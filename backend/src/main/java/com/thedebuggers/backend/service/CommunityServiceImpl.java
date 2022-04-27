@@ -5,6 +5,7 @@ import com.thedebuggers.backend.domain.entity.Community;
 import com.thedebuggers.backend.domain.repository.CommunityRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +19,13 @@ public class CommunityServiceImpl implements CommunityService{
 
     @Override
     public List<Community> getCommunityList() {
+
         return communityRepository.findAllByOrderByNoDesc();
+    }
+
+    @Override
+    public Community getCommunity(long no) {
+        return communityRepository.findByNo(no);
     }
 
 }

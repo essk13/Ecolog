@@ -10,4 +10,6 @@ import java.util.List;
 public interface CommunityRepository extends JpaRepository<Community, Long> {
 
     List<Community> findAllByOrderByNoDesc();
+
+    Community findByNo(long no);
 }

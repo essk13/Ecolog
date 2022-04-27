@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface CommunityService {
     List<Community> getCommunityList();
+
+    Community getCommunity(long no);
 }
