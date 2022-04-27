@@ -1,12 +1,13 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {MainTabParamList} from './types';
 import PloggingScreen from './PloggingScreen';
 import UserScreen from './UserScreen';
 import CommunityScreen from './CommunityScreen';
 import SurveyScreen from './SurveyScreen';
 import ARScreen from './ARScreen';
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<MainTabParamList>();
 
 function MainScreen() {
   return (

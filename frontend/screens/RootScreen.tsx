@@ -1,5 +1,6 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {RootStackParamList} from './types';
 import MainScreen from './MainScreen';
 import PloggingMapScreen from './Plogging/PloggingMapScreen';
 import PloggingResultScreen from './Plogging/PloggingResultScreen';
@@ -8,13 +9,15 @@ import SurveyPageScreen from './Survey/SurveyPageScreen';
 import SurveyResultScreen from './Survey/SurveyResultScreen';
 import CommunityHomeScreen from './Community/CommunityHome';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootScreen() {
   return (
     <Stack.Navigator
       initialRouteName="Main"
-      screenOptions={{headerShown: false}}>
+      screenOptions={{
+        headerShown: false,
+      }}>
       <Stack.Screen name="Main" component={MainScreen} />
       <Stack.Screen name="PloggingMap" component={PloggingMapScreen} />
       <Stack.Screen name="PloggingResult" component={PloggingResultScreen} />
