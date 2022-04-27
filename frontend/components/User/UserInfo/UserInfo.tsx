@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, TouchableOpacity, StyleSheet, Image} from 'react-native';
+import {Text, View, StyleSheet, Image} from 'react-native';
 // Components
 import UserInfoText from './UserInfoText';
 
@@ -8,6 +8,7 @@ const styles = (direction?: any, padding?: number) =>
     userContainer: {
       flexDirection: direction || 'column',
       padding: padding || 0,
+      paddingBottom: 10,
     },
     btnContainer: {
       flexDirection: 'row',
@@ -81,7 +82,7 @@ function UserInfo({user}: UserInfoProps) {
         </View>
       </View>
 
-      <View style={styles().btnContainer}>
+      {/* <View style={styles().btnContainer}>
         <TouchableOpacity onPress={() => {}} style={styles().btn}>
           <Text style={fontStyles(20, '600').buttonText}>플로깅</Text>
         </TouchableOpacity>
@@ -93,7 +94,7 @@ function UserInfo({user}: UserInfoProps) {
         <TouchableOpacity onPress={() => {}} style={styles().btn}>
           <Text style={fontStyles(20, '600').buttonText}>아바타</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 }

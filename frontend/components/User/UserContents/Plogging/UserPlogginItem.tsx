@@ -14,10 +14,17 @@ const styles = () =>
     },
   });
 
-function UserPloggingItem() {
+interface Props {
+  data: string;
+  num: number;
+}
+
+function UserPloggingItem({data, num}: Props) {
   return (
     <View style={styles().itemContainer}>
-      <Text>User Plogging Item</Text>
+      <Text>
+        {data} {num}
+      </Text>
     </View>
   );
 }
