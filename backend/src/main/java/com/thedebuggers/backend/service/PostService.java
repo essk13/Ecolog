@@ -11,4 +11,8 @@ public interface PostService {
     List<Post> getPostList(long communityNo);
 
     Post getPost(long postNo);
+
+    void modifyPost(long postNo, PostDto postDto);
+
+    void deletePost(long postNo);
 }

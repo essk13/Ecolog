@@ -7,7 +7,6 @@ import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,7 +35,7 @@ public class PostController {
     }
 
     @GetMapping
-    @ApiOperation(value = "게시물 목록 조회")
+    @ApiOperation(value = "커뮤니티 별 게시물 목록 조회")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Success"),
             @ApiResponse(code = 404, message = "Not Found"),
@@ -58,6 +57,31 @@ public class PostController {
                                          @ApiParam(defaultValue = "1") @PathVariable long postNo) {
         Post post = postService.getPost(postNo);
         return ResponseEntity.ok(post);
+    }
+
+    @PutMapping("/{postNo}")
+    @ApiOperation(value = "게시글 수정")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Server Error")
+    })
+    private ResponseEntity<Boolean> modifyPost(@PathVariable long postNo,
+                                            @ApiParam("title, content, image, open 사용") @RequestBody PostDto postDto) {
+        postService.modifyPost(postNo, postDto);
+        return ResponseEntity.ok(true);
+    }
+
+    @DeleteMapping("/{postNo}")
+    @ApiOperation(value = "게시글 삭제")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Server Error")
+    })
+    private ResponseEntity<Boolean> deletePost(@PathVariable long postNo) {
+        postService.deletePost(postNo);
+        return ResponseEntity.ok(true);
     }
 }
 
