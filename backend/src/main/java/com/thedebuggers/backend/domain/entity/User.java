@@ -1,9 +1,6 @@
 package com.thedebuggers.backend.domain.entity;
 
-import com.thedebuggers.backend.domain.ProviderType;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
@@ -11,6 +8,9 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @ToString
 @Table(name = "user")
 public class User {
@@ -41,7 +41,5 @@ public class User {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private ProviderType providerType;
-
-    private String providerId;
+    private LoginType loginType;
 }

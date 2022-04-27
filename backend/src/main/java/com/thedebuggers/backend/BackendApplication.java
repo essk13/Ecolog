@@ -1,13 +1,19 @@
 package com.thedebuggers.backend;
 
-import com.thedebuggers.backend.config.AppProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-@EnableConfigurationProperties(AppProperties.class)
 @SpringBootApplication
 public class BackendApplication {
+
+    // Password 인코딩 방식에 BCrypt 암호화 방식 사용
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(BackendApplication.class, args);

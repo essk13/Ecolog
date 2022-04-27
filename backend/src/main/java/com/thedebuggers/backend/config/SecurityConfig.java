@@ -1,18 +1,13 @@
 package com.thedebuggers.backend.config;
 
-import com.thedebuggers.backend.security.TokenProvider;
-import com.thedebuggers.backend.security.CustomUserDetailsService;
-import com.thedebuggers.backend.security.RestAuthenticationEntryPoint;
-import com.thedebuggers.backend.security.TokenAuthenticationFilter;
-import com.thedebuggers.backend.security.oauth2.CustomOAuth2UserService;
-import com.thedebuggers.backend.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
-import com.thedebuggers.backend.security.oauth2.handler.OAuth2AuthenticationFailureHandler;
-import com.thedebuggers.backend.security.oauth2.handler.OAuth2AuthenticationSuccessHandler;
+
+import com.thedebuggers.backend.auth.ELUserDetailsService;
+import com.thedebuggers.backend.auth.JwtAuthenticationFilter;
+import com.thedebuggers.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.BeanIds;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,7 +16,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 
 import org.springframework.web.cors.CorsConfiguration;
@@ -36,42 +30,26 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final CustomUserDetailsService customUserDetailsService;
-    private final CustomOAuth2UserService customOAuth2UserService;
-    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
-    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
-    private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+    private final ELUserDetailsService elUserDetailsService;
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
-
+    // DAO 기반으로 Authentication Provider를 생성
+    // BCrypt Password Encoder와 UserDetailService 구현체를 설정
     @Bean
-    public TokenAuthenticationFilter tokenAuthenticationFilter() {
-        return new TokenAuthenticationFilter();
+    DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
+        daoAuthenticationProvider.setUserDetailsService(this.elUserDetailsService);
+        return daoAuthenticationProvider;
     }
 
-    @Bean
-    public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
-        return new HttpCookieOAuth2AuthorizationRequestRepository();
-
-    }
-
+    // DAO 기반의 Authentication Provider가 적용되도록 설정
     @Override
-    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        authenticationManagerBuilder
-                .userDetailsService(customUserDetailsService)
-                .passwordEncoder(passwordEncoder());
+    protected void configure(AuthenticationManagerBuilder auth) {
+        auth.authenticationProvider(authenticationProvider());
     }
 
-    @Bean(BeanIds.AUTHENTICATION_MANAGER)
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
-
-    // Password 인코딩 방식에 BCrypt 암호화 방식 사용
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -87,34 +65,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().disable()
                 .httpBasic().disable()
 
-                .exceptionHandling()
-                .authenticationEntryPoint(new RestAuthenticationEntryPoint())
+                .addFilter(new JwtAuthenticationFilter(authenticationManager(), userService))
 
-                .and()
                 .authorizeRequests()
-
-                .antMatchers("/auth/**", "/oauth2/**").permitAll()
                 .antMatchers("/api/v1/user/**", "/api/v1/community/**").authenticated()
-                .anyRequest().permitAll()
-
-                .and()
-                .oauth2Login()
-                .authorizationEndpoint()
-                .baseUri("/oauth2/authorize")
-                .authorizationRequestRepository(cookieAuthorizationRequestRepository())
-
-                .and()
-                .redirectionEndpoint()
-                .baseUri("/oauth2/callback/*")
-
-                .and()
-                .userInfoEndpoint()
-                .userService(customOAuth2UserService)
-
-                .and()
-                .successHandler(oAuth2AuthenticationSuccessHandler)
-                .failureHandler(oAuth2AuthenticationFailureHandler);
-
+                .anyRequest().permitAll();
     }
 
     @Bean
