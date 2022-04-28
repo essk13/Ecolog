@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
+    List<Post> findByIsOpen(boolean isOpen);
     List<Post> findByCommunityNo(@Param(value = "no") long communityNo);
     Post findByNo(long postNo);
 

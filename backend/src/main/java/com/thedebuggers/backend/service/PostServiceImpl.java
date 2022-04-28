@@ -22,48 +22,77 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public boolean registPost(PostDto postDto) {
-        Post post = Post.builder()
-                .title(postDto.getTitle())
-                .content(postDto.getContent())
-                .image(postDto.getImage())
-                .createdAt(LocalDateTime.now())
-                .isOpen(postDto.isOpen())
-                .community(communityRepository.findByNo(postDto.getCommunityNo()))
-                .user(userRepository.findByNo(postDto.getUserNo()).orElse(null))
-                .build();
+        try {
+            Post post = Post.builder()
+                    .title(postDto.getTitle())
+                    .content(postDto.getContent())
+                    .image(postDto.getImage())
+                    .createdAt(LocalDateTime.now())
+                    .isOpen(postDto.isOpen())
+                    .community(communityRepository.findByNo(postDto.getCommunityNo()))
+                    .user(userRepository.findByNo(postDto.getUserNo()).orElse(null))
+                    .build();
 
-        post = postRepository.save(post);
-        return true;
+            post = postRepository.save(post);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public List<Post> getAllPost() {
+        try {
+            return postRepository.findByIsOpen(true);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
     public List<Post> getPostList(long communityNo) {
-        List<Post> postList = postRepository.findByCommunityNo(communityNo);
-        return postList;
+        try {
+            return postRepository.findByCommunityNo(communityNo);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
     public Post getPost(long postNo) {
-        Post post = postRepository.findByNo(postNo);
-        return post;
+        try {
+            return postRepository.findByNo(postNo);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
     @Transactional
-    public void modifyPost(long postNo, PostDto postDto) {
-        Post post = Post.builder()
-                .title(postDto.getTitle())
-                .content(postDto.getContent())
-                .image(postDto.getImage())
-                .isOpen(postDto.isOpen())
-                .build();
+    public boolean modifyPost(long postNo, PostDto postDto) {
+        try {
+            Post post = Post.builder()
+                    .title(postDto.getTitle())
+                    .content(postDto.getContent())
+                    .image(postDto.getImage())
+                    .isOpen(postDto.isOpen())
+                    .build();
 
-        postRepository.modifyPost(postNo, post);
+            postRepository.modifyPost(postNo, post);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
-    public void deletePost(long postNo) {
-        postRepository.deleteById(postNo);
+    public boolean deletePost(long postNo) {
+        try {
+            postRepository.deleteById(postNo);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 }
