@@ -42,4 +42,9 @@ public class UserServiceImpl implements UserService{
                 .build();
         return userRepository.save(user);
     }
+
+    @Override
+    public User getUserByUserNo(Long userNo) {
+        return userRepository.findByNo(userNo).orElse(null);
+    }
 }

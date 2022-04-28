@@ -9,4 +9,6 @@ public interface UserService {
     User updateUser(LoginReqDto loginDto);
 
     User createUser(LoginReqDto loginDto);
+
+    User getUserByUserNo(Long userNo);
 }

@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,19 +26,25 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/me")
-    @ApiOperation(value = "내 정보")
+    @GetMapping({"", "/", "/{userNo}"})
+    @ApiOperation(value = "회원 정보 / ")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Success"),
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Server Error")
     })
-    private ResponseEntity<UserInfoResDto> myInfo(Authentication authentication){
+    private ResponseEntity<UserInfoResDto> info(@PathVariable(required = false) Long userNo, Authentication authentication) {
 
-        log.info(authentication.toString());
-        ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
-        User user = userDetails.getUser();
+        User user = null;
 
-        return ResponseEntity.ok(UserInfoResDto.of(user));
+        if (userNo == null) {
+            ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
+            user = userDetails.getUser();
+        } else {
+            user = userService.getUserByUserNo(userNo);
+        }
+
+
+        return ResponseEntity.ok(user != null ? UserInfoResDto.of(user) : null);
     }
 }
