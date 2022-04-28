@@ -41,6 +41,9 @@ public class JwtTokenUtil {
         JwtTokenUtil.accessExpirationTime = accessExpirationTime;
     }
 
+    public static Integer getRefreshExpirationTime(){
+        return refreshExpirationTime;
+    }
 
     public static JWTVerifier getVerifier() {
         return JWT

@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService{
     public User createUser(LoginReqDto loginDto) {
         User user = User.builder()
                 .email(loginDto.getEmail())
-                .password(passwordEncoder.encode(loginDto.getId() + loginDto.getPassword()))
+                .password(passwordEncoder.encode(loginDto.getId() + loginDto.getEmail()))
                 .image(loginDto.getImageUrl())
                 .loginType(loginDto.getLoginType())
                 .build();

@@ -36,10 +36,8 @@ public class UserController {
 
         log.info(authentication.toString());
         ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
-//        User user = userDetails.getUser();
-        String userEmail = userDetails.getUsername();
+        User user = userDetails.getUser();
 
-        User user = userService.getUserByEmail(userEmail);
         return ResponseEntity.ok(UserInfoResDto.of(user));
     }
 }
