@@ -2,10 +2,14 @@ package com.thedebuggers.backend.service;
 
 
 import com.thedebuggers.backend.domain.entity.Community;
+import com.thedebuggers.backend.domain.entity.UserCommunity;
 import com.thedebuggers.backend.domain.repository.CommunityRepository;
+import com.thedebuggers.backend.domain.repository.UserCommunityRepository;
+import com.thedebuggers.backend.domain.repository.UserRepository;
+import com.thedebuggers.backend.dto.CommunityDto;
+import com.thedebuggers.backend.dto.UserCommunityDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +20,8 @@ import java.util.List;
 public class CommunityServiceImpl implements CommunityService{
 
     private final CommunityRepository communityRepository;
+    private final UserRepository userRepository;
+    private final UserCommunityRepository userCommunityRepository;
 
     @Override
     public List<Community> getCommunityList() {
@@ -27,5 +33,27 @@ public class CommunityServiceImpl implements CommunityService{
     public Community getCommunity(long no) {
         return communityRepository.findByNo(no);
     }
+
+    @Override
+    public boolean registCommunity(CommunityDto communityDto) {
+        Community community = Community.builder()
+                .title(communityDto.getTitle())
+                .description(communityDto.getDescription())
+                .image(communityDto.getImage())
+                .manager(userRepository.findByNo(communityDto.getUserNo()).orElse(null))
+                .build();
+
+        community = communityRepository.save(community);
+
+        UserCommunity userCommunity = UserCommunity.builder()
+                .user(userRepository.findByNo(communityDto.getUserNo()).orElse(null))
+                .community(community)
+                .build();
+
+        userCommunity = userCommunityRepository.save(userCommunity);
+
+        return true;
+    }
+
 
 }

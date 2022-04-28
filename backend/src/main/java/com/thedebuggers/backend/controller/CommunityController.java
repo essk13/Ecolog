@@ -1,7 +1,7 @@
 package com.thedebuggers.backend.controller;
 
 import com.thedebuggers.backend.domain.entity.Community;
-import com.thedebuggers.backend.dto.CommunityResDto;
+import com.thedebuggers.backend.dto.CommunityDto;
 import com.thedebuggers.backend.service.CommunityService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +49,20 @@ public class CommunityController {
             @ApiParam("커뮤니티 번호") @PathVariable long no
     ) {
         Community result = communityService.getCommunity(no);
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping
+    @ApiOperation(value = "커뮤니티 생성")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Server Error")
+    })
+    private ResponseEntity<Boolean> registCommunity(
+        @RequestBody CommunityDto communityDto
+    ){
+        boolean result = communityService.registCommunity(communityDto);
         return ResponseEntity.ok(result);
     }
 
