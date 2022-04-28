@@ -11,7 +11,6 @@ declare module '@react-navigation/native' {
       text: string;
       border: string;
       notification: string;
-      button: string;
     };
   };
   export function useTheme(): CustomTheme;

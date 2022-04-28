@@ -23,13 +23,7 @@ const customTheme: CustomTheme = {
   dark: false,
   colors: {
     ...DefaultTheme.colors,
-    primary: '#000000',
     background: '#ffffff',
-    card: '#000000',
-    text: '#000000',
-    border: '#000000',
-    notification: '#000000',
-    button: '#2f00ff',
   },
 };
 
