@@ -8,17 +8,13 @@ import io.swagger.annotations.ApiModel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
-
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 
 @Getter
 @Setter
 @Builder
 @ApiModel("UserInfoResponse")
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class UserInfoResDto {
+public class MyInfoResDto {
     private long no;
     private String email;
     private String name;
@@ -31,10 +27,11 @@ public class UserInfoResDto {
     private String address;
     private LoginType loginType;
 
-    public static UserInfoResDto of(User user){
-        return UserInfoResDto.builder()
+    public static MyInfoResDto of(User user){
+        return MyInfoResDto.builder()
                 .no(user.getNo())
                 .email(user.getEmail())
+                .name(user.getName())
                 .nickname(user.getNickname())
                 .birth(user.getBirth())
                 .height(user.getHeight())
