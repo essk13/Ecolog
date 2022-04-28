@@ -1,12 +1,15 @@
 package com.thedebuggers.backend.controller;
 
+import com.thedebuggers.backend.auth.ELUserDetails;
 import com.thedebuggers.backend.domain.entity.Community;
+import com.thedebuggers.backend.domain.entity.User;
 import com.thedebuggers.backend.dto.CommunityDto;
 import com.thedebuggers.backend.service.CommunityService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,6 +41,20 @@ public class CommunityController {
         return ResponseEntity.ok(result);
     }
 
+    @PostMapping
+    @ApiOperation(value = "커뮤니티 생성")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Server Error")
+    })
+    private ResponseEntity<Boolean> registCommunity(
+            @RequestBody CommunityDto communityDto
+    ){
+        boolean result = communityService.registCommunity(communityDto);
+        return ResponseEntity.ok(result);
+    }
+
     @GetMapping("/{no}")
     @ApiOperation(value = "커뮤니티 상세 조회")
     @ApiResponses({
@@ -52,17 +69,23 @@ public class CommunityController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping
-    @ApiOperation(value = "커뮤니티 생성")
+
+    @PostMapping("/{no}")
+    @ApiOperation(value = "커뮤니티 가입")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Success"),
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Server Error")
     })
-    private ResponseEntity<Boolean> registCommunity(
-        @RequestBody CommunityDto communityDto
-    ){
-        boolean result = communityService.registCommunity(communityDto);
+    private ResponseEntity<Community> joinCommunity(
+            @ApiParam("커뮤니티 번호") @PathVariable long no,
+            Authentication authentication
+    ) {
+        ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
+        User user = userDetails.getUser();
+
+
+        Community result = communityService.joinCommunity(no, user);
         return ResponseEntity.ok(result);
     }
 

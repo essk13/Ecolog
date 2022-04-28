@@ -2,6 +2,7 @@ package com.thedebuggers.backend.service;
 
 
 import com.thedebuggers.backend.domain.entity.Community;
+import com.thedebuggers.backend.domain.entity.User;
 import com.thedebuggers.backend.domain.entity.UserCommunity;
 import com.thedebuggers.backend.domain.repository.CommunityRepository;
 import com.thedebuggers.backend.domain.repository.UserCommunityRepository;
@@ -53,6 +54,20 @@ public class CommunityServiceImpl implements CommunityService{
         userCommunity = userCommunityRepository.save(userCommunity);
 
         return true;
+    }
+
+    @Override
+    public Community joinCommunity(long no, User user) {
+
+        Community community = communityRepository.findByNo(no);
+
+        UserCommunity userCommunity = UserCommunity.builder()
+                .user(user)
+                .community(community)
+                .build();
+        userCommunity = userCommunityRepository.save(userCommunity);
+
+        return community;
     }
 
 

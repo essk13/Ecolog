@@ -1,6 +1,7 @@
 package com.thedebuggers.backend.service;
 
 import com.thedebuggers.backend.domain.entity.Community;
+import com.thedebuggers.backend.domain.entity.User;
 import com.thedebuggers.backend.dto.CommunityDto;
 import com.thedebuggers.backend.dto.UserCommunityDto;
 
@@ -12,4 +13,6 @@ public interface CommunityService {
     Community getCommunity(long no);
 
     boolean registCommunity(CommunityDto communityResDto);
+
+    Community joinCommunity(long no, User user);
 }
