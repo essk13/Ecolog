@@ -17,4 +17,6 @@ public interface PostService {
     boolean modifyPost(long postNo, PostDto postDto);
 
     boolean deletePost(long postNo);
+
+    boolean likePost(long postNo, long userNo);
 }

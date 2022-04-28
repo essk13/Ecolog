@@ -1,5 +1,6 @@
 package com.thedebuggers.backend.controller;
 
+import com.thedebuggers.backend.auth.ELUserDetails;
 import com.thedebuggers.backend.domain.entity.Post;
 import com.thedebuggers.backend.dto.PostDto;
 import com.thedebuggers.backend.service.PostService;
@@ -7,7 +8,9 @@ import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
@@ -98,6 +101,23 @@ public class PostController {
     })
     private ResponseEntity<Boolean> deletePost(@PathVariable long postNo) {
         if (!postService.deletePost(postNo)) {
+            return ResponseEntity.status(404).body(false);
+        }
+        return ResponseEntity.ok(true);
+    }
+
+    @PostMapping("/{postNo}/like")
+    @ApiOperation(value = "게시글 좋아요 / 취소")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Server Error")
+    })
+    private ResponseEntity<Boolean> likePost(@ApiIgnore Authentication authentication,
+                                             @PathVariable long postNo) {
+        ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
+        long userNo = userDetails.getUser().getNo();
+        if (!postService.likePost(postNo, userNo)) {
             return ResponseEntity.status(404).body(false);
         }
         return ResponseEntity.ok(true);

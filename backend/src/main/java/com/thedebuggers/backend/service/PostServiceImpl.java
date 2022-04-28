@@ -1,7 +1,9 @@
 package com.thedebuggers.backend.service;
 
 import com.thedebuggers.backend.domain.entity.Post;
+import com.thedebuggers.backend.domain.entity.PostLike;
 import com.thedebuggers.backend.domain.repository.CommunityRepository;
+import com.thedebuggers.backend.domain.repository.PostLikeRepository;
 import com.thedebuggers.backend.domain.repository.PostRepository;
 import com.thedebuggers.backend.domain.repository.UserRepository;
 import com.thedebuggers.backend.dto.PostDto;
@@ -19,6 +21,7 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CommunityRepository communityRepository;
+    private final PostLikeRepository postLikeRepository;
 
     @Override
     public boolean registPost(PostDto postDto) {
@@ -89,6 +92,29 @@ public class PostServiceImpl implements PostService {
     public boolean deletePost(long postNo) {
         try {
             postRepository.deleteById(postNo);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean likePost(long postNo, long userNo) {
+        try {
+            PostLike like = PostLike.builder()
+                    .post(postRepository.findByNo(postNo))
+                    .user(userRepository.findByNo(userNo).orElse(null))
+                    .build();
+
+            PostLike existLike = postLikeRepository.findByPostNoAndUserNo(postNo, userNo);
+
+            if (existLike == null) {
+                postLikeRepository.save(like);
+            }
+            else {
+                long existNo = existLike.getNo();
+                postLikeRepository.deleteById(existNo);
+            }
             return true;
         } catch (Exception e) {
             return false;
