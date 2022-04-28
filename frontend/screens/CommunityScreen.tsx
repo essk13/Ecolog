@@ -1,34 +1,21 @@
 import React from 'react';
-import {
-  Text,
-  View,
-  TouchableHighlight,
-  StyleSheet,
-  TextInput,
-  ScrollView,
-} from 'react-native';
-
+import {Text, TextInput, View, StyleSheet} from 'react-native';
+import CommunityTab from '../components/User/Community/CommunityTab';
 const styles = StyleSheet.create({
   container: {
-    height: '100%',
-    backgroundColor: '#ffffff',
-    alignItems: 'center',
-    color: '#ffffff',
+    flex: 1,
+    backgroundColor: '#5FA2E5',
   },
   topMenu: {
-    backgroundColor: '#5FA2E5',
     width: '100%',
-    height: '15%',
-    borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
+    height: '10%',
     color: '#ffffff',
-    padding: 20,
+    padding: 10,
   },
   topInput: {
     backgroundColor: 'white',
     width: '100%',
-    height: '20%',
-    borderRadius: 5,
+    height: '50%',
   },
   topTitle: {
     color: '#ffffff',
@@ -38,28 +25,14 @@ const styles = StyleSheet.create({
   },
 });
 
-function CommunityScreen({navigation}: any) {
+function CommunityScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.topMenu}>
         <Text style={styles.topTitle}>커뮤니티</Text>
         <TextInput style={styles.topInput} />
       </View>
-      <View>
-        <Text>인기 캠페인</Text>
-      </View>
-      <View>
-        <Text>인기 커뮤니티</Text>
-      </View>
-      <ScrollView>
-        <TouchableHighlight
-          onPress={() => {
-            navigation.navigate('CommunityHome');
-          }}
-          underlayColor="red">
-          <Text>Go to CommunityHome</Text>
-        </TouchableHighlight>
-      </ScrollView>
+      <CommunityTab />
     </View>
   );
 }
