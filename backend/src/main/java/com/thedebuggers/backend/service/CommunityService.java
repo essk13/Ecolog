@@ -15,4 +15,6 @@ public interface CommunityService {
     boolean registCommunity(CommunityDto communityResDto);
 
     Community joinCommunity(long no, User user);
+
+    List<User> getCommunityMember(long no);
 }

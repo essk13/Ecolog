@@ -70,5 +70,13 @@ public class CommunityServiceImpl implements CommunityService{
         return community;
     }
 
+    @Override
+    public List<User> getCommunityMember(long no) {
+
+        List<User> userList = userCommunityRepository.findAllUserByCommunityNo(no);
+
+        return userList;
+    }
+
 
 }

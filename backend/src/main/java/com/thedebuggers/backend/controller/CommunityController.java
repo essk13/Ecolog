@@ -3,6 +3,7 @@ package com.thedebuggers.backend.controller;
 import com.thedebuggers.backend.auth.ELUserDetails;
 import com.thedebuggers.backend.domain.entity.Community;
 import com.thedebuggers.backend.domain.entity.User;
+import com.thedebuggers.backend.domain.entity.UserCommunity;
 import com.thedebuggers.backend.dto.CommunityDto;
 import com.thedebuggers.backend.service.CommunityService;
 import io.swagger.annotations.*;
@@ -86,6 +87,21 @@ public class CommunityController {
 
 
         Community result = communityService.joinCommunity(no, user);
+        return ResponseEntity.ok(result);
+    }
+
+
+    @GetMapping("/{no}/member")
+    @ApiOperation(value = "커뮤니티 멤버 조회")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Server Error")
+    })
+    private ResponseEntity<List<User>> getCommunityMember(
+            @ApiParam("커뮤니티 번호") @PathVariable long no
+    ){
+        List<User> result = communityService.getCommunityMember(no);
         return ResponseEntity.ok(result);
     }
 
