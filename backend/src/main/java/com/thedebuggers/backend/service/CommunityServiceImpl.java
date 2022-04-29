@@ -78,5 +78,22 @@ public class CommunityServiceImpl implements CommunityService{
         return userList;
     }
 
+    @Override
+    public Community updateCommunity(long communityNo, User user, CommunityDto communityDto) {
+        try {
+            Community community = Community.builder()
+                    .title(communityDto.getTitle())
+                    .description(communityDto.getDescription())
+                    .image(communityDto.getImage())
+                    .manager(userRepository.findByNo(communityDto.getUserNo()).orElse(null))
+                    .build();
+            communityRepository.updateCommunity(communityNo, community);
+            return community;
+        } catch (Exception e) {
+            System.out.print(e);
+            return null;
+        }
+    }
+
 
 }

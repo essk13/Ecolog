@@ -90,6 +90,25 @@ public class CommunityController {
         return ResponseEntity.ok(result);
     }
 
+    @PutMapping("/{communityNo}")
+    @ApiOperation(value = "커뮤니티 수정")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Server Error")
+    })
+    private ResponseEntity<Community> updateCommunity(
+        @ApiParam("커뮤니티 번호") @PathVariable long communityNo,
+        @RequestBody CommunityDto communityDto,
+        Authentication authentication
+    ){
+        ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
+        User user = userDetails.getUser();
+
+        Community result = communityService.updateCommunity(communityNo, user, communityDto);
+        return ResponseEntity.ok(result);
+    }
+
 
     @GetMapping("/{no}/member")
     @ApiOperation(value = "커뮤니티 멤버 조회")

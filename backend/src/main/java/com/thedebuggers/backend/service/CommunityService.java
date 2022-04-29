@@ -17,4 +17,6 @@ public interface CommunityService {
     Community joinCommunity(long no, User user);
 
     List<User> getCommunityMember(long no);
+
+    Community updateCommunity(long communityNo, User user, CommunityDto communityDto);
 }
