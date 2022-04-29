@@ -66,26 +66,26 @@ function PloggingHistoryList({navigation}: PloggingHistoryListProps) {
     },
     {
       id: 1,
-      endedAt: '2099.04.19',
+      endedAt: '2099.04.20',
       image:
         'https://cdn.imweb.me/upload/S2021011502a2f4eeeb339/99652ab25b094.jpeg',
-      time: '00:01:01',
+      time: '00:02:01',
       distance: 0.05,
     },
     {
       id: 2,
-      endedAt: '2099.04.19',
+      endedAt: '2099.04.21',
       image:
         'https://cdn.imweb.me/upload/S2021011502a2f4eeeb339/99652ab25b094.jpeg',
-      time: '00:01:01',
+      time: '00:03:01',
       distance: 0.05,
     },
     {
       id: 3,
-      endedAt: '2099.04.19',
+      endedAt: '2099.04.22',
       image:
         'https://cdn.imweb.me/upload/S2021011502a2f4eeeb339/99652ab25b094.jpeg',
-      time: '00:01:01',
+      time: '00:04:01',
       distance: 0.05,
     },
   ];

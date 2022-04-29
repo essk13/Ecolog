@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, Image, StyleSheet} from 'react-native';
+import {Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
 
 const styles = () =>
   StyleSheet.create({
@@ -29,9 +29,18 @@ interface PloggingHistoryItemProps {
   plogging: any;
 }
 
-function PloggingHistoryItem({plogging}: PloggingHistoryItemProps) {
+function PloggingHistoryItem({navigation, plogging}: PloggingHistoryItemProps) {
   return (
-    <View style={styles().ploggingContainer}>
+    <TouchableOpacity
+      style={styles().ploggingContainer}
+      onPress={() =>
+        navigation.navigate('PloggingRecord', {
+          image: plogging.image,
+          date: plogging.endedAt,
+          distance: plogging.distance,
+          time: plogging.time,
+        })
+      }>
       <Image source={{uri: plogging.image}} style={styles().ploggingImage} />
       <Text style={fontStyles(14, 'bold', '#000000').normalText}>
         {plogging.endedAt}
@@ -40,7 +49,7 @@ function PloggingHistoryItem({plogging}: PloggingHistoryItemProps) {
         style={
           fontStyles(9, 'normal', '#000000').normalText
         }>{`${plogging.distance}km / ${plogging.time}`}</Text>
-    </View>
+    </TouchableOpacity>
   );
 }
 
