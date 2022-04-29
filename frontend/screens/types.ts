@@ -28,9 +28,11 @@ export type RootStackParamList = {
   PloggingMap: undefined;
   PloggingResult: undefined;
   PloggingRanking: undefined;
+  PloggingRecord: undefined;
+  UserEdit: undefined;
+  CommunityHome: undefined;
   SurveyPage: undefined;
   SurveyResult: undefined;
-  CommunityHome: undefined;
 };
 export type RootStackNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;

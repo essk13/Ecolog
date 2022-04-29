@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, StyleSheet, Image} from 'react-native';
+import {Text, View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 // Components
 import UserInfoText from './UserInfoText';
 
@@ -60,9 +60,10 @@ interface User {
 
 interface UserInfoProps {
   user: User;
+  navigation: any;
 }
 
-function UserInfo({user}: UserInfoProps) {
+function UserInfo({user, navigation}: UserInfoProps) {
   return (
     <View>
       <View style={styles('row', 20).userContainer}>
@@ -79,6 +80,9 @@ function UserInfo({user}: UserInfoProps) {
             <UserInfoText title={'팔로우'} count={user.follow} />
             <UserInfoText title={'팔로워'} count={user.follower} />
           </View>
+          <TouchableOpacity onPress={() => navigation.navigate('UserEdit')}>
+            <Text>내 정보 수정</Text>
+          </TouchableOpacity>
         </View>
       </View>
 

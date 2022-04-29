@@ -19,10 +19,10 @@ const UserData = {
   follower: 13,
 };
 
-function UserScreen() {
+function UserScreen({navigation}: any) {
   return (
     <View style={styles('#5FA2E5').background}>
-      <UserInfo user={UserData} />
+      <UserInfo user={UserData} navigation={navigation} />
       <UserTab />
     </View>
   );
