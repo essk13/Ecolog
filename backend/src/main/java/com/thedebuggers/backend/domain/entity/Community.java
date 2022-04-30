@@ -2,15 +2,17 @@ package com.thedebuggers.backend.domain.entity;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @Table(name = "COMMUNITY")
 public class Community {
@@ -36,17 +38,7 @@ public class Community {
     @Column(name = "image")
     private String image;
 
-    @Builder
-    public Community(long no, String title, String description, User manager, String image) {
-        this.no = no;
-        this.title = title;
-        this.description = description;
-        this.manager = manager;
-        this.image = image;
-    }
 
 
-    public Community() {
 
-    }
 }

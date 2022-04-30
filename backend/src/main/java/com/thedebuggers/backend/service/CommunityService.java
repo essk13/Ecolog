@@ -19,4 +19,6 @@ public interface CommunityService {
     List<User> getCommunityMember(long no);
 
     Community updateCommunity(long communityNo, User user, CommunityDto communityDto);
+
+    void deleteCommunity(long communityNo, User user) throws Exception;
 }

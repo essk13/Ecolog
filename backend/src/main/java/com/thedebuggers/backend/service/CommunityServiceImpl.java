@@ -95,5 +95,26 @@ public class CommunityServiceImpl implements CommunityService{
         }
     }
 
+    @Override
+    public void deleteCommunity(long communityNo, User user) throws Exception {
+
+        Community community = communityRepository.findByNo(communityNo);
+        List<UserCommunity> userCommunityList = userCommunityRepository.findAllByCommunityNo(communityNo);
+
+        if (community == null) {
+            System.out.println("1번 에러");
+            throw new Exception();
+        }
+
+        if (community.getManager().getNo() != user.getNo()) {
+            System.out.println("2번 에러");
+            throw new Exception();
+        }
+
+        userCommunityRepository.deleteAll(userCommunityList);
+        communityRepository.delete(community);
+
+    }
+
 
 }

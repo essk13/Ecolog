@@ -12,4 +12,7 @@ import java.util.List;
 public interface UserCommunityRepository extends JpaRepository<UserCommunity, Long> {
     @Query("select uc.user from UserCommunity uc where uc.community.no = :communityNo")
     List<User> findAllUserByCommunityNo(long communityNo);
+
+
+    List<UserCommunity> findAllByCommunityNo(long communityNo);
 }
