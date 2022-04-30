@@ -17,7 +17,7 @@ public class LoginReqDto {
 
     private long id;
     private String email;
-    private String password;
-    private String imageUrl;
+    private String name;
     private LoginType loginType;
+
 }

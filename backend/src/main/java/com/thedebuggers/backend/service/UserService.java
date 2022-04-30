@@ -7,8 +7,6 @@ import com.thedebuggers.backend.dto.UserUpdateReqDto;
 public interface UserService {
     User getUserByEmail(String email);
 
-    User updateUser(LoginReqDto loginDto);
-
     User createUser(LoginReqDto loginDto);
 
     User getUserByUserNo(Long userNo);

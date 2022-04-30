@@ -16,18 +16,12 @@ import lombok.Setter;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class LoginResDto {
 
-    private String email;
-    private String name;
-    private String nickname;
-    private LoginType loginType;
+    private boolean firstLogin;
 
-    public static LoginResDto of(User user){
+    public static LoginResDto of(boolean firstLogin){
 
         return LoginResDto.builder()
-                .email(user.getEmail())
-                .name(user.getName())
-                .nickname(user.getNickname())
-                .loginType(user.getLoginType())
+                .firstLogin(firstLogin)
                 .build();
     }
 }

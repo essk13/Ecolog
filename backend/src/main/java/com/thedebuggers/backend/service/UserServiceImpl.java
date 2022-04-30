@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    private final String defaultImageUrl = "http://ecolog_image_url";
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -23,24 +24,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(LoginReqDto loginDto) {
-        User user = userRepository.findByEmail(loginDto.getEmail()).orElse(null);
-
-        if (user == null) return null;
-
-        if (!user.getImage().equals(loginDto.getImageUrl())) {
-            user.setImage(loginDto.getImageUrl());
-        }
-
-        return userRepository.save(user);
-    }
-
-    @Override
     public User createUser(LoginReqDto loginDto) {
+
+//        User user = userRepository.findByEmail(loginDto.getEmail()).orElse(null);
+
         User user = User.builder()
                 .email(loginDto.getEmail())
+                .name(loginDto.getName())
                 .password(passwordEncoder.encode(loginDto.getId() + loginDto.getEmail()))
-                .image(loginDto.getImageUrl())
+                .nickname(loginDto.getEmail().substring(0, loginDto.getEmail().indexOf('@')))
+                .image(defaultImageUrl)
                 .loginType(loginDto.getLoginType())
                 .build();
         return userRepository.save(user);
@@ -64,12 +57,6 @@ public class UserServiceImpl implements UserService {
         }
 
         if (updateDto.getNickname() != null) {
-
-            if ((user.getNickname() != null && user.getNickname().equals(updateDto.getNickname()))
-                    || userRepository.findByNickname(updateDto.getNickname()).isPresent()) {
-                throw new Exception();
-            }
-
             user.setNickname(updateDto.getNickname());
         }
 

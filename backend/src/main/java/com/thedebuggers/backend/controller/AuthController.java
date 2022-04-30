@@ -49,6 +49,7 @@ public class AuthController {
             @ApiResponse(code = 500, message = "Server Error")
     })
     private ResponseEntity<?> login(@RequestBody LoginReqDto loginDto){
+        boolean firstLogin = false;
 
         User user = userService.getUserByEmail(loginDto.getEmail());
 
@@ -62,8 +63,8 @@ public class AuthController {
                 return ResponseEntity.badRequest().body("Bad Request");
             }
 
-            user = userService.updateUser(loginDto);
         }else {
+            firstLogin = true;
             user = userService.createUser(loginDto);
         }
 
@@ -73,7 +74,7 @@ public class AuthController {
         httpHeaders.add(ACCESS_TOKEN, tokenDto.getAccessToken());
         httpHeaders.add(REFRESH_TOKEN, tokenDto.getRefreshToken());
 
-        return new ResponseEntity<>(LoginResDto.of(user), httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<>(LoginResDto.of(firstLogin), httpHeaders, HttpStatus.OK);
     }
 
     @PostMapping("/reissue")
