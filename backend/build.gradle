@@ -152,6 +152,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.modelmapper:modelmapper:2.3.6'
 
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 test {
     useJUnitPlatform()
