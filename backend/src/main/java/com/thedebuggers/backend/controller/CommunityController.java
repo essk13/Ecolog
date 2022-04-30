@@ -109,6 +109,30 @@ public class CommunityController {
         return ResponseEntity.ok(result);
     }
 
+    @DeleteMapping("/{communityNo}")
+    @ApiOperation(value = "커뮤니티 탈퇴")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Server Error")
+    })
+    private ResponseEntity<String> quitCommunity(
+            @ApiParam("커뮤니티 번호") @PathVariable long communityNo,
+            Authentication authentication
+    ) {
+        ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
+        User user = userDetails.getUser();
+
+        long userNo = user.getNo();
+
+        try {
+            communityService.quitCommunity(communityNo, userNo);
+        }catch (Exception e) {
+            return ResponseEntity.ok("Failed");
+        }
+        return ResponseEntity.ok("Success");
+    }
+
 
     @GetMapping("/{no}/member")
     @ApiOperation(value = "커뮤니티 멤버 조회")
@@ -144,7 +168,6 @@ public class CommunityController {
             System.out.println(e);
             return ResponseEntity.ok("Failed");
         }
-
         return ResponseEntity.ok("Success");
     }
 

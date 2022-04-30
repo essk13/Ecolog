@@ -21,4 +21,6 @@ public interface CommunityService {
     Community updateCommunity(long communityNo, User user, CommunityDto communityDto);
 
     void deleteCommunity(long communityNo, User user) throws Exception;
+
+    void quitCommunity(long communityNo, long userNo) throws Exception;
 }

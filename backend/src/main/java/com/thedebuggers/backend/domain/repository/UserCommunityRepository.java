@@ -15,4 +15,6 @@ public interface UserCommunityRepository extends JpaRepository<UserCommunity, Lo
 
 
     List<UserCommunity> findAllByCommunityNo(long communityNo);
+
+    UserCommunity findAllByCommunityNoAndUserNo(long communityNo, long userNo);
 }

@@ -116,5 +116,22 @@ public class CommunityServiceImpl implements CommunityService{
 
     }
 
+    @Override
+    public void quitCommunity(long communityNo, long userNo) throws Exception {
+        UserCommunity userCommunity = userCommunityRepository.findAllByCommunityNoAndUserNo(communityNo, userNo);
+
+        Community community = communityRepository.findByNo(communityNo);
+
+        if (userCommunity == null) {
+            throw new Exception();
+        }
+
+        if (community.getManager().getNo() == userNo) {
+            throw new Exception();
+        }
+
+        userCommunityRepository.delete(userCommunity);
+    }
+
 
 }
