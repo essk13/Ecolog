@@ -1,5 +1,6 @@
 import React from 'react';
 import {Text, View, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import auth from '@react-native-firebase/auth';
 // Components
 import UserInfoText from './UserInfoText';
 
@@ -63,6 +64,11 @@ interface UserInfoProps {
   navigation: any;
 }
 
+function googleLogout() {
+  auth().signOut();
+  console.log('Logged Out');
+}
+
 function UserInfo({user, navigation}: UserInfoProps) {
   return (
     <View>
@@ -82,6 +88,9 @@ function UserInfo({user, navigation}: UserInfoProps) {
           </View>
           <TouchableOpacity onPress={() => navigation.navigate('UserEdit')}>
             <Text>내 정보 수정</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => googleLogout()}>
+            <Text>로그아웃</Text>
           </TouchableOpacity>
         </View>
       </View>
