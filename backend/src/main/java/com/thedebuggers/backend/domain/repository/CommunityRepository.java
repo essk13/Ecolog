@@ -20,6 +20,7 @@ public interface CommunityRepository extends JpaRepository<Community, Long> {
     @Transactional
     @Query("update Community c set c.title = :#{#community.title}," +
             "c.description = :#{#community.description}, c.image = :#{#community.image}," +
-            "c.manager = :#{#community.manager} where c.no = :#{#communityNo}")
+            "c.manager = :#{#community.manager}, c.sido = :#{#community.sido}," +
+            "c.sigungu = :#{#community.sigungu}, c.tag = :#{#community.tag} where c.no = :#{#communityNo}")
     void updateCommunity(long communityNo, Community community);
 }

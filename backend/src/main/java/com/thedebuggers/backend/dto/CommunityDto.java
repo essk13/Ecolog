@@ -18,5 +18,8 @@ public class CommunityDto {
     private String description;
     private long userNo;
     private String image;
+    private String sido;
+    private String sigungu;
+    private String tag;
 
 }

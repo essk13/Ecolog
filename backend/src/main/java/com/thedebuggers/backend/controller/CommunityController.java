@@ -49,10 +49,15 @@ public class CommunityController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Server Error")
     })
-    private ResponseEntity<Boolean> registCommunity(
-            @RequestBody CommunityDto communityDto
+    private ResponseEntity<Community> registCommunity(
+            @RequestBody CommunityDto communityDto,
+            Authentication authentication
     ){
-        boolean result = communityService.registCommunity(communityDto);
+        ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
+        User user = userDetails.getUser();
+        long userNo = user.getNo();
+
+        Community result = communityService.registCommunity(communityDto, userNo);
         return ResponseEntity.ok(result);
     }
 

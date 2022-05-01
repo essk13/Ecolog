@@ -12,7 +12,7 @@ public interface CommunityService {
 
     Community getCommunity(long no);
 
-    boolean registCommunity(CommunityDto communityResDto);
+    Community registCommunity(CommunityDto communityResDto, long userNo);
 
     Community joinCommunity(long no, User user);
 

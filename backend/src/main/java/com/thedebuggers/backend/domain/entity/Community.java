@@ -38,6 +38,15 @@ public class Community {
     @Column(name = "image")
     private String image;
 
+    @Column(name = "sido")
+    private String sido;
+
+    @Column(name = "sigungu")
+    private String sigungu;
+
+    @Column(name = "tag")
+    private String tag;
+
 
 
 
