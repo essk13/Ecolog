@@ -55,7 +55,11 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<Post> getPostList(long communityNo) {
         try {
-            return postRepository.findByCommunityNo(communityNo);
+            List<Post> postList = postRepository.findByCommunityNo(communityNo);
+            if (postList.size() == 0) {
+                return null;
+            }
+            return postList;
         } catch (Exception e) {
             return null;
         }

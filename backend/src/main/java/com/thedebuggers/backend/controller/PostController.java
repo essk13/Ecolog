@@ -31,10 +31,10 @@ public class PostController {
             @ApiResponse(code = 500, message = "Server Error")
     })
     private ResponseEntity<Boolean> registPost(@ApiParam(defaultValue = "1") @PathVariable long communityNo,
-                                               @ApiParam("communityNo, createdAt은 사용되지 않음.") @RequestBody PostDto postDto) {
+                                               @ApiParam("communityNo, createdAt은 사용되지 않음.") @RequestBody PostDto postDto) throws Exception {
         postDto.setCommunityNo(communityNo);
         if (!postService.registPost(postDto)) {
-           return ResponseEntity.status(404).body(false);
+           throw new Exception("게시물 등록에 실패하였습니다.");
         }
         return ResponseEntity.ok(true);
     }
@@ -56,7 +56,7 @@ public class PostController {
             postList = postService.getPostList(communityNo);
         }
         if (postList == null) {
-            return ResponseEntity.status(404).body(null);
+            throw new NullPointerException("없는 커뮤니티이거나 해당 커뮤니티에 게시물이 존재하지 않습니다.");
         }
         return ResponseEntity.ok(postList);
     }
@@ -72,7 +72,7 @@ public class PostController {
                                          @ApiParam(defaultValue = "1") @PathVariable long postNo) {
         Post post = postService.getPost(postNo);
         if (post == null) {
-            return ResponseEntity.status(404).body(null);
+            throw new NullPointerException("게시물이 존재하지 않습니다.");
         }
         return ResponseEntity.ok(post);
     }
