@@ -5,14 +5,13 @@ import CommunityFeed from './CommunityFeed';
 import CommunityMy from './CommunityMy';
 import CommunityMain from './CommunityMain';
 
-const fontStyles = (size?: number, weight?: any) =>
-  StyleSheet.create({
-    buttonText: {
-      fontSize: size || 15,
-      fontWeight: weight || 'normal',
-      color: '#FFFFFF',
-    },
-  });
+const Styles = StyleSheet.create({
+  buttonText: {
+    fontSize: 15,
+    fontWeight: 'normal',
+    color: '#FFFFFF',
+  },
+});
 
 const FirstRoute = () => <CommunityMain />;
 const SecondRoute = () => <CommunityMy />;
@@ -48,9 +47,7 @@ function CommunityTab() {
           pressColor={'#548dc5'}
           renderLabel={({route}) => (
             <View>
-              <Text style={fontStyles(16, '600').buttonText}>
-                {route.title}
-              </Text>
+              <Text style={Styles.buttonText}>{route.title}</Text>
             </View>
           )}
         />

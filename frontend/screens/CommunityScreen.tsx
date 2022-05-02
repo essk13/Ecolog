@@ -1,6 +1,13 @@
 import React from 'react';
-import {Text, TextInput, View, StyleSheet} from 'react-native';
-import CommunityTab from '../components/User/Community/CommunityTab';
+import {
+  Text,
+  TextInput,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
+import CommunityTab from '../components/Community/MainTab/CommunityTab';
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -25,13 +32,19 @@ const styles = StyleSheet.create({
   },
 });
 
-function CommunityScreen() {
+function CommunityScreen({navigation}: any) {
   return (
     <View style={styles.container}>
       <View style={styles.topMenu}>
         <Text style={styles.topTitle}>커뮤니티</Text>
         <TextInput style={styles.topInput} />
       </View>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('CommunityHome');
+        }}>
+        <Text>홈으로 이동</Text>
+      </TouchableOpacity>
       <CommunityTab />
     </View>
   );
