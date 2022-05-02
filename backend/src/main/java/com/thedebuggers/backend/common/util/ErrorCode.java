@@ -15,7 +15,8 @@ public enum ErrorCode {
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "허용되지 않는 메소드입니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "내부 서버 오류입니다."),
 
-    LOGIN_TYPE_ERROR(HttpStatus.BAD_REQUEST, "Login Type Not Matched");
+    INVALID_TOKEN_VALUE(HttpStatus.UNAUTHORIZED, "토큰 정보가 유효하지 않습니다."),
+    LOGIN_DATA_ERROR(HttpStatus.UNAUTHORIZED, "로그인 데이터가 맞지 않습니다.");
 
     private final HttpStatus status;
     private final String message;

@@ -3,11 +3,16 @@ package com.thedebuggers.backend.service;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.thedebuggers.backend.auth.JwtTokenUtil;
+import com.thedebuggers.backend.common.exception.CustomException;
+import com.thedebuggers.backend.common.util.ErrorCode;
 import com.thedebuggers.backend.domain.entity.User;
+import com.thedebuggers.backend.domain.repository.UserRepository;
+import com.thedebuggers.backend.dto.LoginReqDto;
 import com.thedebuggers.backend.dto.TokenDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
@@ -17,13 +22,22 @@ import java.util.concurrent.TimeUnit;
 public class AuthServiceImpl implements AuthService {
 
     private final RedisTemplate redisTemplate;
-    private final UserService userService;
+    private final UserRepository userRepository;
+
+    private final PasswordEncoder passwordEncoder;
 
     @Override
-    public TokenDto login(User user) {
+    public TokenDto login(LoginReqDto loginDto) {
         ValueOperations<String, String> values = redisTemplate.opsForValue();
 
-        String userEmail = user.getEmail();
+        String userEmail = loginDto.getEmail();
+        User user = userRepository.findByEmail(userEmail).get();
+
+        if (user.getLoginType() != loginDto.getLoginType()
+            || !passwordEncoder.matches(loginDto.getId() + loginDto.getEmail(), user.getPassword())) {
+            throw new CustomException(ErrorCode.LOGIN_DATA_ERROR);
+        }
+
         String accessToken = JwtTokenUtil.getAccessToken(userEmail);
         String refreshToken = JwtTokenUtil.getRefreshToken(userEmail);
 
@@ -43,7 +57,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public TokenDto reissue(String refreshToken) throws Exception {
+    public TokenDto reissue(String refreshToken){
 
         ValueOperations<String, String> values = redisTemplate.opsForValue();
 
@@ -53,9 +67,8 @@ public class AuthServiceImpl implements AuthService {
         DecodedJWT decodedJWT = verifier.verify(refreshToken);
         String userEmail = decodedJWT.getSubject();
 
-        User user = userService.getUserByEmail(userEmail);
-
-        if (user == null || !values.get(userEmail).equals(refreshToken)) throw new Exception();
+        if (!userRepository.findByEmail(userEmail).isPresent() || !values.get(userEmail).equals(refreshToken))
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
 
         String accessToken = JwtTokenUtil.getAccessToken(userEmail);
 

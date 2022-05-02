@@ -2,6 +2,7 @@ package com.thedebuggers.backend.controller;
 
 import com.thedebuggers.backend.auth.ELUserDetails;
 import com.thedebuggers.backend.auth.JwtTokenUtil;
+import com.thedebuggers.backend.common.exception.CustomException;
 import com.thedebuggers.backend.domain.entity.User;
 import com.thedebuggers.backend.dto.LoginReqDto;
 import com.thedebuggers.backend.dto.LoginResDto;
@@ -15,15 +16,11 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Api(value = "인증 관련 API", tags = {"Auth"})
 @Slf4j
@@ -37,9 +34,6 @@ public class AuthController {
 
     private final AuthService authService;
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
-
-    private final RedisTemplate redisTemplate;
 
     @PostMapping("/login")
     @ApiOperation(value = "로그인")
@@ -48,27 +42,17 @@ public class AuthController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Server Error")
     })
-    private ResponseEntity<?> login(@RequestBody LoginReqDto loginDto){
+    private ResponseEntity<LoginResDto> login(@RequestBody LoginReqDto loginDto) {
         boolean firstLogin = false;
 
         User user = userService.getUserByEmail(loginDto.getEmail());
 
-        if (user != null){
-
-            if (user.getLoginType() != loginDto.getLoginType()){
-                return ResponseEntity.badRequest().body("Login Type Not Matched");
-            }
-
-            if (!passwordEncoder.matches(loginDto.getId() + loginDto.getEmail(), user.getPassword())){
-                return ResponseEntity.badRequest().body("Bad Request");
-            }
-
-        }else {
+        if (user == null){
             firstLogin = true;
             user = userService.createUser(loginDto);
         }
 
-        TokenDto tokenDto = authService.login(user);
+        TokenDto tokenDto = authService.login(loginDto);
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(ACCESS_TOKEN, tokenDto.getAccessToken());
@@ -86,18 +70,13 @@ public class AuthController {
     })
     private ResponseEntity<?> reissue(@RequestBody TokenReqDto tokenReqDto){
 
-        TokenDto tokenDto = null;
-        try {
-            tokenDto = authService.reissue(tokenReqDto.getRefreshToken());
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body("Token is Invalid");
-        }
+        TokenDto tokenDto = authService.reissue(tokenReqDto.getRefreshToken());
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(ACCESS_TOKEN, tokenDto.getAccessToken());
         httpHeaders.add(REFRESH_TOKEN, tokenDto.getRefreshToken());
 
-        return new ResponseEntity<>("Success", httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<>(httpHeaders, HttpStatus.OK);
     }
 
     @GetMapping("/logout")
@@ -107,16 +86,13 @@ public class AuthController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Server Error")
     })
-    private ResponseEntity<?> logout(Authentication authentication){
+    private ResponseEntity<?> logout(Authentication authentication) {
 
         ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
         User user = userDetails.getUser();
-        try {
-            authService.logout(user.getEmail());
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body("잘못된 접근");
-        }
 
-        return ResponseEntity.ok("Success");
+        authService.logout(user.getEmail());
+
+        return ResponseEntity.noContent().build();
     }
 }

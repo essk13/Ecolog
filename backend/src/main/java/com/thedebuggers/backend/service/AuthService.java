@@ -1,12 +1,12 @@
 package com.thedebuggers.backend.service;
 
-import com.thedebuggers.backend.domain.entity.User;
+import com.thedebuggers.backend.dto.LoginReqDto;
 import com.thedebuggers.backend.dto.TokenDto;
 
 public interface AuthService {
-    TokenDto login(User user);
+    TokenDto login(LoginReqDto loginDto);
 
     void logout(String userEmail);
 
-    TokenDto reissue(String refreshToken) throws Exception;
+    TokenDto reissue(String refreshToken);
 }
