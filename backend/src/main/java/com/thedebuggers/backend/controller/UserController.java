@@ -17,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -80,12 +82,14 @@ public class UserController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Server Error")
     })
-    private ResponseEntity<?> update(@RequestBody UserUpdateReqDto updateReqDto, Authentication authentication) {
+    private ResponseEntity<?> update(@RequestPart(value = "user_info") UserUpdateReqDto updateReqDto,
+                                     @RequestPart(value = "image", required = false) MultipartFile imageFile,
+                                     @ApiIgnore Authentication authentication) {
 
         ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
         User user = userDetails.getUser();
 
-        userService.updateUser(user, updateReqDto);
+        userService.updateUser(user, updateReqDto, imageFile);
 
         return ResponseEntity.noContent().build();
     }

@@ -2,6 +2,8 @@ package com.thedebuggers.backend.dto;
 
 import lombok.*;
 
+import javax.annotation.Nullable;
+
 @Getter
 @Setter
 @Builder
@@ -15,6 +17,5 @@ public class UserUpdateReqDto {
     private Double height;
     private Double weight;
     private String phone;
-    private String image;
     private String address;
 }

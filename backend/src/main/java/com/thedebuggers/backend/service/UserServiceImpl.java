@@ -8,9 +8,10 @@ import com.thedebuggers.backend.dto.LoginReqDto;
 import com.thedebuggers.backend.dto.UserUpdateReqDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Slf4j
 @Service
@@ -18,8 +19,10 @@ import org.springframework.util.StringUtils;
 public class UserServiceImpl implements UserService {
 
     private final String defaultImageUrl = "http://ecolog_image_url";
+
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+
+    private final S3Service s3Service;
 
     @Override
     public User getUserByEmail(String email) {
@@ -47,14 +50,36 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(User user){
+    public void deleteUser(User user) {
         userRepository.delete(user);
     }
 
     @Override
-    public void updateUser(User user, UserUpdateReqDto updateDto) {
+    public void updateUser(User user, UserUpdateReqDto updateDto, MultipartFile imageFile) {
 
-        user.update(updateDto);
+        String imageUrl = null;
+
+        if (!imageFile.isEmpty()) {
+            imageUrl = s3Service.upload(imageFile);
+        }
+
+        if (updateDto.getName() != null)
+            user.setName(updateDto.getName());
+        if (updateDto.getNickname() != null)
+            user.setNickname(updateDto.getNickname());
+        if (updateDto.getBirth() != null)
+            user.setBirth(updateDto.getBirth());
+        if (updateDto.getHeight() != null)
+            user.setHeight(updateDto.getHeight());
+        if (updateDto.getWeight() != null)
+            user.setWeight(updateDto.getWeight());
+        if (updateDto.getPhone() != null)
+            user.setPhone(updateDto.getPhone());
+        if (updateDto.getAddress() != null)
+            user.setAddress(updateDto.getAddress());
+
+        if (imageUrl != null)
+            user.setImage(imageUrl);
 
         userRepository.save(user);
     }
