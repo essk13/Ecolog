@@ -8,6 +8,7 @@ buildscript {
         minSdkVersion = 21
         compileSdkVersion = 31
         targetSdkVersion = 31
+        googlePlayServicesVersion = "17.0.0"
 
         if (System.properties['os.arch'] == "aarch64") {
             // For M1 Users we need to use the NDK 24 which added support for aarch64
@@ -23,6 +24,7 @@ buildscript {
     }
     repositories {
         google()
+        jcenter()
         mavenCentral()
     }
     dependencies {
@@ -54,6 +56,22 @@ allprojects {
             }
         }
         google()
+        jcenter()
         maven { url 'https://www.jitpack.io' }
+
+        // Mapbox
+        maven {
+              url 'https://api.mapbox.com/downloads/v2/releases/maven'
+              authentication {
+                  basic(BasicAuthentication)
+              }
+              credentials {
+                // Do not change the username below.
+                // This should always be `mapbox` (not your username).
+                  username = "mapbox"
+                  // Use the secret token you stored in gradle.properties as the password
+                  password = project.properties['MAPBOX_DOWNLOADS_TOKEN'] ?: ""
+              }
+          }
     }
 }
