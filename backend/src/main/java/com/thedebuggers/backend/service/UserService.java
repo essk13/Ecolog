@@ -11,7 +11,7 @@ public interface UserService {
 
     User getUserByUserNo(Long userNo);
 
-    void deleteUser(User user) throws Exception;
+    void deleteUser(User user);
 
-    void updateUser(User user, UserUpdateReqDto updateDto) throws Exception;
+    void updateUser(User user, UserUpdateReqDto updateDto);
 }

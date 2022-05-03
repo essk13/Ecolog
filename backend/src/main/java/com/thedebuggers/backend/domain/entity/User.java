@@ -1,5 +1,6 @@
 package com.thedebuggers.backend.domain.entity;
 
+import com.thedebuggers.backend.dto.UserUpdateReqDto;
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,4 +43,16 @@ public class User {
     @NotNull
     @Enumerated(EnumType.STRING)
     private LoginType loginType;
+
+    public void update(UserUpdateReqDto updateDto) {
+
+        this.name = updateDto.getName();
+        this.nickname = updateDto.getNickname();
+        this.birth = updateDto.getBirth();
+        this.height = updateDto.getHeight();
+        this.weight = updateDto.getWeight();
+        this.phone = updateDto.getPhone();
+        this.image = updateDto.getImage();
+        this.address = updateDto.getAddress();
+    }
 }

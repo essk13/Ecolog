@@ -24,8 +24,6 @@ public class AuthServiceImpl implements AuthService {
     private final RedisTemplate redisTemplate;
     private final UserRepository userRepository;
 
-    private final PasswordEncoder passwordEncoder;
-
     @Override
     public TokenDto login(LoginReqDto loginDto) {
         ValueOperations<String, String> values = redisTemplate.opsForValue();
@@ -33,8 +31,7 @@ public class AuthServiceImpl implements AuthService {
         String userEmail = loginDto.getEmail();
         User user = userRepository.findByEmail(userEmail).get();
 
-        if (user.getLoginType() != loginDto.getLoginType()
-            || !passwordEncoder.matches(loginDto.getId() + loginDto.getEmail(), user.getPassword())) {
+        if (user.getLoginType() != loginDto.getLoginType()) {
             throw new CustomException(ErrorCode.LOGIN_DATA_ERROR);
         }
 

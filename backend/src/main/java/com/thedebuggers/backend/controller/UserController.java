@@ -34,8 +34,8 @@ public class UserController {
     })
     private ResponseEntity<MyInfoResDto> myInfo(Authentication authentication) {
 
-            ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
-            User user = userDetails.getUser();
+        ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
+        User user = userDetails.getUser();
 
         return ResponseEntity.ok(MyInfoResDto.of(user));
     }
@@ -51,7 +51,7 @@ public class UserController {
 
         User user = userService.getUserByUserNo(userNo);
 
-        return ResponseEntity.ok(user != null ? ProfileResDto.of(user) : null);
+        return ResponseEntity.ok(ProfileResDto.of(user));
     }
 
     @PutMapping
@@ -61,19 +61,14 @@ public class UserController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Server Error")
     })
-    private ResponseEntity<String> update(@RequestBody UserUpdateReqDto updateReqDto, Authentication authentication) {
+    private ResponseEntity<?> update(@RequestBody UserUpdateReqDto updateReqDto, Authentication authentication) {
 
         ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
         User user = userDetails.getUser();
-        log.info(user.toString());
-        log.info(updateReqDto.toString());
-        try {
-            userService.updateUser(user, updateReqDto);
-        }catch (Exception e){
-            e.printStackTrace();
-            return ResponseEntity.ok("Failed");
-        }
-        return ResponseEntity.ok("Success");
+
+        userService.updateUser(user, updateReqDto);
+
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping
@@ -83,16 +78,13 @@ public class UserController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Server Error")
     })
-    private ResponseEntity<String> delete(Authentication authentication) {
+    private ResponseEntity<?> delete(Authentication authentication) {
 
         ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
         User user = userDetails.getUser();
 
-        try {
-            userService.deleteUser(user);
-        }catch (Exception e){
-            return ResponseEntity.ok("Failed");
-        }
-        return ResponseEntity.ok("Success");
+        userService.deleteUser(user);
+
+        return ResponseEntity.noContent().build();
     }
 }
