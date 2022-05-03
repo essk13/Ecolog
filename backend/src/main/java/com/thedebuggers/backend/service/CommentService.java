@@ -16,4 +16,6 @@ public interface CommentService {
     void updateComment(long commentNo, CommentReqDto commentDto, User user);
 
     void deleteComment(long commentNo, User user);
+
+    List<Comment> getUserCommentsInCommunity(long communityNo, long userNo);
 }

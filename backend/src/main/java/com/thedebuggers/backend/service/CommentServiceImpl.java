@@ -65,4 +65,9 @@ public class CommentServiceImpl implements CommentService{
 
         commentRepository.delete(comment);
     }
+
+    @Override
+    public List<Comment> getUserCommentsInCommunity(long communityNo, long userNo) {
+        return commentRepository.getUserCommentsInCommunity(communityNo, userNo);
+    }
 }

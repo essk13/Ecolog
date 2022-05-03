@@ -120,6 +120,23 @@ public class PostController {
         boolean result = postService.likePost(postNo, userNo);
         return ResponseEntity.ok(result);
     }
+
+    @GetMapping("/mine")
+    @ApiOperation(value = "커뮤니티 내 게시물 목록 조회")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Server Error")
+    })
+    private ResponseEntity<List<PostResDto>> getMyPostList(
+            @ApiParam(defaultValue = "1") @PathVariable long communityNo, Authentication authentication) {
+        ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
+        long userNo = userDetails.getUser().getNo();
+
+        List<PostResDto> postList = postService.getMyPostListInCommunity(communityNo, userNo).stream().map(PostResDto::of).collect(Collectors.toList());;
+
+        return ResponseEntity.ok(postList);
+    }
 }
 
 

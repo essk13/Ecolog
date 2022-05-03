@@ -4,6 +4,7 @@ import com.thedebuggers.backend.domain.entity.Post;
 import com.thedebuggers.backend.domain.entity.User;
 import com.thedebuggers.backend.dto.PostReqDto;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface PostService {
@@ -12,6 +13,10 @@ public interface PostService {
     List<Post> getAllPost();
 
     List<Post> getPostList(long communityNo);
+
+    List<Post> getMyPostList(long userNo);
+
+    List<Post> getMyPostListInCommunity(long communityNo, long userNo);
 
     Post getPost(long postNo);
 
@@ -22,4 +27,5 @@ public interface PostService {
     boolean deletePost(User user, long postNo);
 
     boolean likePost(long postNo, long userNo);
+
 }
