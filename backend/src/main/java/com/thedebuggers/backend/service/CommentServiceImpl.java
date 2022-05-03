@@ -1,5 +1,7 @@
 package com.thedebuggers.backend.service;
 
+import com.thedebuggers.backend.common.exception.CustomException;
+import com.thedebuggers.backend.common.util.ErrorCode;
 import com.thedebuggers.backend.domain.entity.Comment;
 import com.thedebuggers.backend.domain.entity.Post;
 import com.thedebuggers.backend.domain.entity.User;
@@ -23,10 +25,10 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public void registComment(long postNo, User user, CommentReqDto commentDto) throws Exception {
+    public void registComment(long postNo, User user, CommentReqDto commentDto) {
         Post post = postService.getPost(postNo);
 
-        if (post == null) throw new Exception();
+        if (post == null) throw new CustomException(ErrorCode.NOT_FOUND);
 
         Comment comment = Comment.builder()
                 .post(post)
@@ -39,17 +41,15 @@ public class CommentServiceImpl implements CommentService{
 
     @Override
     public Comment getCommentByNo(long commentNo) {
-        return commentRepository.findByNo(commentNo).orElse(null);
+        return commentRepository.findByNo(commentNo).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
     }
 
     @Override
-    public void updateComment(long commentNo, CommentReqDto commentDto, User user) throws Exception {
+    public void updateComment(long commentNo, CommentReqDto commentDto, User user){
 
-        Comment comment = commentRepository.findByNo(commentNo).orElse(null);
+        Comment comment = commentRepository.findByNo(commentNo).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
 
-        if (comment == null) throw new Exception();
-
-        if (comment.getUser().getNo() != user.getNo()) throw new Exception();
+        if (comment.getUser().getNo() != user.getNo()) throw new CustomException(ErrorCode.METHOD_NOT_ALLOWED);
 
         comment.setContent(commentDto.getContent());
 
@@ -57,13 +57,11 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public void deleteComment(long commentNo, User user) throws Exception {
+    public void deleteComment(long commentNo, User user) {
 
-        Comment comment = commentRepository.findByNo(commentNo).orElse(null);
+        Comment comment = commentRepository.findByNo(commentNo).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
 
-        if (comment == null) throw new Exception();
-
-        if (comment.getUser().getNo() != user.getNo()) throw new Exception();
+        if (comment.getUser().getNo() != user.getNo()) throw new CustomException(ErrorCode.METHOD_NOT_ALLOWED);
 
         commentRepository.delete(comment);
     }

@@ -46,16 +46,13 @@ public class CommentController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Server Error")
     })
-    private ResponseEntity<String> registComment(@ApiParam(defaultValue = "1") @PathVariable long postNo, @RequestBody CommentReqDto commentDto, Authentication authentication) {
+    private ResponseEntity<?> registComment(@ApiParam(defaultValue = "1") @PathVariable long postNo, @RequestBody CommentReqDto commentDto, Authentication authentication) {
         ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
         User user = userDetails.getUser();
 
-        try {
-            commentService.registComment(postNo, user, commentDto);
-        }catch (Exception e){
-            return ResponseEntity.ok("Failed");
-        }
-        return ResponseEntity.ok("Success");
+        commentService.registComment(postNo, user, commentDto);
+
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{commentNo}")
@@ -66,14 +63,12 @@ public class CommentController {
             @ApiResponse(code = 500, message = "Server Error")
     })
     private ResponseEntity<?> getCommentDetail(@ApiParam(defaultValue = "1") @PathVariable long commentNo) {
-        Comment comment = null;
-        try {
-            comment = commentService.getCommentByNo(commentNo);
-        }catch (Exception e){
-            return ResponseEntity.ok("Failed");
-        }
+
+        Comment comment = commentService.getCommentByNo(commentNo);
+
         return ResponseEntity.ok(CommentResDto.of(comment));
     }
+
     @PutMapping("/{commentNo}")
     @ApiOperation(value = "댓글 수정")
     @ApiResponses({
@@ -81,17 +76,15 @@ public class CommentController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Server Error")
     })
-    private ResponseEntity<String> updateComment(@ApiParam(defaultValue = "1") @PathVariable long commentNo, @RequestBody CommentReqDto commentDto, Authentication authentication) {
+    private ResponseEntity<?> updateComment(@ApiParam(defaultValue = "1") @PathVariable long commentNo, @RequestBody CommentReqDto commentDto, Authentication authentication) {
         ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
         User user = userDetails.getUser();
 
-        try {
-            commentService.updateComment(commentNo, commentDto, user);
-        }catch (Exception e){
-            return ResponseEntity.ok("Failed");
-        }
-        return ResponseEntity.ok("Success");
+        commentService.updateComment(commentNo, commentDto, user);
+
+        return ResponseEntity.noContent().build();
     }
+
     @DeleteMapping("/{commentNo}")
     @ApiOperation(value = "댓글 삭제")
     @ApiResponses({
@@ -103,11 +96,8 @@ public class CommentController {
         ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
         User user = userDetails.getUser();
 
-        try {
-            commentService.deleteComment(commentNo,user);
-        }catch (Exception e){
-            return ResponseEntity.ok("Failed");
-        }
-        return ResponseEntity.ok("Success");
+        commentService.deleteComment(commentNo, user);
+
+        return ResponseEntity.noContent().build();
     }
 }
