@@ -1,6 +1,8 @@
 package com.thedebuggers.backend.service;
 
 
+import com.thedebuggers.backend.common.exception.CustomException;
+import com.thedebuggers.backend.common.util.ErrorCode;
 import com.thedebuggers.backend.domain.entity.Community;
 import com.thedebuggers.backend.domain.entity.User;
 import com.thedebuggers.backend.domain.entity.UserCommunity;
@@ -37,6 +39,8 @@ public class CommunityServiceImpl implements CommunityService{
 
     @Override
     public Community registCommunity(CommunityDto communityDto, long userNo) {
+//        User user = userRepository.findByNo(userNo).orElseThrow(new CustomException(ErrorCode.NOT_FOUND));
+
         Community community = Community.builder()
                 .title(communityDto.getTitle())
                 .description(communityDto.getDescription())
@@ -54,6 +58,7 @@ public class CommunityServiceImpl implements CommunityService{
                 .community(community)
                 .build();
 
+//        joinCommunity(community.getNo(), user);
         userCommunity = userCommunityRepository.save(userCommunity);
 
         return community;
@@ -105,7 +110,12 @@ public class CommunityServiceImpl implements CommunityService{
     public void deleteCommunity(long communityNo, User user) throws Exception {
 
         Community community = communityRepository.findByNo(communityNo);
-        List<UserCommunity> userCommunityList = userCommunityRepository.findAllByCommunityNo(communityNo);
+//        List<UserCommunity> userCommunityList = userCommunityRepository.findAllByCommunityNo(communityNo);
+
+        // 커뮤니티 게시글 조회 >> 삭제
+        // 댓글 삭제
+        // 좋아요 중개 테이블 삭제
+
 
         if (community == null) {
             System.out.println("1번 에러");
@@ -117,7 +127,7 @@ public class CommunityServiceImpl implements CommunityService{
             throw new Exception();
         }
 
-        userCommunityRepository.deleteAll(userCommunityList);
+//        userCommunityRepository.deleteAll(userCommunityList);
         communityRepository.delete(community);
 
     }
@@ -126,7 +136,9 @@ public class CommunityServiceImpl implements CommunityService{
     public void quitCommunity(long communityNo, long userNo) throws Exception {
         UserCommunity userCommunity = userCommunityRepository.findAllByCommunityNoAndUserNo(communityNo, userNo);
 
-        Community community = communityRepository.findByNo(communityNo);
+        Community community = userCommunity.getCommunity();
+
+//        Community community = communityRepository.findByNo(communityNo);
 
         if (userCommunity == null) {
             throw new Exception();

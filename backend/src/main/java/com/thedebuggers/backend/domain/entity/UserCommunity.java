@@ -2,9 +2,7 @@ package com.thedebuggers.backend.domain.entity;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.persistence.*;
@@ -12,6 +10,9 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @Table(name = "USER_COMMUNITY")
 public class UserCommunity {
@@ -29,14 +30,4 @@ public class UserCommunity {
     @JoinColumn(name = "community_no")
     private Community community;
 
-    @Builder
-    public UserCommunity(long no, User user, Community community) {
-        this.no = no;
-        this.user = user;
-        this.community = community;
-    }
-
-    public UserCommunity() {
-
-    }
 }

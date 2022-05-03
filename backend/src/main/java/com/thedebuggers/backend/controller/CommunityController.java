@@ -5,6 +5,8 @@ import com.thedebuggers.backend.domain.entity.Community;
 import com.thedebuggers.backend.domain.entity.User;
 import com.thedebuggers.backend.domain.entity.UserCommunity;
 import com.thedebuggers.backend.dto.CommunityDto;
+import com.thedebuggers.backend.dto.CommunityResDto;
+import com.thedebuggers.backend.dto.ProfileResDto;
 import com.thedebuggers.backend.service.CommunityService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Api(value = "커뮤니티 API", tags = {"Community"})
@@ -32,11 +35,12 @@ public class CommunityController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Server Error")
     })
-    private ResponseEntity<List<Community>> getCommunityList(
+    private ResponseEntity<List<CommunityResDto>> getCommunityList(
 
     ){
-        List<Community> result = communityService.getCommunityList();
+        List<Community> communityList = communityService.getCommunityList();
 
+        List<CommunityResDto> result = communityList.stream().map(CommunityResDto::of).collect(Collectors.toList());
 //        Community res = Community.builder().title("ex").description("ex2").build();
 
         return ResponseEntity.ok(result);
@@ -49,7 +53,7 @@ public class CommunityController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Server Error")
     })
-    private ResponseEntity<Community> registCommunity(
+    private ResponseEntity<CommunityResDto> registCommunity(
             @RequestBody CommunityDto communityDto,
             Authentication authentication
     ){
@@ -57,8 +61,9 @@ public class CommunityController {
         User user = userDetails.getUser();
         long userNo = user.getNo();
 
-        Community result = communityService.registCommunity(communityDto, userNo);
-        return ResponseEntity.ok(result);
+        Community community = communityService.registCommunity(communityDto, userNo);
+
+        return ResponseEntity.ok(CommunityResDto.of(community));
     }
 
     @GetMapping("/{no}")
@@ -68,11 +73,11 @@ public class CommunityController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Server Error")
     })
-    private ResponseEntity<Community> getCommunity(
+    private ResponseEntity<CommunityResDto> getCommunity(
             @ApiParam("커뮤니티 번호") @PathVariable long no
     ) {
-        Community result = communityService.getCommunity(no);
-        return ResponseEntity.ok(result);
+        Community community = communityService.getCommunity(no);
+        return ResponseEntity.ok(CommunityResDto.of(community));
     }
 
 
@@ -83,7 +88,7 @@ public class CommunityController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Server Error")
     })
-    private ResponseEntity<Community> joinCommunity(
+    private ResponseEntity<CommunityResDto> joinCommunity(
             @ApiParam("커뮤니티 번호") @PathVariable long no,
             Authentication authentication
     ) {
@@ -91,8 +96,8 @@ public class CommunityController {
         User user = userDetails.getUser();
 
 
-        Community result = communityService.joinCommunity(no, user);
-        return ResponseEntity.ok(result);
+        Community community = communityService.joinCommunity(no, user);
+        return ResponseEntity.ok(CommunityResDto.of(community));
     }
 
     @PutMapping("/{communityNo}")
@@ -102,7 +107,7 @@ public class CommunityController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Server Error")
     })
-    private ResponseEntity<Community> updateCommunity(
+    private ResponseEntity<CommunityResDto> updateCommunity(
         @ApiParam("커뮤니티 번호") @PathVariable long communityNo,
         @RequestBody CommunityDto communityDto,
         Authentication authentication
@@ -110,8 +115,8 @@ public class CommunityController {
         ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
         User user = userDetails.getUser();
 
-        Community result = communityService.updateCommunity(communityNo, user, communityDto);
-        return ResponseEntity.ok(result);
+        Community community = communityService.updateCommunity(communityNo, user, communityDto);
+        return ResponseEntity.ok(CommunityResDto.of(community));
     }
 
     @DeleteMapping("/{communityNo}")
@@ -146,11 +151,12 @@ public class CommunityController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Server Error")
     })
-    private ResponseEntity<List<User>> getCommunityMember(
+    private ResponseEntity<List<ProfileResDto>> getCommunityMember(
             @ApiParam("커뮤니티 번호") @PathVariable long no
     ){
         List<User> result = communityService.getCommunityMember(no);
-        return ResponseEntity.ok(result);
+        List<ProfileResDto> profileResDtoList = result.stream().map(ProfileResDto::of).collect(Collectors.toList());
+        return ResponseEntity.ok(profileResDtoList);
     }
 
     @DeleteMapping("/{communityNo}/delete")
