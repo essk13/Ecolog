@@ -51,14 +51,14 @@ public class Community {
     @Column(name = "tag")
     private String tag;
 
-//    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-//    @JoinTable(name = "USER_COMMUNITY",
-//        joinColumns = @JoinColumn(name = "community_no"),
-//        inverseJoinColumns = @JoinColumn(name = "user_no")
-//    )
-//    private Set<User> users = new HashSet<>();
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "USER_COMMUNITY",
+        joinColumns = @JoinColumn(name = "community_no"),
+        inverseJoinColumns = @JoinColumn(name = "user_no")
+    )
+    private Set<User> users = new HashSet<>();
 
-    @OneToMany(mappedBy = "community")
-    private List<UserCommunity> communityList = new ArrayList<>();
+//    @OneToMany(mappedBy = "community")
+//    private List<UserCommunity> communityList = new ArrayList<>();
 
 }
