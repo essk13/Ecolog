@@ -41,7 +41,33 @@ const styles = StyleSheet.create({
   map: {
     flex: 1,
   },
+  recordContainer: {
+    position: 'absolute',
+    alignItems: 'center',
+    width: '100%',
+    height: '30%',
+    bottom: 0,
+    padding: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
+  },
+  itemContainer: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    marginTop: 20,
+  },
 });
+
+const fontStyles = (size?: number, weight?: any, align?: any, color?: any) =>
+  StyleSheet.create({
+    textStyle: {
+      fontSize: size || 15,
+      fontWeight: weight || 'normal',
+      color: color || '#000000',
+      textAlign: align || 'auto',
+    },
+  });
 
 const imagePickerOption: CameraOptions = {
   mediaType: 'photo',
@@ -51,6 +77,7 @@ const imagePickerOption: CameraOptions = {
 };
 
 function PloggingMapScreen({navigation}: any) {
+  // 사용자 위치 트래킹 정보
   const [coordinates, setCoordinates] = useState([128, 36]);
   const [route, setRoute] = useState<{
     type: string;
@@ -76,6 +103,79 @@ function PloggingMapScreen({navigation}: any) {
     ],
   });
 
+  // 타이머
+  const [count, setCount] = useState<number>(0);
+  const [currentHours, setHours] = useState<number>(0);
+  const [currentMinutes, setMinutes] = useState<number>(0);
+  const [currentSeconds, setSecons] = useState<number>(0);
+
+  function timer() {
+    const checkMinutes = Math.floor(count / 60);
+    const hours = Math.floor(count / 3600);
+    const minutes = checkMinutes % 60;
+    const seconds = count % 60;
+    setHours(hours);
+    setMinutes(minutes);
+    setSecons(seconds);
+  }
+  // 타이머 표시 형식
+  useEffect(() => {
+    timer();
+  }, [count]);
+  // 타이머 시작
+  useEffect(() => {
+    setInterval(() => {
+      setCount(c => c + 1);
+    }, 1000);
+  }, []);
+
+  // 거리 및 칼로리
+  const [currentDistance, setDistance] = useState<number>(0.0);
+  const [currentKcal, setKcal] = useState<number>(0);
+
+  function getDistance(lo1: number, la1: number, lo2: number, la2: number) {
+    function deg2rad(deg: number) {
+      return deg * (Math.PI / 180);
+    }
+
+    const radius = 6371;
+    const dLat = deg2rad(la2 - la1);
+    const dLon = deg2rad(lo2 - lo1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(la1)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const d = radius * c;
+    return d;
+  }
+
+  useEffect(() => {
+    console.log('cal');
+    if (route.features[0].geometry.coordinates.length > 1) {
+      const newPosition =
+        route.features[0].geometry.coordinates[
+          route.features[0].geometry.coordinates.length - 1
+        ];
+      const prePosition =
+        route.features[0].geometry.coordinates[
+          route.features[0].geometry.coordinates.length - 2
+        ];
+      const distance = getDistance(
+        prePosition[0],
+        prePosition[1],
+        newPosition[0],
+        newPosition[1],
+      );
+      function round(num: number) {
+        var m = Number((Math.abs(num) * 100).toPrecision(15));
+        return (Math.round(m) / 100) * Math.sign(num);
+      }
+      console.log(round(distance));
+      setDistance(d => d + round(distance));
+    }
+  }, [coordinates]);
+
+  // 위치 감지
   useEffect(() => {
     updateLocation();
   }, []);
@@ -140,11 +240,7 @@ function PloggingMapScreen({navigation}: any) {
     <View style={styles.page}>
       <View style={styles.container}>
         <MapboxGL.MapView style={styles.map} localizeLabels={true}>
-          <MapboxGL.Camera zoomLevel={16} centerCoordinate={coordinates} />
-          <MapboxGL.PointAnnotation
-            id={'myPosition'}
-            coordinate={coordinates}
-          />
+          <MapboxGL.Camera zoomLevel={17} centerCoordinate={coordinates} />
           <MapboxGL.ShapeSource id="line" shape={route}>
             <MapboxGL.LineLayer
               id="linelayer"
@@ -156,12 +252,65 @@ function PloggingMapScreen({navigation}: any) {
               }}
             />
           </MapboxGL.ShapeSource>
+          <MapboxGL.PointAnnotation
+            id={'myPosition'}
+            coordinate={coordinates}
+          />
         </MapboxGL.MapView>
-        <TouchableHighlight
-          onPress={() => onLaunchCamera()}
-          underlayColor="red">
-          <Text>Go to Result</Text>
-        </TouchableHighlight>
+
+        <View style={styles.recordContainer}>
+          <TouchableHighlight
+            onPress={() => onLaunchCamera()}
+            underlayColor="red">
+            <Text style={fontStyles(20, '500', null, '#FFFFFF').textStyle}>
+              FINISH
+            </Text>
+          </TouchableHighlight>
+
+          {/* 타이머 */}
+          <View style={styles.itemContainer}>
+            <Text style={fontStyles(45, '600', null, '#FFFFFF').textStyle}>
+              {currentHours < 10 ? `0${currentHours}` : currentHours}
+            </Text>
+            <Text style={fontStyles(25, '500', null, '#FFFFFF').textStyle}>
+              시간{'  '}
+            </Text>
+
+            <Text style={fontStyles(45, '600', null, '#FFFFFF').textStyle}>
+              {currentMinutes < 10 ? `0${currentMinutes}` : currentMinutes}
+            </Text>
+            <Text style={fontStyles(25, '500', null, '#FFFFFF').textStyle}>
+              분{'  '}
+            </Text>
+
+            <Text style={fontStyles(45, '600', null, '#FFFFFF').textStyle}>
+              {currentSeconds < 10 ? `0${currentSeconds}` : currentSeconds}
+            </Text>
+            <Text style={fontStyles(25, '500', null, '#FFFFFF').textStyle}>
+              초{'  '}
+            </Text>
+          </View>
+
+          {/* 거리 및 칼로리 */}
+          <View style={styles.itemContainer}>
+            <View>
+              <Text style={fontStyles(15, '500', null, '#FFFFFF').textStyle}>
+                이동 거리
+              </Text>
+              <Text style={fontStyles(25, '500', null, '#FFFFFF').textStyle}>
+                {currentDistance} km
+              </Text>
+            </View>
+            <View style={{marginLeft: 50}}>
+              <Text style={fontStyles(15, '500', null, '#FFFFFF').textStyle}>
+                칼로리
+              </Text>
+              <Text style={fontStyles(25, '500', null, '#FFFFFF').textStyle}>
+                15 kcal
+              </Text>
+            </View>
+          </View>
+        </View>
       </View>
     </View>
   );
