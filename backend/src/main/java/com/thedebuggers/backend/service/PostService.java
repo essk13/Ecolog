@@ -1,12 +1,13 @@
 package com.thedebuggers.backend.service;
 
 import com.thedebuggers.backend.domain.entity.Post;
-import com.thedebuggers.backend.dto.PostDto;
+import com.thedebuggers.backend.domain.entity.User;
+import com.thedebuggers.backend.dto.PostReqDto;
 
 import java.util.List;
 
 public interface PostService {
-    boolean registPost(PostDto postDto);
+    Post registPost(User user, PostReqDto postReqDto, long communityNo);
 
     List<Post> getAllPost();
 
@@ -14,9 +15,11 @@ public interface PostService {
 
     Post getPost(long postNo);
 
-    boolean modifyPost(long postNo, PostDto postDto);
+    Post getPost(User user, long postNo) throws Exception;
 
-    boolean deletePost(long postNo);
+    boolean modifyPost(User user, long postNo, PostReqDto postDto);
+
+    boolean deletePost(User user, long postNo);
 
     boolean likePost(long postNo, long userNo);
 }

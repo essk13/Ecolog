@@ -26,6 +26,7 @@ public class Post {
     private String image;
     private LocalDateTime createdAt;
     private boolean isOpen;
+    private long likeCount;
 
     @ManyToOne
     @JoinColumn(name = "community_no")

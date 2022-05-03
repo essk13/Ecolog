@@ -37,6 +37,7 @@ public class GlobalExceptionHandler {
     // 500 Server Error
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ErrorResponseBody> serverErrorException(final Exception ex) {
+        ex.printStackTrace();
         log.error("serverErrorException: {}", ex.getMessage());
         return ResponseEntity.status(ErrorCode.INTERNAL_SERVER_ERROR.getStatus().value()).body(ErrorResponseBody.of(ErrorCode.INTERNAL_SERVER_ERROR));
     }

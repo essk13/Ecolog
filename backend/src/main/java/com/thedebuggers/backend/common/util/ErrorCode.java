@@ -16,7 +16,11 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "내부 서버 오류입니다."),
 
     INVALID_TOKEN_VALUE(HttpStatus.UNAUTHORIZED, "토큰 정보가 유효하지 않습니다."),
-    LOGIN_DATA_ERROR(HttpStatus.UNAUTHORIZED, "로그인 데이터가 맞지 않습니다.");
+    LOGIN_DATA_ERROR(HttpStatus.UNAUTHORIZED, "로그인 데이터가 맞지 않습니다."),
+
+    CONTENT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 콘텐츠를 찾을 수 없습니다."),
+    CONTENT_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "해당 콘텐츠에 접근할 수 있는 권한이 없습니다."),
+    CONTENT_NOT_FILLED(HttpStatus.BAD_REQUEST, "내용이 채워지지 않았습니다.");
 
     private final HttpStatus status;
     private final String message;
