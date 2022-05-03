@@ -8,25 +8,24 @@ const refresh = async (
   config: AxiosRequestConfig,
 ): Promise<AxiosRequestConfig> => {
   const refreshToken = await AsyncStorage.getItem('refreshToken');
-  let jwtToken = await AsyncStorage.getItem('jwtToken');
+  let accessToken = await AsyncStorage.getItem('accessToken');
 
   if (refreshToken) {
-    if (jwtToken) {
-      const {exp} = jwtDecode<JwtPayload>(jwtToken);
+    if (accessToken) {
+      const {exp} = jwtDecode<JwtPayload>(accessToken);
       if (exp && Date.now() >= exp * 1000) {
         try {
           const response = await authApi.post('/auth/reissue', {
-            refresh_token: `Bearer ${refreshToken}`,
+            refresh_token: `${refreshToken}`,
           });
-          const newJwtToken = response.headers.authorization.split(' ')[1];
-          AsyncStorage.setItem('jwtToken', newJwtToken);
-          jwtToken = newJwtToken;
+          const newAccessToken = response.headers.access_token;
+          AsyncStorage.setItem('accessToken', newAccessToken);
+          accessToken = newAccessToken;
         } catch (e: any) {
           Alert.alert('로그인 유지 기간이 만료되었습니다.');
+          AsyncStorage.removeItem('accessToken');
           AsyncStorage.removeItem('refreshToken');
-          AsyncStorage.removeItem('jwtToken');
           AsyncStorage.removeItem('persist:root');
-          // window.dispatchEvent(new Event('storage'));
         }
       }
     }
@@ -35,7 +34,7 @@ const refresh = async (
   if (!config.headers) {
     config.headers = {};
   }
-  config.headers.Authorization = `Bearer ${jwtToken}`;
+  config.headers.Authorization = `Bearer ${accessToken}`;
 
   return config;
 };

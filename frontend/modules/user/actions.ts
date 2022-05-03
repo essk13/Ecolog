@@ -1,17 +1,29 @@
 import {createAsyncAction} from 'typesafe-actions';
 import {AxiosError} from 'axios';
 import {User} from '../../api/types';
+import {LoginData} from '../../api/auth';
 
-export const GET_USER_INFO = 'user/GET_USER_INFO';
-export const GET_USER_INFO_SUCCESS = 'user/GET_USER_INFO_SUCCESS';
-export const GET_USER_INFO_ERROR = 'user/GET_USER_INFO_ERROR';
+export const LOGIN = 'user/LOGIN';
+export const LOGIN_SUCCESS = 'user/LOGIN_SUCCESS';
+export const LOGIN_ERROR = 'user/LOGIN_ERROR';
 
-const getUserInfoAsync = createAsyncAction(
-  GET_USER_INFO,
-  GET_USER_INFO_SUCCESS,
-  GET_USER_INFO_ERROR,
-)<number, User, AxiosError>();
+export const GET_MY_INFO = 'user/GET_MY_INFO';
+export const GET_MY_INFO_SUCCESS = 'user/GET_MY_INFO_SUCCESS';
+export const GET_MY_INFO_ERROR = 'user/GET_MY_INFO_ERROR';
+
+const loginAsync = createAsyncAction(LOGIN, LOGIN_SUCCESS, LOGIN_ERROR)<
+  LoginData,
+  any,
+  AxiosError
+>();
+
+const getMyInfoAsync = createAsyncAction(
+  GET_MY_INFO,
+  GET_MY_INFO_SUCCESS,
+  GET_MY_INFO_ERROR,
+)<any, User, AxiosError>();
 
 export const userActions = {
-  getUserInfoAsync,
+  loginAsync,
+  getMyInfoAsync,
 };

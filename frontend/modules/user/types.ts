@@ -6,5 +6,5 @@ import {User} from '../../api/types';
 export type UserAction = ActionType<typeof userActions>;
 
 export type UserState = {
-  userInfo: AsyncState<User, Error>;
+  user: AsyncState<User, Error>;
 };

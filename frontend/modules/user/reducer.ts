@@ -9,13 +9,13 @@ import {
 
 // --- recerUtils 의 asyncState 를 활용한 리팩토링 ---
 const initialState: UserState = {
-  userInfo: asyncState.initial(),
+  user: asyncState.initial(),
 };
 
 // --- reducerUtils 의 createAsyncReducer, transformToArray 를 활용한 리팩토링 ---
 const user = createReducer<UserState, UserAction>(initialState).handleAction(
-  transformToArray(userActions.getUserInfoAsync),
-  createAsyncReducer(userActions.getUserInfoAsync, 'userInfo'),
+  transformToArray(userActions.getMyInfoAsync),
+  createAsyncReducer(userActions.getMyInfoAsync, 'user'),
 );
 
 export default user;

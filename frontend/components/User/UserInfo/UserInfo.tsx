@@ -1,6 +1,11 @@
 import React from 'react';
 import {Text, View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import auth from '@react-native-firebase/auth';
+import {logout} from '../../../api/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useMutation} from 'react-query';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../../modules';
 // Components
 import UserInfoText from './UserInfoText';
 
@@ -64,12 +69,22 @@ interface UserInfoProps {
   navigation: any;
 }
 
-function googleLogout() {
-  auth().signOut();
-  console.log('Logged Out');
-}
-
 function UserInfo({user, navigation}: UserInfoProps) {
+  const myInfo = useSelector((state: RootState) => state.user.user);
+
+  const {mutate: userLogout, isLoading} = useMutation(logout, {
+    onSuccess: () => {
+      AsyncStorage.removeItem('accessToken');
+      AsyncStorage.removeItem('refreshToken');
+      AsyncStorage.removeItem('persist:root');
+    },
+  });
+
+  function googleLogout() {
+    auth().signOut();
+    userLogout();
+  }
+
   return (
     <View>
       <View style={styles('row', 20).userContainer}>
@@ -80,7 +95,9 @@ function UserInfo({user, navigation}: UserInfoProps) {
           }}
         />
         <View>
-          <Text style={fontStyles(20, '600').userName}>{user.name}</Text>
+          <Text style={fontStyles(20, '600').userName}>
+            {myInfo.data ? myInfo.data.name : null}
+          </Text>
           <View style={styles('row').userContainer}>
             <UserInfoText title={'내 게시물'} count={user.content} />
             <UserInfoText title={'팔로우'} count={user.follow} />
