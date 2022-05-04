@@ -129,9 +129,8 @@ function PloggingMapScreen({navigation}: any) {
     }, 1000);
   }, []);
 
-  // 거리 및 칼로리
+  // 거리 계산
   const [currentDistance, setDistance] = useState<number>(0.0);
-  const [currentKcal, setKcal] = useState<number>(0);
 
   function getDistance(lo1: number, la1: number, lo2: number, la2: number) {
     function deg2rad(deg: number) {
@@ -149,8 +148,13 @@ function PloggingMapScreen({navigation}: any) {
     return d;
   }
 
+  // 소수점 2째자리 반올림
+  function round(num: number) {
+    var m = Number((Math.abs(num) * 100).toPrecision(15));
+    return (Math.round(m) / 100) * Math.sign(num);
+  }
+
   useEffect(() => {
-    console.log('cal');
     if (route.features[0].geometry.coordinates.length > 1) {
       const newPosition =
         route.features[0].geometry.coordinates[
@@ -166,14 +170,21 @@ function PloggingMapScreen({navigation}: any) {
         newPosition[0],
         newPosition[1],
       );
-      function round(num: number) {
-        var m = Number((Math.abs(num) * 100).toPrecision(15));
-        return (Math.round(m) / 100) * Math.sign(num);
-      }
-      console.log(round(distance));
       setDistance(d => d + round(distance));
     }
   }, [coordinates]);
+
+  // 칼로리 계산
+  const [currentKcal, setKcal] = useState<number>(0);
+
+  function calculateKcal(weight: number) {
+    const kcal = 4.0 * (3.5 * weight * 0.15) * 5 * currentDistance;
+    setKcal(round(kcal));
+  }
+
+  useEffect(() => {
+    calculateKcal(80);
+  }, [currentDistance]);
 
   // 위치 감지
   useEffect(() => {
@@ -182,7 +193,6 @@ function PloggingMapScreen({navigation}: any) {
 
   // Set && Update Location (GPS)
   const updateLocation = () => {
-    console.log('request');
     Geolocation.watchPosition(
       position => {
         // See My Location
@@ -195,7 +205,6 @@ function PloggingMapScreen({navigation}: any) {
             position.coords.latitude,
           ]);
           setRoute(newRoute);
-          console.log(route.features[0].geometry.coordinates);
         }
         // Route 가 존재하는 경우
         else {
@@ -212,7 +221,6 @@ function PloggingMapScreen({navigation}: any) {
               position.coords.latitude,
             ]);
             setRoute(newRoute);
-            console.log(route.features[0].geometry.coordinates);
           }
         }
       },
@@ -306,7 +314,7 @@ function PloggingMapScreen({navigation}: any) {
                 칼로리
               </Text>
               <Text style={fontStyles(25, '500', null, '#FFFFFF').textStyle}>
-                15 kcal
+                {currentKcal} kcal
               </Text>
             </View>
           </View>
