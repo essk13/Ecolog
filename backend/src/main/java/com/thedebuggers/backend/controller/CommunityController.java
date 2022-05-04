@@ -3,10 +3,9 @@ package com.thedebuggers.backend.controller;
 import com.thedebuggers.backend.auth.ELUserDetails;
 import com.thedebuggers.backend.domain.entity.Community;
 import com.thedebuggers.backend.domain.entity.User;
-import com.thedebuggers.backend.domain.entity.UserCommunity;
 import com.thedebuggers.backend.dto.CommunityDto;
 import com.thedebuggers.backend.dto.CommunityResDto;
-import com.thedebuggers.backend.dto.ProfileResDto;
+import com.thedebuggers.backend.dto.BaseUserInfoResDto;
 import com.thedebuggers.backend.service.CommunityService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
@@ -152,11 +151,11 @@ public class CommunityController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Server Error")
     })
-    private ResponseEntity<List<ProfileResDto>> getCommunityMember(
+    private ResponseEntity<List<BaseUserInfoResDto>> getCommunityMember(
             @ApiParam("커뮤니티 번호") @PathVariable long no
     ){
         List<User> result = communityService.getCommunityMember(no);
-        List<ProfileResDto> profileResDtoList = result.stream().map(ProfileResDto::of).collect(Collectors.toList());
+        List<BaseUserInfoResDto> profileResDtoList = result.stream().map(BaseUserInfoResDto::of).collect(Collectors.toList());
         return ResponseEntity.ok(profileResDtoList);
     }
 

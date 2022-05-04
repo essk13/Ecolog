@@ -15,4 +15,6 @@ public interface UserService {
     void deleteUser(User user);
 
     void updateUser(User user, UserUpdateReqDto updateDto, MultipartFile imageFile);
+
+    void followUser(long followerNo, long followeeNo);
 }

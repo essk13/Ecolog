@@ -55,11 +55,14 @@ public class UserController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Server Error")
     })
-    private ResponseEntity<ProfileResDto> userPosts(@PathVariable Long userNo) {
+    private ResponseEntity<ProfileResDto> userPosts(@PathVariable Long userNo, @ApiIgnore Authentication authentication) {
+        ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
+        long requestUserNo = userDetails.getUser().getNo();
 
+        User requestUser = userService.getUserByUserNo(requestUserNo);
         User user = userService.getUserByUserNo(userNo);
 
-        return ResponseEntity.ok(ProfileResDto.of(user));
+        return ResponseEntity.ok(ProfileResDto.of(user, requestUser));
     }
 
     @GetMapping("/{userNo}/post")
@@ -107,6 +110,22 @@ public class UserController {
         User user = userDetails.getUser();
 
         userService.deleteUser(user);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{userNo}/follow")
+    @ApiOperation(value = "회원 팔로우 / 언팔로우")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Server Error")
+    })
+    private ResponseEntity<ProfileResDto> followUser(@PathVariable Long userNo, @ApiIgnore Authentication authentication) {
+        ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
+        long followerNo = userDetails.getUser().getNo();
+
+        userService.followUser(followerNo, userNo);
 
         return ResponseEntity.noContent().build();
     }

@@ -3,6 +3,8 @@ package com.thedebuggers.backend.service;
 import com.thedebuggers.backend.common.exception.CustomException;
 import com.thedebuggers.backend.common.util.ErrorCode;
 import com.thedebuggers.backend.domain.entity.User;
+import com.thedebuggers.backend.domain.entity.UserFollow;
+import com.thedebuggers.backend.domain.repository.UserFollowRepository;
 import com.thedebuggers.backend.domain.repository.UserRepository;
 import com.thedebuggers.backend.dto.LoginReqDto;
 import com.thedebuggers.backend.dto.UserUpdateReqDto;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -21,6 +24,7 @@ public class UserServiceImpl implements UserService {
     private final String defaultImageUrl = "http://ecolog_image_url";
 
     private final UserRepository userRepository;
+    private final UserFollowRepository followRepository;
 
     private final S3Service s3Service;
 
@@ -82,5 +86,26 @@ public class UserServiceImpl implements UserService {
             user.setImage(imageUrl);
 
         userRepository.save(user);
+    }
+
+    @Override
+    public void followUser(long followerNo, long followeeNo) {
+
+        User follower = userRepository.findByNo(followerNo).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+        User followee = userRepository.findByNo(followeeNo).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+
+        Optional<UserFollow> savedFollowInfo = followRepository.findByFollowerAndFollowee(follower, followee);
+
+        if (savedFollowInfo.isPresent()) {
+            followRepository.delete(savedFollowInfo.get());
+        } else {
+            UserFollow newFollowInfo = UserFollow.builder()
+                    .follower(follower)
+                    .followee(followee)
+                    .build();
+
+            followRepository.save(newFollowInfo);
+        }
+
     }
 }

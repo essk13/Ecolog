@@ -12,7 +12,7 @@ public class CommunityResDto {
     private long no;
     private String title;
     private String description;
-    private ProfileResDto manager;
+    private BaseUserInfoResDto manager;
     private String image;
     private String sido;
     private String sigungu;
@@ -23,7 +23,7 @@ public class CommunityResDto {
                 .no(community.getNo())
                 .title(community.getTitle())
                 .description(community.getDescription())
-                .manager(ProfileResDto.of(community.getManager()))
+                .manager(BaseUserInfoResDto.of(community.getManager()))
                 .image(community.getImage())
                 .sido(community.getSido())
                 .sigungu(community.getSigungu())

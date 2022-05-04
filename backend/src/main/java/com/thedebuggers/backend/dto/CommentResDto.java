@@ -12,14 +12,14 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class CommentResDto {
     private long no;
-    private ProfileResDto writer;
+    private BaseUserInfoResDto writer;
     private String content;
     private LocalDateTime createdAt;
 
     public static CommentResDto of(Comment comment){
         return CommentResDto.builder()
                 .no(comment.getNo())
-                .writer(ProfileResDto.of(comment.getUser()))
+                .writer(BaseUserInfoResDto.of(comment.getUser()))
                 .content(comment.getContent())
                 .createdAt(comment.getCreatedAt())
                 .build();
