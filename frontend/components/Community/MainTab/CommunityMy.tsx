@@ -1,10 +1,17 @@
 import React from 'react';
-import {View, Text, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 
 const styles = StyleSheet.create({
   myListContainer: {
     flexGrow: 0,
     width: '100%',
+    minHeight: '100%',
     backgroundColor: '#ffffff',
     padding: 20,
   },
@@ -17,29 +24,30 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
 });
-const myItem = ({item}: any) => {
+const mydata = [
+  {title: '구미 일진 박승원팸', member: 5},
+  {title: '구미 플로깅 고수모임', member: 50},
+  {title: '구미 일진 박승원팸', member: 54},
+  {title: '구미 일진 박승원팸', member: 66},
+  {title: '구미 일진 박승원팸', member: 12},
+  {title: '구미 일진 박승원팸', member: 3},
+];
+const Myitem = mydata.map((item, index) => {
   return (
-    <TouchableOpacity>
+    <TouchableOpacity key={index}>
       <View style={styles.myItem}>
-        <Text>{item}</Text>
+        <Text>{item.title}</Text>
+        <Text>멤버수 : {item.member}</Text>
       </View>
     </TouchableOpacity>
   );
-};
+});
+
 function CommunityMy() {
-  const mydata = [
-    '커뮤니티1',
-    '커뮤니티12',
-    '커뮤니티15',
-    '커뮤니티17',
-    '커뮤니티81',
-  ];
   return (
-    <FlatList
-      style={styles.myListContainer}
-      data={mydata}
-      renderItem={myItem}
-    />
+    <ScrollView style={styles.myListContainer}>
+      <View>{Myitem}</View>
+    </ScrollView>
   );
 }
 

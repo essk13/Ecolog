@@ -1,6 +1,5 @@
 import React from 'react';
 import {Text, View, FlatList, StyleSheet} from 'react-native';
-
 const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
@@ -59,7 +58,7 @@ const styles = StyleSheet.create({
 const myItem = ({item}: any) => {
   return (
     <View style={styles.myItem}>
-      <Text>{item}</Text>
+      <Text>{item.title}</Text>
     </View>
   );
 };
@@ -73,7 +72,7 @@ const hotItem = ({item}: any) => {
 const hotCommu = ({item}: any) => {
   return (
     <View style={styles.hotCommu}>
-      <Text>{item}</Text>
+      <Text>{item.title}</Text>
     </View>
   );
 };
@@ -87,18 +86,20 @@ function CommunityMain() {
     '아이스버킷챌린지',
   ];
   const hotcommu = [
-    '커뮤니티1',
-    '커뮤니티12',
-    '커뮤니티15',
-    '커뮤니티17',
-    '커뮤니티81',
+    {title: '구미 일진 박승원팸', member: 5},
+    {title: '구미 플로깅 고수모임', member: 50},
+    {title: '구미 일진 박승원팸', member: 54},
+    {title: '구미 일진 박승원팸', member: 66},
+    {title: '구미 일진 박승원팸', member: 12},
+    {title: '구미 일진 박승원팸', member: 3},
   ];
   const mydata = [
-    '커뮤니티1',
-    '커뮤니티12',
-    '커뮤니티15',
-    '커뮤니티17',
-    '커뮤니티81',
+    {title: '구미 일진 박승원팸', member: 5},
+    {title: '구미 플로깅 고수모임', member: 50},
+    {title: '구미 일진 박승원팸', member: 54},
+    {title: '구미 일진 박승원팸', member: 66},
+    {title: '구미 일진 박승원팸', member: 12},
+    {title: '구미 일진 박승원팸', member: 3},
   ];
   return (
     <View style={styles.contentContainer}>
