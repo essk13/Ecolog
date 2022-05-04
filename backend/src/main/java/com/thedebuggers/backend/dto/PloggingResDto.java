@@ -28,7 +28,7 @@ public class PloggingResDto {
     private int time;
     private double distance;
     private double calories;
-    private ProfileResDto user;
+    private BaseUserInfoResDto user;
 
     public static PloggingResDto of(Plogging plogging) {
         return PloggingResDto.builder()
@@ -40,7 +40,7 @@ public class PloggingResDto {
                 .time(plogging.getTime())
                 .distance(plogging.getDistance())
                 .calories(plogging.getCalories())
-                .user(ProfileResDto.of(plogging.getUser()))
+                .user(BaseUserInfoResDto.of(plogging.getUser()))
                 .build();
     }
 }

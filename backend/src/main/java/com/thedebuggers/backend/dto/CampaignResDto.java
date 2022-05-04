@@ -1,6 +1,7 @@
 package com.thedebuggers.backend.dto;
 
 import com.thedebuggers.backend.domain.entity.Campaign;
+import com.thedebuggers.backend.domain.entity.User;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -23,7 +24,7 @@ public class CampaignResDto {
     private LocalDateTime end_date;
 
     private long max_personnel;
-    private List<ProfileResDto> join_personnel;
+    private List<BaseUserInfoResDto> join_personnel;
 
     private BaseUserInfoResDto writer;
 
@@ -38,6 +39,7 @@ public class CampaignResDto {
                 .end_date(campaign.getEnd_date())
                 .max_personnel(campaign.getMax_personnel())
                 .writer(BaseUserInfoResDto.of(campaign.getUser()))
+                .join_personnel(userList.stream().map(BaseUserInfoResDto::of).collect(Collectors.toList()))
                 .build();
 
     }
