@@ -7,6 +7,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -14,8 +16,8 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+@Table(name = "CAMPAIGN")
 public class Campaign {
 
     @Id
@@ -39,4 +41,12 @@ public class Campaign {
     @ManyToOne
     @JoinColumn(name = "user_no")
     private User user;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "USER_CAMPAIGN",
+        joinColumns = @JoinColumn(name = "campaign_no"),
+        inverseJoinColumns = @JoinColumn(name = "user_no")
+    )
+    private Set<User> users = new HashSet<>();
+
 }

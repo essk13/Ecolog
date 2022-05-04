@@ -13,12 +13,13 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+@Table(name="USER_CAMPAIGN")
 public class UserCampaign {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "no")
     long no;
 
     @ManyToOne

@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -111,5 +113,45 @@ public class CampaignController {
         return ResponseEntity.ok(CampaignResDto.of(campaign, userList));
     }
 
+    @PutMapping("/{campaignNo}")
+    @ApiOperation(value = "캠페인 모집 수정")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Server Error")
+    })
+    private ResponseEntity<CampaignResDto> updateCampaign(
+            @RequestPart(value = "campaign_info") CampaignReqDto campaignReqDto,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile,
+            @PathVariable long campaignNo,
+            @ApiIgnore Authentication authentication
+    ) {
+        ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
+        User user = userDetails.getUser();
+
+        Campaign campaign = campaignService.updateCampaign(campaignReqDto, campaignNo, user, imageFile);
+        List<User> userList = campaignService.getCampaignMember(campaignNo);
+
+        return ResponseEntity.ok(CampaignResDto.of(campaign, userList));
+    }
+
+    @DeleteMapping("/{campaignNo}")
+    @ApiOperation(value = "캠페인 모집 삭제")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Server Error")
+    })
+    private ResponseEntity<Boolean> deleteCampaign(
+            @PathVariable long campaignNo,
+            @ApiIgnore Authentication authentication
+    ) {
+        ELUserDetails userDetails = (ELUserDetails)authentication.getDetails();
+        User user = userDetails.getUser();
+
+        boolean result = campaignService.deleteCampaign(user, campaignNo);
+
+        return ResponseEntity.ok(result);
+    }
 
 }

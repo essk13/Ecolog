@@ -11,6 +11,7 @@ import com.thedebuggers.backend.domain.repository.UserCampaignRepository;
 import com.thedebuggers.backend.dto.CampaignReqDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -21,6 +22,8 @@ public class CampaignServiceImpl implements CampaignService{
     private final CampaignRespository campaignRespository;
     private final CommunityService communityService;
     private final UserCampaignRepository userCampaignRepository;
+
+    private final S3Service s3Service;
 
     @Override
     public Campaign registCampaign(CampaignReqDto campaignReqDto, long communityNo, User user) throws Exception {
@@ -86,5 +89,44 @@ public class CampaignServiceImpl implements CampaignService{
             long existNo = existUserCampaign.getNo();
             userCampaignRepository.deleteById(existNo);
         }
+    }
+
+    @Override
+    public Campaign updateCampaign(CampaignReqDto campaignReqDto, long campaignNo, User user, MultipartFile imageFile) {
+        Campaign campaign = campaignRespository.findByNo(campaignNo).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+
+        if (campaign.getUser().getNo() != user.getNo()) throw new CustomException(ErrorCode.CONTENT_UNAUTHORIZED);
+
+        String imageUrl = null;
+
+        if (imageFile != null) {
+            imageUrl = s3Service.upload(imageFile);
+        }
+
+
+        campaign.setTitle(campaignReqDto.getTitle());
+        campaign.setContent(campaignReqDto.getContent());
+        campaign.setImage(imageUrl);
+        campaign.setLocation(campaignReqDto.getLocation());
+        campaign.setStart_date(campaignReqDto.getStart_date());
+        campaign.setEnd_date(campaignReqDto.getEnd_date());
+        campaign.setMax_personnel(campaignReqDto.getMax_personnel());
+
+        campaign = campaignRespository.save(campaign);
+
+        return campaign;
+
+    }
+
+    @Override
+    public boolean deleteCampaign(User user, long campaignNo) {
+        Campaign campaign = campaignRespository.findByNo(campaignNo).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+
+        if (campaign.getUser().getNo() != user.getNo()) throw new CustomException(ErrorCode.CONTENT_UNAUTHORIZED);
+
+        campaignRespository.delete(campaign);
+
+
+        return true;
     }
 }
