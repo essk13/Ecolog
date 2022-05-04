@@ -1,6 +1,7 @@
 package com.thedebuggers.backend.service;
 
 import com.thedebuggers.backend.common.exception.CustomException;
+import com.thedebuggers.backend.common.util.DefaultImageUrl;
 import com.thedebuggers.backend.common.util.ErrorCode;
 import com.thedebuggers.backend.domain.entity.User;
 import com.thedebuggers.backend.domain.entity.UserFollow;
@@ -21,8 +22,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final String defaultImageUrl = "http://ecolog_image_url";
-
     private final UserRepository userRepository;
     private final UserFollowRepository followRepository;
 
@@ -41,7 +40,7 @@ public class UserServiceImpl implements UserService {
                 .name(loginDto.getName())
                 .password("")
                 .nickname(loginDto.getEmail().substring(0, loginDto.getEmail().indexOf('@')))
-                .image(defaultImageUrl)
+                .image(DefaultImageUrl.PROFILE_DEFAULT_URL)
                 .loginType(loginDto.getLoginType())
                 .build();
 
