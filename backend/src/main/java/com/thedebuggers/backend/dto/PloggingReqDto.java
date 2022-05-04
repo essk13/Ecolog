@@ -19,8 +19,6 @@ public class PloggingReqDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime endedAt;
 
-    private String resultImg;
-    private String routeImg;
     private int time;
     private double distance;
     private double calories;

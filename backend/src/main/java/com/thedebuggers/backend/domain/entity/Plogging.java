@@ -5,10 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -22,6 +19,7 @@ import java.time.LocalDateTime;
 public class Plogging {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long no;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

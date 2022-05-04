@@ -7,7 +7,6 @@ import com.thedebuggers.backend.domain.entity.Plogging;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 

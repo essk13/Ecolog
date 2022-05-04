@@ -9,6 +9,7 @@ import com.thedebuggers.backend.dto.PloggingReqDto;
 import com.thedebuggers.backend.dto.PloggingResDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,13 +20,21 @@ public class PloggingServiceImpl implements PloggingService {
 
     private final PloggingRepository ploggingRepository;
 
+    private final S3Service s3Service;
+
     @Override
-    public PloggingResDto registPlogging(User user, PloggingReqDto ploggingReqDto) {
+    public PloggingResDto registPlogging(User user, PloggingReqDto ploggingReqDto, List<MultipartFile> imageFileList) {
+
+        if (imageFileList.size() < 2) {
+            throw new CustomException(ErrorCode.CONTENT_NOT_FILLED);
+        }
+        List<String> imageUrls = s3Service.upload(imageFileList);
+
         Plogging plogging = Plogging.builder()
                 .startedAt(ploggingReqDto.getStartedAt())
                 .endedAt(ploggingReqDto.getEndedAt())
-                .resultImg(ploggingReqDto.getResultImg())
-                .routeImg(ploggingReqDto.getRouteImg())
+                .resultImg(imageUrls.get(0))
+                .routeImg(imageUrls.get(1))
                 .time(ploggingReqDto.getTime())
                 .distance(ploggingReqDto.getDistance())
                 .calories(ploggingReqDto.getCalories())

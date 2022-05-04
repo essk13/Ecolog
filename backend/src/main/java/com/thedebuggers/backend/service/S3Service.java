@@ -17,7 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @NoArgsConstructor
@@ -62,6 +64,29 @@ public class S3Service {
         }
 
         return amazonS3Client.getUrl(bucket, filename).toString();
+    }
+
+    public List<String> upload(List<MultipartFile> multipartFileList) {
+
+        int fileIdx = 0;
+        List<String> urlList = new ArrayList<>();
+        for (MultipartFile multipartFile : multipartFileList) {
+            String ext = multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf(".") + 1);
+
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+            String filename = "Ecolog_file_" + format.format(new Date()) + "_" + fileIdx++ + "." + ext;
+
+            try {
+                amazonS3Client.putObject(new PutObjectRequest(bucket, filename, multipartFile.getInputStream(), null)
+                        .withCannedAcl(CannedAccessControlList.PublicRead));
+                urlList.add(amazonS3Client.getUrl(bucket, filename).toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new CustomException(ErrorCode.IMAGE_UPLOAD_ERROR);
+            }
+        }
+
+        return urlList;
     }
 
 }

@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
@@ -33,10 +34,11 @@ public class PloggingController {
             @ApiResponse(code = 500, message = "Server Error")
     })
     private ResponseEntity<PloggingResDto> registPlogging(@ApiIgnore Authentication authentication,
-                                                          PloggingReqDto ploggingReqDto) {
+                                                          @RequestPart(value = "plogging_info") PloggingReqDto ploggingReqDto,
+                                                          @RequestPart(value = "images") @ApiParam(value = "결과, 경로 순으로 업로드") List<MultipartFile> imageFileList) {
         ELUserDetails userDetails = (ELUserDetails)authentication.getDetails();
         User user = userDetails.getUser();
-        PloggingResDto ploggingResDto = ploggingService.registPlogging(user, ploggingReqDto);
+        PloggingResDto ploggingResDto = ploggingService.registPlogging(user, ploggingReqDto, imageFileList);
         return ResponseEntity.ok(ploggingResDto);
     }
 
