@@ -2,6 +2,7 @@ import Api from '../lib/customApi';
 
 export async function getCommunityList() {
   const response = await Api.get('/community');
+  console.log(response.data);
   return response.data;
 }
 
@@ -12,9 +13,7 @@ export async function getCommunityDetail(communitySeq: number) {
 
 export interface Community {
   title: string;
-  description: string;
-  managerSeq: number;
-  image: string;
+  no: number;
 }
 
 export interface CommunityList extends Array<Community> {}

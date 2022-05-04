@@ -6,7 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-
+import {getCommunityList} from '../../../api/community';
 const styles = StyleSheet.create({
   myListContainer: {
     flexGrow: 0,
@@ -24,20 +24,21 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
 });
+
 const mydata = [
-  {title: '구미 일진 박승원팸', member: 5},
-  {title: '구미 플로깅 고수모임', member: 50},
-  {title: '구미 일진 박승원팸', member: 54},
-  {title: '구미 일진 박승원팸', member: 66},
-  {title: '구미 일진 박승원팸', member: 12},
-  {title: '구미 일진 박승원팸', member: 3},
+  {title: '구미 일진 박승원팸', no: 5},
+  {title: '구미 플로깅 고수모임', no: 50},
+  {title: '구미 일진 박승원팸', no: 54},
+  {title: '구미 일진 박승원팸', no: 66},
+  {title: '구미 일진 박승원팸', no: 12},
+  {title: '구미 일진 박승원팸', no: 3},
 ];
-const Myitem = mydata.map((item, index) => {
+const Myitem = mydata.map((item: any, index: number) => {
   return (
-    <TouchableOpacity key={index}>
+    <TouchableOpacity key={index} onPress={() => getCommunityList()}>
       <View style={styles.myItem}>
         <Text>{item.title}</Text>
-        <Text>멤버수 : {item.member}</Text>
+        <Text>멤버수 : {item.no}</Text>
       </View>
     </TouchableOpacity>
   );
