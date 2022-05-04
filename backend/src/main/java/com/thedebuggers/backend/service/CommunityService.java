@@ -3,7 +3,6 @@ package com.thedebuggers.backend.service;
 import com.thedebuggers.backend.domain.entity.Community;
 import com.thedebuggers.backend.domain.entity.User;
 import com.thedebuggers.backend.dto.CommunityDto;
-import com.thedebuggers.backend.dto.UserCommunityDto;
 
 import java.util.List;
 
@@ -23,4 +22,6 @@ public interface CommunityService {
     void deleteCommunity(long communityNo, User user) throws Exception;
 
     void quitCommunity(long communityNo, long userNo) throws Exception;
+
+    List<Community> getMyCommunityList(long userNo);
 }

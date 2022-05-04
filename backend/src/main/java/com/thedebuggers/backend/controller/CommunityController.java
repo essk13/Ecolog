@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -182,4 +183,21 @@ public class CommunityController {
         return ResponseEntity.ok("Success");
     }
 
+    @GetMapping("/mine")
+    @ApiOperation(value = "내가 가입한 커뮤니티 목록 조회")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Server Error")
+    })
+    private ResponseEntity<List<CommunityResDto>> getMyCommunityList(@ApiIgnore Authentication authentication){
+        ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
+        long userNo = userDetails.getUser().getNo();
+
+        List<Community> communityList = communityService.getMyCommunityList(userNo);
+
+        List<CommunityResDto> result = communityList.stream().map(CommunityResDto::of).collect(Collectors.toList());
+
+        return ResponseEntity.ok(result);
+    }
 }

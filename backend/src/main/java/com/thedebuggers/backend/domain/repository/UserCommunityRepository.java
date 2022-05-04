@@ -1,5 +1,6 @@
 package com.thedebuggers.backend.domain.repository;
 
+import com.thedebuggers.backend.domain.entity.Community;
 import com.thedebuggers.backend.domain.entity.User;
 import com.thedebuggers.backend.domain.entity.UserCommunity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,4 +18,7 @@ public interface UserCommunityRepository extends JpaRepository<UserCommunity, Lo
     List<UserCommunity> findAllByCommunityNo(long communityNo);
 
     UserCommunity findAllByCommunityNoAndUserNo(long communityNo, long userNo);
+
+    @Query("select uc.community from UserCommunity  uc where uc.user.no = :userNo")
+    List<Community> findAllCommunityByUserNo(long userNo);
 }

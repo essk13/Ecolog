@@ -1,8 +1,6 @@
 package com.thedebuggers.backend.service;
 
 
-import com.thedebuggers.backend.common.exception.CustomException;
-import com.thedebuggers.backend.common.util.ErrorCode;
 import com.thedebuggers.backend.domain.entity.Community;
 import com.thedebuggers.backend.domain.entity.User;
 import com.thedebuggers.backend.domain.entity.UserCommunity;
@@ -10,7 +8,6 @@ import com.thedebuggers.backend.domain.repository.CommunityRepository;
 import com.thedebuggers.backend.domain.repository.UserCommunityRepository;
 import com.thedebuggers.backend.domain.repository.UserRepository;
 import com.thedebuggers.backend.dto.CommunityDto;
-import com.thedebuggers.backend.dto.UserCommunityDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -149,6 +146,11 @@ public class CommunityServiceImpl implements CommunityService{
         }
 
         userCommunityRepository.delete(userCommunity);
+    }
+
+    @Override
+    public List<Community> getMyCommunityList(long userNo) {
+        return userCommunityRepository.findAllCommunityByUserNo(userNo);
     }
 
 
