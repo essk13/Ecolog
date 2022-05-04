@@ -4,8 +4,7 @@ import auth from '@react-native-firebase/auth';
 import {logout} from '../../../api/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useMutation} from 'react-query';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../../modules';
+import {User} from '../../../api/user';
 // Components
 import UserInfoText from './UserInfoText';
 
@@ -57,21 +56,12 @@ const fontStyles = (size?: number, weight?: any) =>
     },
   });
 
-interface User {
-  name: string;
-  content: number;
-  follow: number;
-  follower: number;
-}
-
 interface UserInfoProps {
-  user: User;
+  user: User | null;
   navigation: any;
 }
 
 function UserInfo({user, navigation}: UserInfoProps) {
-  const myInfo = useSelector((state: RootState) => state.user.user);
-
   const {mutate: userLogout, isLoading} = useMutation(logout, {
     onSuccess: () => {
       AsyncStorage.removeItem('accessToken');
@@ -96,12 +86,12 @@ function UserInfo({user, navigation}: UserInfoProps) {
         />
         <View>
           <Text style={fontStyles(20, '600').userName}>
-            {myInfo.data ? myInfo.data.name : null}
+            {user ? user.name : null}
           </Text>
           <View style={styles('row').userContainer}>
-            <UserInfoText title={'내 게시물'} count={user.content} />
-            <UserInfoText title={'팔로우'} count={user.follow} />
-            <UserInfoText title={'팔로워'} count={user.follower} />
+            <UserInfoText title={'내 게시물'} count={13} />
+            <UserInfoText title={'팔로우'} count={13} />
+            <UserInfoText title={'팔로워'} count={13} />
           </View>
           <TouchableOpacity onPress={() => navigation.navigate('UserEdit')}>
             <Text>내 정보 수정</Text>
@@ -111,20 +101,6 @@ function UserInfo({user, navigation}: UserInfoProps) {
           </TouchableOpacity>
         </View>
       </View>
-
-      {/* <View style={styles().btnContainer}>
-        <TouchableOpacity onPress={() => {}} style={styles().btn}>
-          <Text style={fontStyles(20, '600').buttonText}>플로깅</Text>
-        </TouchableOpacity>
-        <View style={styles().line} />
-        <TouchableOpacity onPress={() => {}} style={styles().btn}>
-          <Text style={fontStyles(20, '600').buttonText}>캠페인</Text>
-        </TouchableOpacity>
-        <View style={styles().line} />
-        <TouchableOpacity onPress={() => {}} style={styles().btn}>
-          <Text style={fontStyles(20, '600').buttonText}>아바타</Text>
-        </TouchableOpacity>
-      </View> */}
     </View>
   );
 }

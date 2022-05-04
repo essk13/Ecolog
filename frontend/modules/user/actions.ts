@@ -1,6 +1,6 @@
 import {createAsyncAction} from 'typesafe-actions';
 import {AxiosError} from 'axios';
-import {User} from '../../api/types';
+import {User} from '../../api/user';
 import {LoginData} from '../../api/auth';
 
 export const LOGIN = 'user/LOGIN';

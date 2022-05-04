@@ -5,6 +5,7 @@ import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 import UserPlogging from './Plogging/UserPlogging';
 import UserCampaign from './Campaign/UserCampaign';
 import UserAvatar from './Avatar/UserAvatar';
+import {PloggingList} from '../../../api/plogging';
 
 // Style
 const fontStyles = (size?: number, weight?: any) =>
@@ -16,26 +17,36 @@ const fontStyles = (size?: number, weight?: any) =>
     },
   });
 
-// Tab-View
-const FirstRoute = () => <UserPlogging />;
-const SecondRoute = () => <UserCampaign />;
-const ThirdRoute = () => <UserAvatar />;
+interface UserTabProps {
+  ploggingList: PloggingList | null;
+}
 
-const renderScene = SceneMap({
-  plogging: FirstRoute,
-  campaign: SecondRoute,
-  avatar: ThirdRoute,
-});
-
-function UserTab() {
+function UserTab({ploggingList}: UserTabProps) {
   const layout = useWindowDimensions();
-
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     {key: 'plogging', title: '플로깅'},
     {key: 'campaign', title: '캠페인'},
     {key: 'avatar', title: '아바타'},
   ]);
+
+  // Tab-View
+  const FirstRoute = () =>
+    ploggingList ? (
+      <UserPlogging ploggingList={ploggingList} />
+    ) : (
+      <View>
+        <Text>로딩중</Text>
+      </View>
+    );
+  const SecondRoute = () => <UserCampaign />;
+  const ThirdRoute = () => <UserAvatar />;
+
+  const renderScene = SceneMap({
+    plogging: FirstRoute,
+    campaign: SecondRoute,
+    avatar: ThirdRoute,
+  });
 
   return (
     <TabView

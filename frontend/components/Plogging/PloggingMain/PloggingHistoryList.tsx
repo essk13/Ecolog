@@ -1,5 +1,13 @@
 import React from 'react';
-import {FlatList, View, Image, Text, StyleSheet} from 'react-native';
+import {
+  FlatList,
+  TouchableOpacity,
+  Image,
+  Text,
+  StyleSheet,
+} from 'react-native';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../../modules';
 // Components
 import PloggingHistoryItem from './PloggingHistoryItem';
 
@@ -36,13 +44,15 @@ const fontStyles = (size?: number, weight?: any, color?: string) =>
     },
   });
 
-interface PloggingHistoryListProps {
+interface MoreImageProps {
   navigation: any;
 }
 
-function MoreImage() {
+function MoreImage({navigation}: MoreImageProps) {
   return (
-    <View style={styles().moreContainer}>
+    <TouchableOpacity
+      style={styles().moreContainer}
+      onPress={() => navigation.navigate('User')}>
       <Image
         source={{
           uri: 'https://cdn0.iconfinder.com/data/icons/modagraphica-interface/30/more-512.png',
@@ -50,56 +60,29 @@ function MoreImage() {
         style={styles().moreImage}
       />
       <Text style={fontStyles(14, 'bold', '#000000').normalText}>더보기</Text>
-    </View>
+    </TouchableOpacity>
   );
 }
 
+interface PloggingHistoryListProps {
+  navigation: any;
+}
+
 function PloggingHistoryList({navigation}: PloggingHistoryListProps) {
-  const ploggingList = [
-    {
-      id: 0,
-      endedAt: '2099.04.19',
-      image:
-        'https://cdn.imweb.me/upload/S2021011502a2f4eeeb339/99652ab25b094.jpeg',
-      time: '00:01:01',
-      distance: 0.05,
-    },
-    {
-      id: 1,
-      endedAt: '2099.04.20',
-      image:
-        'https://cdn.imweb.me/upload/S2021011502a2f4eeeb339/99652ab25b094.jpeg',
-      time: '00:02:01',
-      distance: 0.05,
-    },
-    {
-      id: 2,
-      endedAt: '2099.04.21',
-      image:
-        'https://cdn.imweb.me/upload/S2021011502a2f4eeeb339/99652ab25b094.jpeg',
-      time: '00:03:01',
-      distance: 0.05,
-    },
-    {
-      id: 3,
-      endedAt: '2099.04.22',
-      image:
-        'https://cdn.imweb.me/upload/S2021011502a2f4eeeb339/99652ab25b094.jpeg',
-      time: '00:04:01',
-      distance: 0.05,
-    },
-  ];
+  const ploggingList = useSelector(
+    (state: RootState) => state.plogging.ploggingList,
+  );
 
   return (
     <FlatList
       style={styles().ploggingListContainer}
       horizontal={true}
-      data={ploggingList}
+      data={ploggingList.data?.slice(-5).reverse()}
       renderItem={({item}: any) => (
         <PloggingHistoryItem navigation={navigation} plogging={item} />
       )}
-      ListFooterComponent={() => <MoreImage />}
-      keyExtractor={item => item.id.toString()}
+      ListFooterComponent={() => <MoreImage navigation={navigation} />}
+      keyExtractor={item => item.no.toString()}
     />
   );
 }

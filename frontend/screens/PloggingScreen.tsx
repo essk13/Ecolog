@@ -1,6 +1,10 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Text, View, TouchableOpacity, Image, StyleSheet} from 'react-native';
 import {useTheme} from '@react-navigation/native';
+import {useDispatch} from 'react-redux';
+import {ploggingActions} from '../modules/plogging';
+import {useSelector} from 'react-redux';
+import {RootState} from '../modules';
 // Components
 import PloggingRankingInfo from '../components/Plogging/PloggingMain/PloggingRankingInfo';
 import PloggingStartButton from '../components/Plogging/PloggingMain/PloggingStartButton';
@@ -63,7 +67,15 @@ const fontStyles = (size?: number, weight?: any, color?: string) =>
   });
 
 function PloggingScreen({navigation}: any) {
+  const myInfo = useSelector((state: RootState) => state.user.user);
   const {colors} = useTheme();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (myInfo.data) {
+      dispatch(ploggingActions.getPloggingListAsync.request(myInfo.data.no));
+    }
+  }, [dispatch, myInfo.data]);
 
   return (
     <View style={styles(colors.background).background}>

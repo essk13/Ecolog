@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, ScrollView, StyleSheet} from 'react-native';
+import {PloggingList} from '../../../../api/plogging';
 // Components
 import UserPloggingItem from './UserPlogginItem';
 
@@ -18,26 +19,16 @@ const styles = () =>
     },
   });
 
-const PloggingData = [
-  'User Ploggin Data',
-  'User Ploggin Data',
-  'User Ploggin Data',
-  'User Ploggin Data',
-  'User Ploggin Data',
-  'User Ploggin Data',
-  'User Ploggin Data',
-  'User Ploggin Data',
-  'User Ploggin Data',
-  'User Ploggin Data',
-  'User Ploggin Data',
-  'User Ploggin Data',
-  'User Ploggin Data',
-];
+interface UserPloggingProps {
+  ploggingList: PloggingList;
+}
 
-function UserPlogging() {
-  const items = PloggingData.map((data, index) => (
-    <UserPloggingItem key={index} data={data} num={index + 1} />
-  ));
+function UserPlogging({ploggingList}: UserPloggingProps) {
+  const items = [...ploggingList]
+    .reverse()
+    .map((ploggingData, index) => (
+      <UserPloggingItem key={index} ploggingData={ploggingData} />
+    ));
 
   return (
     <ScrollView style={styles().scrollContainer}>

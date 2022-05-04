@@ -1,7 +1,7 @@
 import {GET_MY_INFO, LOGIN, userActions} from './actions';
 import {getMyInfo} from '../../api/user';
 import {call, put, takeEvery} from 'redux-saga/effects';
-import {User} from '../../api/types';
+import {User} from '../../api/user';
 import {login, LoginResponseHeaders} from '../../api/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

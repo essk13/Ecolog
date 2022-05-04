@@ -2,7 +2,9 @@ import React from 'react';
 import {View, StyleSheet} from 'react-native';
 // Components
 import UserInfo from '../components/User/UserInfo/UserInfo';
-import UserTab from '../components/User/UserContents/UserTabScreen';
+import UserTabScreen from '../components/User/UserContents/UserTabScreen';
+import {useSelector} from 'react-redux';
+import {RootState} from '../modules';
 
 const styles = (color?: any) =>
   StyleSheet.create({
@@ -12,18 +14,16 @@ const styles = (color?: any) =>
     },
   });
 
-const UserData = {
-  name: 'Unkown',
-  content: 13,
-  follow: 13,
-  follower: 13,
-};
-
 function UserScreen({navigation}: any) {
+  const myInfo = useSelector((state: RootState) => state.user.user);
+  const ploggingList = useSelector(
+    (state: RootState) => state.plogging.ploggingList,
+  );
+
   return (
     <View style={styles('#5FA2E5').background}>
-      <UserInfo user={UserData} navigation={navigation} />
-      <UserTab />
+      <UserInfo user={myInfo.data} navigation={navigation} />
+      <UserTabScreen ploggingList={ploggingList.data} />
     </View>
   );
 }

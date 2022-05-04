@@ -1,5 +1,6 @@
 import React from 'react';
 import {Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
+import {Plogging} from '../../../api/plogging';
 
 const styles = () =>
   StyleSheet.create({
@@ -26,29 +27,30 @@ const fontStyles = (size?: number, weight?: any, color?: string) =>
 
 interface PloggingHistoryItemProps {
   navigation: any;
-  plogging: any;
+  plogging: Plogging;
 }
 
 function PloggingHistoryItem({navigation, plogging}: PloggingHistoryItemProps) {
+  const ploggingDate = plogging.ended_at.split(' ')[0].split('-');
+  const hour = String(Math.floor(plogging.time / 3600)).padStart(2, '0');
+  const min = String(Math.floor((plogging.time % 3600) / 60)).padStart(2, '0');
+  const sec = String(plogging.time % 60).padStart(2, '0');
+
   return (
     <TouchableOpacity
       style={styles().ploggingContainer}
-      onPress={() =>
-        navigation.navigate('PloggingRecord', {
-          image: plogging.image,
-          date: plogging.endedAt,
-          distance: plogging.distance,
-          time: plogging.time,
-        })
-      }>
-      <Image source={{uri: plogging.image}} style={styles().ploggingImage} />
+      onPress={() => navigation.navigate('PloggingRecord', {id: plogging.no})}>
+      <Image
+        source={{uri: plogging.result_img}}
+        style={styles().ploggingImage}
+      />
       <Text style={fontStyles(14, 'bold', '#000000').normalText}>
-        {plogging.endedAt}
+        {`${ploggingDate[0]}.${ploggingDate[1]}.${ploggingDate[2]}`}
       </Text>
       <Text
         style={
           fontStyles(9, 'normal', '#000000').normalText
-        }>{`${plogging.distance}km / ${plogging.time}`}</Text>
+        }>{`${plogging.distance}km / ${hour}:${min}:${sec}`}</Text>
     </TouchableOpacity>
   );
 }

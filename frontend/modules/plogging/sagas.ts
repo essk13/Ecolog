@@ -1,7 +1,7 @@
 import {GET_PLOGGING_LIST, ploggingActions} from './actions';
 import {getPloggingList} from '../../api/plogging';
 import {call, put, takeEvery} from 'redux-saga/effects';
-import {PloggingList} from '../../api/types';
+import {PloggingList} from '../../api/plogging';
 
 function* getPloggingListSaga(
   action: ReturnType<typeof ploggingActions.getPloggingListAsync.request>,

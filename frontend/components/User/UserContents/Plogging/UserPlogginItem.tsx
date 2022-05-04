@@ -1,5 +1,8 @@
 import React from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import {Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {MainTabNavigationProp} from '../../../../screens/types';
+import {Plogging} from '../../../../api/plogging';
 
 const styles = () =>
   StyleSheet.create({
@@ -14,18 +17,21 @@ const styles = () =>
     },
   });
 
-interface Props {
-  data: string;
-  num: number;
+interface UserPloggingItemProps {
+  ploggingData: Plogging;
 }
 
-function UserPloggingItem({data, num}: Props) {
+function UserPloggingItem({ploggingData}: UserPloggingItemProps) {
+  const navigation = useNavigation<MainTabNavigationProp>();
+
   return (
-    <View style={styles().itemContainer}>
-      <Text>
-        {data} {num}
-      </Text>
-    </View>
+    <TouchableOpacity
+      style={styles().itemContainer}
+      onPress={() =>
+        navigation.navigate('PloggingRecord', {id: ploggingData.no})
+      }>
+      <Text>{ploggingData.no}</Text>
+    </TouchableOpacity>
   );
 }
 

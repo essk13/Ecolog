@@ -20,7 +20,6 @@ export interface LoginResponseHeaders {
 
 export interface LoginData {
   email: string;
-  id: string;
   login_type: string;
   name: string | null;
 }

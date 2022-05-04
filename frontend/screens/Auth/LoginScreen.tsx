@@ -39,7 +39,6 @@ function LoginScreen() {
       );
       const loginData = {
         email: userInfo.user.email,
-        id: userInfo.user.id,
         login_type: 'GOOGLE',
         name: userInfo.user.name,
       };

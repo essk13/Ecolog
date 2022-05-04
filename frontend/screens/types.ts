@@ -28,7 +28,9 @@ export type RootStackParamList = {
   PloggingMap: undefined;
   PloggingResult: undefined;
   PloggingRanking: undefined;
-  PloggingRecord: undefined;
+  PloggingRecord: {
+    id: number;
+  };
   UserEdit: undefined;
   CommunityHome: undefined;
   SurveyPage: undefined;
