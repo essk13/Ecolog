@@ -13,6 +13,5 @@ import lombok.ToString;
 public class PostReqDto {
     private String title;
     private String content;
-    private String image;
     private boolean isOpen;
 }

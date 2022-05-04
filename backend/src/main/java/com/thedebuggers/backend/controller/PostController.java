@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
@@ -35,11 +36,12 @@ public class PostController {
     })
     private ResponseEntity<PostResDto> registPost(@ApiIgnore Authentication authentication,
                                                   @ApiParam(defaultValue = "1") @PathVariable long communityNo,
-                                                  @RequestBody PostReqDto postReqDto) {
+                                                  @RequestPart(value = "post_info") PostReqDto postReqDto,
+                                                  @RequestPart(value = "image", required = false) MultipartFile imageFile) {
         ELUserDetails userDetails = (ELUserDetails)authentication.getDetails();
         User user = userDetails.getUser();
-        Post post = postService.registPost(user, postReqDto, communityNo);
-        return ResponseEntity.ok(PostResDto.of(post));
+        PostResDto postResDto = postService.registPost(user, postReqDto, communityNo, imageFile);
+        return ResponseEntity.ok(postResDto);
     }
 
     @GetMapping
@@ -54,9 +56,9 @@ public class PostController {
         List<PostResDto> postList;
 
         if (communityNo == 0)
-            postList = postService.getAllPost().stream().map(PostResDto::of).collect(Collectors.toList());
+            postList = postService.getAllPost();
         else
-            postList = postService.getPostList(communityNo).stream().map(PostResDto::of).collect(Collectors.toList());;
+            postList = postService.getPostList(communityNo);;
 
         return ResponseEntity.ok(postList);
     }
@@ -72,8 +74,8 @@ public class PostController {
                                                @ApiParam(defaultValue = "1") @PathVariable long postNo) throws Exception {
         ELUserDetails userDetails = (ELUserDetails)authentication.getDetails();
         User user = userDetails.getUser();
-        Post post = postService.getPost(user, postNo);
-        return ResponseEntity.ok(PostResDto.of(post));
+        PostResDto postResDto = postService.getPost(user, postNo);
+        return ResponseEntity.ok(postResDto);
     }
 
     @PutMapping("/{postNo}")
@@ -84,10 +86,12 @@ public class PostController {
             @ApiResponse(code = 500, message = "Server Error")
     })
     private ResponseEntity<Boolean> modifyPost(@ApiIgnore Authentication authentication,
-                                               @PathVariable long postNo, @RequestBody PostReqDto postDto) {
+                                               @PathVariable long postNo,
+                                               @RequestPart(value = "post_info") PostReqDto postDto,
+                                               @RequestPart(value = "image", required = false) MultipartFile imageFile) {
         ELUserDetails userDetails = (ELUserDetails)authentication.getDetails();
         User user = userDetails.getUser();
-        boolean result = postService.modifyPost(user, postNo, postDto);
+        boolean result = postService.modifyPost(user, postNo, postDto, imageFile);
         return ResponseEntity.ok(result);
     }
 
@@ -133,7 +137,7 @@ public class PostController {
         ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
         long userNo = userDetails.getUser().getNo();
 
-        List<PostResDto> postList = postService.getMyPostListInCommunity(communityNo, userNo).stream().map(PostResDto::of).collect(Collectors.toList());;
+        List<PostResDto> postList = postService.getMyPostListInCommunity(communityNo, userNo);;
 
         return ResponseEntity.ok(postList);
     }

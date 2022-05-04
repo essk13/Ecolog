@@ -71,7 +71,7 @@ public class UserController {
     })
     private ResponseEntity<List<PostResDto>> profile(@PathVariable Long userNo) {
 
-        List<PostResDto> posts = postService.getMyPostList(userNo).stream().map(PostResDto::of).collect(Collectors.toList());;
+        List<PostResDto> posts = postService.getMyPostList(userNo);
 
         return ResponseEntity.ok(posts);
     }
