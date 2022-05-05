@@ -12,9 +12,6 @@ services:
       - ecolog
     environment:
       - TZ=Asia/Seoul
-    depends_on:
-      - mysql
-      - redis
     restart: always
     networks:
       - ecolog_network 
