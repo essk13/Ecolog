@@ -13,17 +13,17 @@ const Styles = StyleSheet.create({
   },
 });
 
-const FirstRoute = () => <CommunityMain />;
-const SecondRoute = () => <CommunityMy />;
-const ThirdRoute = () => <CommunityFeed />;
-
-const renderScene = SceneMap({
-  main: FirstRoute,
-  my: SecondRoute,
-  feed: ThirdRoute,
-});
-
 function CommunityTab() {
+  const FirstRoute = () => <CommunityMain />;
+  const SecondRoute = () => <CommunityMy />;
+  const ThirdRoute = () => <CommunityFeed />;
+
+  const renderScene = SceneMap({
+    main: FirstRoute,
+    my: SecondRoute,
+    feed: ThirdRoute,
+  });
+
   const layout = useWindowDimensions();
 
   const [index, setIndex] = React.useState(0);

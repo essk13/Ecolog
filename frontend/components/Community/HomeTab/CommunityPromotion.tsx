@@ -1,6 +1,13 @@
 import React from 'react';
-import {StyleSheet, ScrollView} from 'react-native';
+import {StyleSheet, FlatList, View, Text, Image} from 'react-native';
 import {Button, Card, Title} from 'react-native-paper';
+import {
+  CommunityDetail,
+  getCampaignList,
+  Campaign,
+} from '../../../api/community';
+import {useNavigation} from '@react-navigation/native';
+import {useQuery} from 'react-query';
 const styles = StyleSheet.create({
   Container: {
     flexGrow: 0,
@@ -10,39 +17,66 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   CardContainer: {
-    flexGrow: 0,
+    height: 200,
     borderColor: 'black',
     borderWidth: 1,
     marginBottom: 20,
   },
+  image: {
+    width: '100%',
+    height: '50%',
+  },
 });
+interface CommunityDetailProps {
+  data: CommunityDetail;
+}
+interface CampaignItemProps {
+  campaign: Campaign;
+}
 
-const PromListItem = ({prom}: any) => {
-  return (
-    <Card style={styles.CardContainer}>
-      <Card.Cover
-        source={{
-          uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSb-C1FL7xV2Rka1wtiAck-IYVmP9o1pRRdB45S2rGP-WnRDvEY_SMM1ZuiCRjkNkTFCEw&usqp=CAU',
-        }}
-      />
-      <Card.Content>
-        <Title>{prom}</Title>
-      </Card.Content>
-      <Card.Actions>
-        <Button>상세 보기</Button>
-      </Card.Actions>
-    </Card>
+function CommunityPromotion({data}: CommunityDetailProps) {
+  const PromListItem = ({campaign}: CampaignItemProps) => {
+    const navigation = useNavigation<any>();
+    return (
+      <Card style={styles.CardContainer}>
+        <Image source={{uri: campaign.image}} style={styles.image} />
+        <Card.Content>
+          <Title>{campaign.title}</Title>
+        </Card.Content>
+        <Card.Actions>
+          <Text>{campaign.location}</Text>
+          <Text>{campaign.content}</Text>
+          <Text>{campaign.no}</Text>
+          <Button
+            onPress={() =>
+              navigation.navigate('CampaignDetail', {
+                id: campaign.no,
+                no: data.no,
+              })
+            }>
+            상세 보기
+          </Button>
+        </Card.Actions>
+      </Card>
+    );
+  };
+  const {data: campaignListData, isLoading} = useQuery(
+    ['campaignList', data.no],
+    () => getCampaignList(data.no),
   );
-};
-
-function CommunityPromotion() {
+  if (!campaignListData || isLoading) {
+    return (
+      <View>
+        <Text>로딩중</Text>
+      </View>
+    );
+  }
   return (
-    <ScrollView style={styles.Container}>
-      <PromListItem prom="4차 플로깅 모집" />
-      <PromListItem prom="2차 플로깅 모집" />
-      <PromListItem prom="1차 플로깅 모집" />
-      <PromListItem prom="6차 플로깅 모집" />
-    </ScrollView>
+    <FlatList
+      style={styles.Container}
+      data={campaignListData}
+      renderItem={({item}: any) => <PromListItem campaign={item} />}
+    />
   );
 }
 

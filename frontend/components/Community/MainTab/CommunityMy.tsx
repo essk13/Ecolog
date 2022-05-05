@@ -1,12 +1,8 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
-import {getCommunityList} from '../../../api/community';
+import {StyleSheet, FlatList} from 'react-native';
+import CommunityMyItem from './CommunityMyItem';
+import {useQuery} from 'react-query';
+import {getMyCommunity} from '../../../api/community';
 const styles = StyleSheet.create({
   myListContainer: {
     flexGrow: 0,
@@ -25,30 +21,14 @@ const styles = StyleSheet.create({
   },
 });
 
-const mydata = [
-  {title: '구미 일진 박승원팸', no: 5},
-  {title: '구미 플로깅 고수모임', no: 50},
-  {title: '구미 일진 박승원팸', no: 54},
-  {title: '구미 일진 박승원팸', no: 66},
-  {title: '구미 일진 박승원팸', no: 12},
-  {title: '구미 일진 박승원팸', no: 3},
-];
-const Myitem = mydata.map((item: any, index: number) => {
-  return (
-    <TouchableOpacity key={index} onPress={() => getCommunityList()}>
-      <View style={styles.myItem}>
-        <Text>{item.title}</Text>
-        <Text>멤버수 : {item.no}</Text>
-      </View>
-    </TouchableOpacity>
-  );
-});
-
 function CommunityMy() {
+  const {data: communityListData} = useQuery('myCommunity', getMyCommunity);
   return (
-    <ScrollView style={styles.myListContainer}>
-      <View>{Myitem}</View>
-    </ScrollView>
+    <FlatList
+      style={styles.myListContainer}
+      data={communityListData}
+      renderItem={({item}: any) => <CommunityMyItem community={item} />}
+    />
   );
 }
 

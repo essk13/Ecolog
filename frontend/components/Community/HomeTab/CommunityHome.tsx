@@ -1,6 +1,6 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-
+import {View, Text, StyleSheet, Image} from 'react-native';
+import {CommunityDetail} from '../../../api/community';
 const styles = StyleSheet.create({
   Container: {
     flexGrow: 0,
@@ -38,11 +38,18 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: 20,
   },
+  image: {
+    width: '100%',
+    height: '20%',
+  },
 });
-
-function CommunityHome() {
+interface CommunityDetailProps {
+  data: CommunityDetail;
+}
+function CommunityHome({data}: CommunityDetailProps) {
   return (
     <View style={styles.Container}>
+      <Image source={{uri: data.image}} style={styles.image} />
       <Text>공지 사항</Text>
       <View style={styles.HomeNotice}>
         <View>
@@ -62,12 +69,14 @@ function CommunityHome() {
       <View style={styles.commuInfo}>
         <Text>회원 수 </Text>
         <Text>개설일</Text>
-        <Text>관리자</Text>
-        <Text>캠페인 태그</Text>
-        <Text>지역</Text>
+        <Text>관리자 : {data.manager.email}</Text>
+        <Text>캠페인 태그 : {data.tag}</Text>
+        <Text>지역 </Text>
       </View>
       <Text>소개글</Text>
-      <View style={styles.intro}></View>
+      <View style={styles.intro}>
+        <Text>{data.description}</Text>
+      </View>
       <View style={styles.button}>
         <Text>가입하기</Text>
       </View>

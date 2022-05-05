@@ -32,19 +32,13 @@ const styles = StyleSheet.create({
   },
 });
 
-function CommunityScreen({navigation}: any) {
+function CommunityScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.topMenu}>
         <Text style={styles.topTitle}>커뮤니티</Text>
         <TextInput style={styles.topInput} />
       </View>
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate('CommunityHome');
-        }}>
-        <Text>홈으로 이동</Text>
-      </TouchableOpacity>
       <CommunityTab />
     </View>
   );

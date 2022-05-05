@@ -11,7 +11,7 @@ import UserEditScreen from './User/UserEditScreen';
 import CommunityHomeScreen from './Community/CommunityHome';
 import SurveyPageScreen from './Survey/SurveyPageScreen';
 import SurveyResultScreen from './Survey/SurveyResultScreen';
-
+import CampaginDetailScreen from './Community/CampaginDetail';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootScreen() {
@@ -28,6 +28,7 @@ function RootScreen() {
       <Stack.Screen name="PloggingRecord" component={PloggingRecordScreen} />
       <Stack.Screen name="UserEdit" component={UserEditScreen} />
       <Stack.Screen name="CommunityHome" component={CommunityHomeScreen} />
+      <Stack.Screen name="CampaignDetail" component={CampaginDetailScreen} />
       <Stack.Screen name="SurveyPage" component={SurveyPageScreen} />
       <Stack.Screen name="SurveyResult" component={SurveyResultScreen} />
     </Stack.Navigator>

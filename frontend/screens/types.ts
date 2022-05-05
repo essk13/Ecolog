@@ -33,6 +33,7 @@ export type RootStackParamList = {
   };
   UserEdit: undefined;
   CommunityHome: undefined;
+  CampaignDetail: undefined;
   SurveyPage: undefined;
   SurveyResult: undefined;
 };

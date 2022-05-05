@@ -7,6 +7,7 @@ import CommunityNotice from './CommunityNotice';
 import CommunityPromotion from './CommunityPromotion';
 import CommunityFree from './CommunityFree';
 import CommunityMyInfo from './CommunityMyInfo';
+import {CommunityDetail} from '../../../api/community';
 
 const Styles = StyleSheet.create({
   buttonText: {
@@ -16,23 +17,24 @@ const Styles = StyleSheet.create({
   },
 });
 
-const FirstRoute = () => <CommunityHome />;
-const SecondRoute = () => <CommunityNotice />;
-const ThirdRoute = () => <CommunityPromotion />;
-const fourthRoute = () => <CommunityFree />;
-const fifthRoute = () => <CommunityMyInfo />;
+interface CommunityDetailProps {
+  data: CommunityDetail;
+}
+function CommunityHomeTab({data}: CommunityDetailProps) {
+  const FirstRoute = () => <CommunityHome data={data} />;
+  const SecondRoute = () => <CommunityNotice />;
+  const ThirdRoute = () => <CommunityPromotion data={data} />;
+  const fourthRoute = () => <CommunityFree />;
+  const fifthRoute = () => <CommunityMyInfo />;
 
-const renderScene = SceneMap({
-  home: FirstRoute,
-  notice: SecondRoute,
-  promotion: ThirdRoute,
-  free: fourthRoute,
-  myInfo: fifthRoute,
-});
-
-function CommunityHomeTab() {
+  const renderScene = SceneMap({
+    home: FirstRoute,
+    notice: SecondRoute,
+    promotion: ThirdRoute,
+    free: fourthRoute,
+    myInfo: fifthRoute,
+  });
   const layout = useWindowDimensions();
-
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     {key: 'home', title: '홈'},
