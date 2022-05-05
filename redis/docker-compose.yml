@@ -1,0 +1,11 @@
+version: "3.7"
+services:
+  redis:
+    container_name: ecolog_redis
+    image: redis:latest
+    ports:
+      - 6379:6379
+    restart: always
+    volumes:
+      - ./data/:/data
+      - ./conf/redis.conf:/usr/local/conf/redis.conf

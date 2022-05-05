@@ -18,34 +18,5 @@ services:
     restart: always
     networks:
       - ecolog_network 
-  mysql:
-    image: mysql
-    container_name: ecolog_mysql
-    ports:
-      - "3306:3306"
-    environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
-    volumes:
-      - ./mysql/data:/var/lib/mysql
-    cap_add:
-      - SYS_NICE
-    command:
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
-    restart: always
-    networks:
-      - ecolog_network 
-  redis:
-    container_name: ecolog_redis
-    image: redis:latest
-    ports:
-      - 6379:6379
-    restart: always
-    volumes:
-      - ./redis/data/:/data
-      - ./redis/conf/redis.conf:/usr/local/conf/redis.conf
-    restart: always
-    networks:
-      - ecolog_network 
 networks:
   ecolog_network:
