@@ -48,4 +48,4 @@ services:
     networks:
       - ecolog_network 
 networks:
-  ecolog-network:
+  ecolog_network:
