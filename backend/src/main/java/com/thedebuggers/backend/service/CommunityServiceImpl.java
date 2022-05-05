@@ -10,6 +10,8 @@ import com.thedebuggers.backend.domain.repository.UserRepository;
 import com.thedebuggers.backend.dto.CommunityDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -151,6 +153,17 @@ public class CommunityServiceImpl implements CommunityService{
     @Override
     public List<Community> getMyCommunityList(long userNo) {
         return userCommunityRepository.findAllCommunityByUserNo(userNo);
+    }
+
+    @Override
+    public List<Community> getPopularCommunityList() {
+//        List<Long> communityNoList = userCommunityRepository.findTop5CommunityNo();
+//        List<Community> communityList = communityRepository.findAllById(communityNoList);
+        Pageable limitFive = PageRequest.of(0, 5);
+
+        List<Community> communityList = userCommunityRepository.findTop5Community(limitFive);
+
+        return communityList;
     }
 
 

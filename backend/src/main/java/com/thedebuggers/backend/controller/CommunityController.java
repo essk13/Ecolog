@@ -199,4 +199,20 @@ public class CommunityController {
 
         return ResponseEntity.ok(result);
     }
+
+    @GetMapping("/popular")
+    @ApiOperation(value = "인기 커뮤니티 목록 조회")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Server Error")
+    })
+    private ResponseEntity<List<CommunityResDto>> getPopularCommunityList(
+
+    ) {
+        List<Community> communityList = communityService.getPopularCommunityList();
+
+        return ResponseEntity.ok(communityList.stream().map(CommunityResDto::of).collect(Collectors.toList()));
+    }
+
 }

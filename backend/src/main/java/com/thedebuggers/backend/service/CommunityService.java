@@ -24,4 +24,6 @@ public interface CommunityService {
     void quitCommunity(long communityNo, long userNo) throws Exception;
 
     List<Community> getMyCommunityList(long userNo);
+
+    List<Community> getPopularCommunityList();
 }

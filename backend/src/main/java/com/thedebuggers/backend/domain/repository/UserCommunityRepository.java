@@ -3,6 +3,7 @@ package com.thedebuggers.backend.domain.repository;
 import com.thedebuggers.backend.domain.entity.Community;
 import com.thedebuggers.backend.domain.entity.User;
 import com.thedebuggers.backend.domain.entity.UserCommunity;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -21,4 +22,7 @@ public interface UserCommunityRepository extends JpaRepository<UserCommunity, Lo
 
     @Query("select uc.community from UserCommunity  uc where uc.user.no = :userNo")
     List<Community> findAllCommunityByUserNo(long userNo);
+
+    @Query("select uc.community from UserCommunity uc group by uc.community order by count(uc.user) desc")
+    List<Community> findTop5Community(Pageable pageable);
 }
