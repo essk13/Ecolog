@@ -86,6 +86,27 @@ public class CommunityServiceImpl implements CommunityService{
     }
 
     @Override
+    public long getCommunityMemberCount(long communityNo) {
+
+        long userCount = userCommunityRepository.findCommunityCountByCommunityNo(communityNo);
+
+        return 0;
+    }
+
+    @Override
+    public boolean checkCommunityUser(long userNo, long communityNo) {
+
+        UserCommunity userCommunity = userCommunityRepository.findByCommunityNoAndUserNo(communityNo, userNo);
+
+        if (userCommunity != null) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    @Override
     public Community updateCommunity(long communityNo, User user, CommunityDto communityDto) {
         try {
             Community community = Community.builder()

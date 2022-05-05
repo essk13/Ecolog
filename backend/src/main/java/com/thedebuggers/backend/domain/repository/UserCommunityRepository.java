@@ -25,4 +25,9 @@ public interface UserCommunityRepository extends JpaRepository<UserCommunity, Lo
 
     @Query("select uc.community from UserCommunity uc group by uc.community order by count(uc.user) desc")
     List<Community> findTop5Community(Pageable pageable);
+
+    @Query("select count(uc.user) from UserCommunity uc where uc.community.no = :communityNo")
+    long findCommunityCountByCommunityNo(long communityNo);
+
+    UserCommunity findByCommunityNoAndUserNo(long communityNo, long userNo);
 }
