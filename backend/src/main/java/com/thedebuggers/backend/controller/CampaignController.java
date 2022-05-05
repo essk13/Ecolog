@@ -35,7 +35,8 @@ public class CampaignController {
             @ApiResponse(code = 500, message = "Server Error")
     })
     private ResponseEntity<?> registCampaign(
-            @RequestBody CampaignReqDto campaignReqDto,
+            @RequestPart(value = "campaign_info") CampaignReqDto campaignReqDto,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile,
             @PathVariable long communityNo,
             Authentication authentication
     ){
@@ -45,7 +46,7 @@ public class CampaignController {
         Campaign campaign = null;
 
         try {
-            campaign = campaignService.registCampaign(campaignReqDto, communityNo, user);
+            campaign = campaignService.registCampaign(campaignReqDto, communityNo, user, imageFile);
         }catch (Exception e) {
             return ResponseEntity.ok("Failed");
         }

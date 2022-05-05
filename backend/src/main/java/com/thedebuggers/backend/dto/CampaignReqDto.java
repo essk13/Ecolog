@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 public class CampaignReqDto {
     private String title;
     private String content;
-    private String image;
     private String location;
 
     private LocalDateTime start_date;

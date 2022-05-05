@@ -26,16 +26,22 @@ public class CampaignServiceImpl implements CampaignService{
     private final S3Service s3Service;
 
     @Override
-    public Campaign registCampaign(CampaignReqDto campaignReqDto, long communityNo, User user) throws Exception {
+    public Campaign registCampaign(CampaignReqDto campaignReqDto, long communityNo, User user, MultipartFile imageFile) throws Exception {
 
         Community community = communityService.getCommunity(communityNo);
 
         if (community == null) throw new Exception();
 
+        String imageUrl = null;
+
+        if (imageFile != null) {
+            imageUrl = s3Service.upload(imageFile);
+        }
+
         Campaign campaign = Campaign.builder()
                 .title(campaignReqDto.getTitle())
                 .content(campaignReqDto.getContent())
-                .image(campaignReqDto.getImage())
+                .image(imageUrl)
                 .start_date(campaignReqDto.getStart_date())
                 .end_date(campaignReqDto.getEnd_date())
                 .max_personnel(campaignReqDto.getMax_personnel())
