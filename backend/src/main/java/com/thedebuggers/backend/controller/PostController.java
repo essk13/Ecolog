@@ -137,7 +137,7 @@ public class PostController {
         ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
         long userNo = userDetails.getUser().getNo();
 
-        List<PostResDto> postList = postService.getMyPostListInCommunity(communityNo, userNo);;
+        List<PostResDto> postList = postService.getMyPostListInCommunity(communityNo, userNo);
 
         return ResponseEntity.ok(postList);
     }

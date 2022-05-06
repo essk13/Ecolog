@@ -1,10 +1,10 @@
 package com.thedebuggers.backend.controller;
 
 import com.thedebuggers.backend.auth.ELUserDetails;
-import com.thedebuggers.backend.domain.entity.Plogging;
 import com.thedebuggers.backend.domain.entity.User;
 import com.thedebuggers.backend.dto.PloggingReqDto;
 import com.thedebuggers.backend.dto.PloggingResDto;
+import com.thedebuggers.backend.dto.RankingResDto;
 import com.thedebuggers.backend.service.PloggingService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
@@ -64,5 +64,17 @@ public class PloggingController {
     private ResponseEntity<PloggingResDto> getPlogging(@PathVariable long ploggingNo) {
         PloggingResDto ploggingResDto = ploggingService.getPlogging(ploggingNo);
         return ResponseEntity.ok(ploggingResDto);
+    }
+
+    @GetMapping("/rank/time")
+    @ApiOperation(value = "플로깅 기간 별 랭킹")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Server Error")
+    })
+    private ResponseEntity<List<RankingResDto>> getRankingByTime(@ApiParam(value = "입력 키워드: all, month, week") @RequestParam String type) {
+        List<RankingResDto> rankingResDtoList = ploggingService.getRankingByTime(type);
+        return ResponseEntity.ok(rankingResDtoList);
     }
 }
