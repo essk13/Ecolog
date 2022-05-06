@@ -52,13 +52,14 @@ public class PostController {
             @ApiResponse(code = 500, message = "Server Error")
     })
     private ResponseEntity<List<PostResDto>> getPostList(
-            @ApiParam(value = "0 : 전체 커뮤니티의 공개 게시물, 1~ : 해당 커뮤니티의 전체 게시물", defaultValue = "1") @PathVariable long communityNo) {
+            @ApiParam(value = "0 : 전체 커뮤니티의 공개 게시물, 1~ : 해당 커뮤니티의 전체 게시물", defaultValue = "1") @PathVariable long communityNo,
+            @ApiParam(value = "입력 키워드: notice, free, campaign", defaultValue = "free") @RequestParam String type) {
         List<PostResDto> postList;
 
         if (communityNo == 0)
             postList = postService.getAllPost();
         else
-            postList = postService.getPostList(communityNo);;
+            postList = postService.getPostList(communityNo, type);
 
         return ResponseEntity.ok(postList);
     }

@@ -2,10 +2,7 @@ package com.thedebuggers.backend.service;
 
 import com.thedebuggers.backend.common.exception.CustomException;
 import com.thedebuggers.backend.common.util.ErrorCode;
-import com.thedebuggers.backend.domain.entity.Post;
-import com.thedebuggers.backend.domain.entity.PostLike;
-import com.thedebuggers.backend.domain.entity.User;
-import com.thedebuggers.backend.domain.entity.UserCommunity;
+import com.thedebuggers.backend.domain.entity.*;
 import com.thedebuggers.backend.domain.repository.*;
 import com.thedebuggers.backend.dto.PostReqDto;
 import com.thedebuggers.backend.dto.PostResDto;
@@ -49,6 +46,7 @@ public class PostServiceImpl implements PostService {
                 .image(imageUrl)
                 .createdAt(LocalDateTime.now())
                 .isOpen(postReqDto.isOpen())
+                .type(postReqDto.getType())
                 .community(communityRepository.findByNo(communityNo))
                 .user(user)
                 .build();
@@ -60,13 +58,28 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostResDto> getAllPost() {
-        List<PostResDto> postResDtoList = postRepository.findAllByIsOpenTrue().stream().map(PostResDto::of).collect(Collectors.toList());
+        List<PostResDto> postResDtoList = postRepository.findAllByTypeAndIsOpenTrue(PostType.CAMPAIGN.getValue()).stream().map(PostResDto::of).collect(Collectors.toList());
         return postResDtoList;
     }
 
     @Override
-    public List<PostResDto> getPostList(long communityNo) {
-        List<PostResDto> postResDtoList = postRepository.findAllByCommunityNo(communityNo).stream().map(PostResDto::of).collect(Collectors.toList());
+    public List<PostResDto> getPostList(long communityNo, String type) {
+        int typeNum = -1;
+        switch (type) {
+            case "notice":
+                typeNum = PostType.NOTICE.getValue();
+                break;
+            case "free":
+                typeNum = PostType.FREE.getValue();
+                break;
+            case "campaign":
+                typeNum = PostType.CAMPAIGN.getValue();
+                break;
+            default:
+                throw new CustomException(ErrorCode.BAD_REQUEST);
+        }
+
+        List<PostResDto> postResDtoList = postRepository.findAllByCommunityNoAndType(communityNo, typeNum).stream().map(PostResDto::of).collect(Collectors.toList());
         return postResDtoList;
     }
 

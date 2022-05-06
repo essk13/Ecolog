@@ -13,7 +13,7 @@ public interface PostService {
 
     List<PostResDto> getAllPost();
 
-    List<PostResDto> getPostList(long communityNo);
+    List<PostResDto> getPostList(long communityNo, String type);
 
     List<PostResDto> getMyPostList(long userNo);
 

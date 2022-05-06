@@ -27,6 +27,7 @@ public class Post {
     private LocalDateTime createdAt;
     private boolean isOpen;
     private long likeCount;
+    private int type;
 
     @ManyToOne
     @JoinColumn(name = "community_no")
