@@ -5,6 +5,7 @@ import lombok.*;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,15 +47,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     private LoginType loginType;
 
-    @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY)
-    private List<UserFollow> following;
-    @OneToMany(mappedBy = "followee", fetch = FetchType.LAZY)
-    private List<UserFollow> follower;
+    @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<UserFollow> following = new ArrayList<>();
+    @OneToMany(mappedBy = "followee", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<UserFollow> follower = new ArrayList<>();
 
-    public List<User> getFollowingUser(){
-        return this.following.stream().map(UserFollow::getFollowee).collect(Collectors.toList());
-    }
-    public List<User> getFollowerUser(){
-        return this.follower.stream().map(UserFollow::getFollower).collect(Collectors.toList());
-    }
+
 }

@@ -7,7 +7,9 @@ import com.thedebuggers.backend.domain.entity.User;
 import com.thedebuggers.backend.domain.entity.UserFollow;
 import com.thedebuggers.backend.domain.repository.UserFollowRepository;
 import com.thedebuggers.backend.domain.repository.UserRepository;
+import com.thedebuggers.backend.dto.FollowUserResDto;
 import com.thedebuggers.backend.dto.LoginReqDto;
+import com.thedebuggers.backend.dto.ProfileResDto;
 import com.thedebuggers.backend.dto.UserUpdateReqDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -50,6 +54,51 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserByUserNo(Long userNo) {
         return userRepository.findByNo(userNo).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+    }
+
+    @Override
+    public ProfileResDto getUserProfile(long requestUserNo, long userNo) {
+        User profileUser = getUserByUserNo(userNo);
+        User requestUser = getUserByUserNo(requestUserNo);
+
+        List<User> profileUserFollowing = followRepository.findAllFolloweeByFollower(profileUser);
+        List<User> profileUserFollower = followRepository.findAllFollowerByFollowee(profileUser);
+
+        List<User> requestUserFollowing = followRepository.findAllFolloweeByFollower(requestUser);
+
+        List<FollowUserResDto> followingUserResDtoList
+                = profileUserFollowing.stream().map(user -> FollowUserResDto.builder()
+                        .no(user.getNo())
+                        .email(user.getEmail())
+                        .name(user.getName())
+                        .nickname(user.getNickname())
+                        .birth(user.getBirth())
+                        .image(user.getImage())
+                        .isFollowing(requestUserFollowing.contains(user))
+                        .build()).collect(Collectors.toList());
+
+        List<FollowUserResDto> followerUserResDtoList
+                = profileUserFollower.stream().map(user -> FollowUserResDto.builder()
+                .no(user.getNo())
+                .email(user.getEmail())
+                .name(user.getName())
+                .nickname(user.getNickname())
+                .birth(user.getBirth())
+                .image(user.getImage())
+                .isFollowing(requestUserFollowing.contains(user))
+                .build()).collect(Collectors.toList());
+
+        return ProfileResDto.builder()
+                .no(profileUser.getNo())
+                .email(profileUser.getEmail())
+                .name(profileUser.getName())
+                .nickname(profileUser.getNickname())
+                .birth(profileUser.getBirth())
+                .image(profileUser.getImage())
+                .isFollowing(requestUserFollowing.contains(profileUser))
+                .followingUser(followingUserResDtoList)
+                .followerUser(followerUserResDtoList)
+                .build();
     }
 
     @Override
@@ -93,15 +142,23 @@ public class UserServiceImpl implements UserService {
         User follower = userRepository.findByNo(followerNo).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
         User followee = userRepository.findByNo(followeeNo).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
 
-        Optional<UserFollow> savedFollowInfo = followRepository.findByFollowerAndFollowee(follower, followee);
+        Optional<UserFollow> optionalSavedFollowInfo = followRepository.findByFollowerAndFollowee(follower, followee);
 
-        if (savedFollowInfo.isPresent()) {
-            followRepository.delete(savedFollowInfo.get());
+        if (optionalSavedFollowInfo.isPresent()) {
+            UserFollow savedFollowInfo = optionalSavedFollowInfo.get();
+
+            follower.getFollowing().remove(savedFollowInfo);
+            followee.getFollower().remove(savedFollowInfo);
+
+            followRepository.delete(savedFollowInfo);
         } else {
             UserFollow newFollowInfo = UserFollow.builder()
                     .follower(follower)
                     .followee(followee)
                     .build();
+
+            follower.getFollowing().add(newFollowInfo);
+            followee.getFollower().add(newFollowInfo);
 
             followRepository.save(newFollowInfo);
         }

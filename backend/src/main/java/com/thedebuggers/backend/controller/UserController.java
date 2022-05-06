@@ -40,7 +40,7 @@ public class UserController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Server Error")
     })
-    private ResponseEntity<MyInfoResDto> myInfo(Authentication authentication) {
+    private ResponseEntity<MyInfoResDto> myInfo(@ApiIgnore Authentication authentication) {
 
         ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
         User user = userDetails.getUser();
@@ -59,10 +59,9 @@ public class UserController {
         ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
         long requestUserNo = userDetails.getUser().getNo();
 
-        User requestUser = userService.getUserByUserNo(requestUserNo);
-        User user = userService.getUserByUserNo(userNo);
+        ProfileResDto profileResDto = userService.getUserProfile(requestUserNo, userNo);
 
-        return ResponseEntity.ok(ProfileResDto.of(user, requestUser));
+        return ResponseEntity.ok(profileResDto);
     }
 
     @GetMapping("/{userNo}/post")
@@ -104,7 +103,7 @@ public class UserController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Server Error")
     })
-    private ResponseEntity<?> delete(Authentication authentication) {
+    private ResponseEntity<?> delete(@ApiIgnore Authentication authentication) {
 
         ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
         User user = userDetails.getUser();

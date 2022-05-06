@@ -25,17 +25,4 @@ public class ProfileResDto extends BaseUserInfoResDto{
     private List<FollowUserResDto> followingUser;
     private List<FollowUserResDto> followerUser;
 
-    public static ProfileResDto of(User user, User requestUser){
-        return ProfileResDto.builder()
-                .no(user.getNo())
-                .email(user.getEmail())
-                .name(user.getName())
-                .nickname(user.getNickname())
-                .birth(user.getBirth())
-                .image(user.getImage())
-                .isFollowing(requestUser.getFollowingUser().contains(user))
-                .followingUser(user.getFollowingUser().stream().map(u -> FollowUserResDto.of(u, requestUser)).collect(Collectors.toList()))
-                .followerUser(user.getFollowerUser().stream().map(u -> FollowUserResDto.of(u, requestUser)).collect(Collectors.toList()))
-                .build();
-    }
 }
