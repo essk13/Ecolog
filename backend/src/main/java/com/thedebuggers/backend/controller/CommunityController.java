@@ -6,6 +6,7 @@ import com.thedebuggers.backend.domain.entity.User;
 import com.thedebuggers.backend.dto.CommunityDto;
 import com.thedebuggers.backend.dto.CommunityResDto;
 import com.thedebuggers.backend.dto.BaseUserInfoResDto;
+import com.thedebuggers.backend.dto.PostReqDto;
 import com.thedebuggers.backend.service.CommunityService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
@@ -61,14 +63,15 @@ public class CommunityController {
             @ApiResponse(code = 500, message = "Server Error")
     })
     private ResponseEntity<CommunityResDto> registCommunity(
-            @RequestBody CommunityDto communityDto,
+            @RequestPart(value = "community_info") CommunityDto communityDto,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile,
             Authentication authentication
     ){
         ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
         User user = userDetails.getUser();
         long userNo = user.getNo();
 
-        Community community = communityService.registCommunity(communityDto, userNo);
+        Community community = communityService.registCommunity(communityDto, userNo, imageFile);
         long userCount = communityService.getCommunityMemberCount(community.getNo());
         boolean is_join = communityService.checkCommunityUser(userNo, community.getNo());
 
@@ -129,13 +132,14 @@ public class CommunityController {
     })
     private ResponseEntity<CommunityResDto> updateCommunity(
         @ApiParam("커뮤니티 번호") @PathVariable long communityNo,
-        @RequestBody CommunityDto communityDto,
+        @RequestPart(value = "community_info") CommunityDto communityDto,
+        @RequestPart(value = "image", required = false) MultipartFile imageFile,
         Authentication authentication
     ){
         ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
         User user = userDetails.getUser();
 
-        Community community = communityService.updateCommunity(communityNo, user, communityDto);
+        Community community = communityService.updateCommunity(communityNo, user, communityDto, imageFile);
         long userCount = communityService.getCommunityMemberCount(community.getNo());
         boolean is_join = communityService.checkCommunityUser(user.getNo(), community.getNo());
 

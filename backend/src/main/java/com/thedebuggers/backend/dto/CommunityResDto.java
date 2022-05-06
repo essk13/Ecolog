@@ -1,5 +1,7 @@
 package com.thedebuggers.backend.dto;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.thedebuggers.backend.domain.entity.Community;
 import lombok.*;
 
@@ -8,6 +10,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class CommunityResDto {
     private long no;
     private String title;
@@ -18,8 +21,8 @@ public class CommunityResDto {
     private String sigungu;
     private String tag;
 
-    private long join_count;
-    private boolean is_join;
+    private long joinCount;
+    private boolean isJoin;
 
     public static CommunityResDto of(Community community, long userCount, boolean is_join) {
         return CommunityResDto.builder()
@@ -31,8 +34,8 @@ public class CommunityResDto {
                 .sido(community.getSido())
                 .sigungu(community.getSigungu())
                 .tag(community.getTag())
-                .join_count(userCount)
-                .is_join(is_join)
+                .joinCount(userCount)
+                .isJoin(is_join)
                 .build();
     }
 }

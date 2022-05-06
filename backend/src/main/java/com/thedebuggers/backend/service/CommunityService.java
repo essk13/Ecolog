@@ -3,6 +3,7 @@ package com.thedebuggers.backend.service;
 import com.thedebuggers.backend.domain.entity.Community;
 import com.thedebuggers.backend.domain.entity.User;
 import com.thedebuggers.backend.dto.CommunityDto;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -11,13 +12,13 @@ public interface CommunityService {
 
     Community getCommunity(long no);
 
-    Community registCommunity(CommunityDto communityResDto, long userNo);
+    Community registCommunity(CommunityDto communityResDto, long userNo, MultipartFile imageFile);
 
     Community joinCommunity(long no, User user);
 
     List<User> getCommunityMember(long no);
 
-    Community updateCommunity(long communityNo, User user, CommunityDto communityDto);
+    Community updateCommunity(long communityNo, User user, CommunityDto communityDto, MultipartFile imageFile);
 
     void deleteCommunity(long communityNo, User user) throws Exception;
 

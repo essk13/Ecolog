@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class CommunityServiceImpl implements CommunityService{
     private final CommunityRepository communityRepository;
     private final UserRepository userRepository;
     private final UserCommunityRepository userCommunityRepository;
+    private final S3Service s3Service;
 
     @Override
     public List<Community> getCommunityList() {
@@ -37,13 +39,18 @@ public class CommunityServiceImpl implements CommunityService{
     }
 
     @Override
-    public Community registCommunity(CommunityDto communityDto, long userNo) {
+    public Community registCommunity(CommunityDto communityDto, long userNo, MultipartFile imageFile) {
 //        User user = userRepository.findByNo(userNo).orElseThrow(new CustomException(ErrorCode.NOT_FOUND));
+
+        String imageUrl = null;
+        if (imageFile != null) {
+            imageUrl = s3Service.upload(imageFile);
+        }
 
         Community community = Community.builder()
                 .title(communityDto.getTitle())
                 .description(communityDto.getDescription())
-                .image(communityDto.getImage())
+                .image(imageUrl)
                 .manager(userRepository.findByNo(userNo).orElse(null))
                 .sido(communityDto.getSido())
                 .sigungu(communityDto.getSigungu())
@@ -90,7 +97,7 @@ public class CommunityServiceImpl implements CommunityService{
 
         long userCount = userCommunityRepository.findCommunityCountByCommunityNo(communityNo);
 
-        return 0;
+        return userCount;
     }
 
     @Override
@@ -107,12 +114,18 @@ public class CommunityServiceImpl implements CommunityService{
     }
 
     @Override
-    public Community updateCommunity(long communityNo, User user, CommunityDto communityDto) {
+    public Community updateCommunity(long communityNo, User user, CommunityDto communityDto, MultipartFile imageFile) {
+
+        String imageUrl = null;
+        if (imageFile != null) {
+            imageUrl = s3Service.upload(imageFile);
+        }
+
         try {
             Community community = Community.builder()
                     .title(communityDto.getTitle())
                     .description(communityDto.getDescription())
-                    .image(communityDto.getImage())
+                    .image(imageUrl)
                     .manager(userRepository.findByNo(communityDto.getUserNo()).orElse(null))
                     .sido(communityDto.getSido())
                     .sigungu(communityDto.getSigungu())
