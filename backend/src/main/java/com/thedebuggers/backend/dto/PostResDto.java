@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class PostResDto {
     private long no;
+    private long communityNo;
     private String title;
     private String content;
     private String image;
@@ -26,6 +27,7 @@ public class PostResDto {
     public static PostResDto of(Post post) {
         return PostResDto.builder()
                 .no(post.getNo())
+                .communityNo(post.getCommunity().getNo())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .image(post.getImage())
