@@ -7,6 +7,8 @@ import {useMutation} from 'react-query';
 import {User} from '../../../api/user';
 // Components
 import UserInfoText from './UserInfoText';
+import {useNavigation} from '@react-navigation/native';
+import {RootStackNavigationProp} from '../../../screens/types';
 
 const styles = (direction?: any, padding?: number) =>
   StyleSheet.create({
@@ -58,10 +60,9 @@ const fontStyles = (size?: number, weight?: any) =>
 
 interface UserInfoProps {
   user: User | null;
-  navigation: any;
 }
 
-function UserInfo({user, navigation}: UserInfoProps) {
+function UserInfo({user}: UserInfoProps) {
   const {mutate: userLogout, isLoading} = useMutation(logout, {
     onSuccess: () => {
       AsyncStorage.removeItem('accessToken');
@@ -69,6 +70,7 @@ function UserInfo({user, navigation}: UserInfoProps) {
       AsyncStorage.removeItem('persist:root');
     },
   });
+  const navigation = useNavigation<RootStackNavigationProp>();
 
   function googleLogout() {
     auth().signOut();
@@ -81,7 +83,7 @@ function UserInfo({user, navigation}: UserInfoProps) {
         <Image
           style={styles().profileImg}
           source={{
-            uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSb-C1FL7xV2Rka1wtiAck-IYVmP9o1pRRdB45S2rGP-WnRDvEY_SMM1ZuiCRjkNkTFCEw&usqp=CAU',
+            uri: user?.image,
           }}
         />
         <View>

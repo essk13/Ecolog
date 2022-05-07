@@ -14,7 +14,7 @@ const styles = (color?: any) =>
     },
   });
 
-function UserScreen({navigation}: any) {
+function UserScreen() {
   const myInfo = useSelector((state: RootState) => state.user.user);
   const ploggingList = useSelector(
     (state: RootState) => state.plogging.ploggingList,
@@ -22,7 +22,7 @@ function UserScreen({navigation}: any) {
 
   return (
     <View style={styles('#5FA2E5').background}>
-      <UserInfo user={myInfo.data} navigation={navigation} />
+      <UserInfo user={myInfo.data} />
       <UserTabScreen ploggingList={ploggingList.data} />
     </View>
   );

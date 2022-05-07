@@ -1,6 +1,8 @@
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
+import {RootStackNavigationProp} from '../../../screens/types';
 
 const styles = (
   width?: any,
@@ -29,7 +31,9 @@ const fontStyles = (size?: number, weight?: any, color?: string) =>
     },
   });
 
-function UserEditHeader({navigation}: any) {
+function UserEditHeader() {
+  const navigation = useNavigation<RootStackNavigationProp>();
+
   return (
     <View style={styles('100%', 60, null, null, 'row').container}>
       <View style={styles('16%', '100%', 'center', 'center').container}>

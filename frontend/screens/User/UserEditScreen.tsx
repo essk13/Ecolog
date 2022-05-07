@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
+import React, {Dispatch, useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,12 +7,29 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  ScrollView,
+  Alert,
 } from 'react-native';
+import {
+  CameraOptions,
+  ImagePickerResponse,
+  launchImageLibrary,
+} from 'react-native-image-picker';
+import {useMutation} from 'react-query';
+import {useSelector} from 'react-redux';
+import {editUserInfo, EditUserInfo} from '../../api/user';
+import {RootState} from '../../modules';
+import {RootStackNavigationProp} from '../types';
 // Components
 import UserEditHeader from '../../components/User/UserEdit/UserEditHeader';
+import {useDispatch} from 'react-redux';
+import {userActions} from '../../modules/user';
 
 const styles = () =>
   StyleSheet.create({
+    scrollContainer: {
+      width: '100%',
+    },
     mainContainer: {
       width: '100%',
       height: '100%',
@@ -141,10 +159,15 @@ const fontStyles = (size?: number, weight?: any, color?: string) =>
     },
   });
 
-function NicknameEdit({userInfo, setUserInfo}: any) {
+interface NicknameEditProps {
+  userInfo: EditUserInfo;
+  setUserInfo: Dispatch<EditUserInfo>;
+}
+
+function NicknameEdit({userInfo, setUserInfo}: NicknameEditProps) {
   return (
     <View style={styles().nicknameContainer}>
-      <Text>닉네임</Text>
+      <Text>닉네임 (필수)</Text>
       <TextInput
         placeholder="닉네임을 입력하세요."
         style={styles().nicknameInput}
@@ -158,12 +181,12 @@ function NicknameEdit({userInfo, setUserInfo}: any) {
   );
 }
 
-function EditButton({navigation}: any) {
+function EditButton({onClick}: any) {
   return (
     <TouchableOpacity
       activeOpacity={0.7}
       style={styles().buttonContainer}
-      onPress={() => navigation.pop()}>
+      onPress={onClick}>
       <View style={styles().button}>
         <Text style={fontStyles(20, 'bold', '#ffffff').normalText}>완료</Text>
       </View>
@@ -171,127 +194,193 @@ function EditButton({navigation}: any) {
   );
 }
 
-interface UserEditScreenProps {
-  navigation: any;
-}
-
-function UserEditScreen({navigation}: UserEditScreenProps) {
-  const [userInfo, setUserInfo] = useState({
-    nickname: 'nickname',
-    name: '이수환',
-    birth: '1821년 15월 32일',
-    height: '70',
-    weight: '180',
-    phone: '011-123-4567',
-    address: '뉴욕시 강남구 진평동',
+function UserEditScreen() {
+  const myInfo = useSelector((state: RootState) => state.user.user);
+  const dispatch = useDispatch();
+  const [profileImgUri, setProfileImgUri] = useState<string>(
+    'https://ecolog-bucket.s3.ap-northeast-2.amazonaws.com/Ecolog_file_default_profile.jpg',
+  );
+  const [userInfo, setUserInfo] = useState<EditUserInfo>({
+    nickname: '',
+    name: '',
+    birth: '',
+    height: 0,
+    weight: 0,
+    phone: '',
+    address: '',
   });
+  const {mutate: editUser, isLoading} = useMutation(editUserInfo, {
+    onSuccess: () => {
+      dispatch(userActions.getMyInfoAsync.request(null));
+      navigation.pop();
+    },
+    onError: error => {
+      console.error(error);
+    },
+  });
+  const navigation = useNavigation<RootStackNavigationProp>();
+
+  useEffect(() => {
+    if (myInfo.data) {
+      setProfileImgUri(myInfo.data.image);
+      setUserInfo({
+        nickname: myInfo.data.nickname,
+        name: myInfo.data.name,
+        birth: myInfo.data.birth,
+        height: myInfo.data.height,
+        weight: myInfo.data.weight,
+        phone: myInfo.data.phone,
+        address: myInfo.data.address,
+      });
+    }
+  }, [myInfo]);
+
+  const imagePickerOption: CameraOptions = {
+    mediaType: 'photo',
+    maxWidth: 768,
+    maxHeight: 768,
+  };
+
+  const onPickImage = async (res: ImagePickerResponse) => {
+    if (res.didCancel || !res) {
+      return;
+    }
+    if (res.assets && res.assets[0].uri) {
+      setProfileImgUri(res.assets[0].uri);
+    }
+  };
+
+  const onClickEditButton = () => {
+    if (userInfo.nickname !== '' && userInfo.name !== '') {
+      const userImgData = {
+        name: profileImgUri.split('/').pop(),
+        type: 'image/jpeg',
+        uri: profileImgUri,
+      };
+      editUser({userImgData: userImgData, editUserInfo: userInfo});
+    } else {
+      Alert.alert('닉네임과 이름은 필수입니다!');
+    }
+  };
 
   return (
     <View style={styles().mainContainer}>
-      <UserEditHeader navigation={navigation} />
-      <View style={styles().imageContainer}>
-        <Image
-          style={styles().profileImg}
-          resizeMode="cover"
-          source={{
-            uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSb-C1FL7xV2Rka1wtiAck-IYVmP9o1pRRdB45S2rGP-WnRDvEY_SMM1ZuiCRjkNkTFCEw&usqp=CAU',
-          }}
-        />
-        <View style={styles().imageEditMask}>
-          <Text style={fontStyles(12, 'normal', '#ffffff').normalText}>
-            편집
-          </Text>
-        </View>
-      </View>
-      <NicknameEdit userInfo={userInfo} setUserInfo={setUserInfo} />
-      <View style={styles().infoContainer}>
-        <View style={styles().infoTitleContainer}>
-          <Text style={fontStyles(15, 'bold', '#ffffff').normalText}>
-            내 정보
-          </Text>
-        </View>
-        <View style={styles().infoEditContainer}>
-          <Text style={fontStyles(12).editTitle}>이름</Text>
-          <TextInput
-            placeholder="이름을 입력하세요."
-            style={styles().infoInput}
-            value={userInfo.name}
-            onChangeText={(text: string) =>
-              setUserInfo({...userInfo, name: text})
-            }
-            returnKeyType="done"
+      <UserEditHeader />
+      <ScrollView contentContainerStyle={{flexGrow: 1, alignItems: 'center'}}>
+        <TouchableOpacity
+          style={styles().imageContainer}
+          onPress={() => launchImageLibrary(imagePickerOption, onPickImage)}>
+          <Image
+            style={styles().profileImg}
+            resizeMode="cover"
+            source={{
+              uri: profileImgUri,
+            }}
           />
-        </View>
-        <View style={styles().infoEditContainer}>
-          <Text style={fontStyles(12).editTitle}>생년월일</Text>
-          <TextInput
-            placeholder="생년월일을 입력하세요."
-            style={styles().infoInput}
-            value={userInfo.birth}
-            onChangeText={(text: string) =>
-              setUserInfo({...userInfo, birth: text})
-            }
-            returnKeyType="done"
-          />
-        </View>
-        <View style={styles().statusEditContainer}>
-          <View style={styles().heightEditContainer}>
-            <Text style={fontStyles(12).editTitle}>키</Text>
-            <View style={styles().statusInputContainer}>
-              <TextInput
-                placeholder="키를 입력하세요."
-                style={styles().statusInput}
-                value={userInfo.height}
-                onChangeText={(text: string) =>
-                  setUserInfo({...userInfo, height: text})
-                }
-                returnKeyType="done"
-              />
-              <Text style={fontStyles().unit}>cm</Text>
+          <View style={styles().imageEditMask}>
+            <Text style={fontStyles(12, 'normal', '#ffffff').normalText}>
+              편집
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <NicknameEdit userInfo={userInfo} setUserInfo={setUserInfo} />
+        <View style={styles().infoContainer}>
+          <View style={styles().infoTitleContainer}>
+            <Text style={fontStyles(15, 'bold', '#ffffff').normalText}>
+              내 정보
+            </Text>
+          </View>
+          <View style={styles().infoEditContainer}>
+            <Text style={fontStyles(12).editTitle}>이름 (필수)</Text>
+            <TextInput
+              placeholder="이름을 입력하세요."
+              style={styles().infoInput}
+              value={userInfo.name}
+              onChangeText={(text: string) =>
+                setUserInfo({...userInfo, name: text})
+              }
+              returnKeyType="done"
+            />
+          </View>
+          <View style={styles().infoEditContainer}>
+            <Text style={fontStyles(12).editTitle}>생년월일</Text>
+            <TextInput
+              placeholder="생년월일을 입력하세요."
+              style={styles().infoInput}
+              value={userInfo.birth}
+              onChangeText={(text: string) =>
+                setUserInfo({...userInfo, birth: text})
+              }
+              returnKeyType="done"
+            />
+          </View>
+          <View style={styles().statusEditContainer}>
+            <View style={styles().heightEditContainer}>
+              <Text style={fontStyles(12).editTitle}>키</Text>
+              <View style={styles().statusInputContainer}>
+                <TextInput
+                  placeholder="키를 입력하세요."
+                  style={styles().statusInput}
+                  keyboardType="numeric"
+                  value={String(userInfo.height)}
+                  onChangeText={(text: string) =>
+                    setUserInfo({
+                      ...userInfo,
+                      height: Number(text.replace(/[^0-9]/g, '')),
+                    })
+                  }
+                  returnKeyType="done"
+                />
+                <Text style={fontStyles().unit}>cm</Text>
+              </View>
+            </View>
+            <View style={styles().weightEditContainer}>
+              <Text style={fontStyles(12).editTitle}>몸무게</Text>
+              <View style={styles().statusInputContainer}>
+                <TextInput
+                  placeholder="몸무게를 입력하세요."
+                  style={styles().statusInput}
+                  keyboardType="numeric"
+                  value={String(userInfo.weight)}
+                  onChangeText={(text: string) =>
+                    setUserInfo({
+                      ...userInfo,
+                      weight: Number(text.replace(/[^0-9]/g, '')),
+                    })
+                  }
+                  returnKeyType="done"
+                />
+                <Text style={fontStyles().unit}>kg</Text>
+              </View>
             </View>
           </View>
-          <View style={styles().weightEditContainer}>
-            <Text style={fontStyles(12).editTitle}>몸무게</Text>
-            <View style={styles().statusInputContainer}>
-              <TextInput
-                placeholder="몸무게를 입력하세요."
-                style={styles().statusInput}
-                value={userInfo.weight}
-                onChangeText={(text: string) =>
-                  setUserInfo({...userInfo, weight: text})
-                }
-                returnKeyType="done"
-              />
-              <Text style={fontStyles().unit}>kg</Text>
-            </View>
+          <View style={styles().infoEditContainer}>
+            <Text style={fontStyles(12).editTitle}>연락처</Text>
+            <TextInput
+              placeholder="연락처를 입력하세요."
+              style={styles().infoInput}
+              value={userInfo.phone}
+              onChangeText={(text: string) =>
+                setUserInfo({...userInfo, phone: text})
+              }
+              returnKeyType="done"
+            />
+          </View>
+          <View style={styles().infoEditContainer}>
+            <Text style={fontStyles(12).editTitle}>주소지</Text>
+            <TextInput
+              placeholder="주소지를 입력하세요."
+              style={styles().infoInput}
+              value={userInfo.address}
+              onChangeText={(text: string) =>
+                setUserInfo({...userInfo, address: text})
+              }
+              returnKeyType="done"
+            />
           </View>
         </View>
-        <View style={styles().infoEditContainer}>
-          <Text style={fontStyles(12).editTitle}>연락처</Text>
-          <TextInput
-            placeholder="연락처를 입력하세요."
-            style={styles().infoInput}
-            value={userInfo.phone}
-            onChangeText={(text: string) =>
-              setUserInfo({...userInfo, phone: text})
-            }
-            returnKeyType="done"
-          />
-        </View>
-        <View style={styles().infoEditContainer}>
-          <Text style={fontStyles(12).editTitle}>주소지</Text>
-          <TextInput
-            placeholder="주소지를 입력하세요."
-            style={styles().infoInput}
-            value={userInfo.address}
-            onChangeText={(text: string) =>
-              setUserInfo({...userInfo, address: text})
-            }
-            returnKeyType="done"
-          />
-        </View>
-      </View>
-      <EditButton navigation={navigation} />
+        <EditButton onClick={onClickEditButton} />
+      </ScrollView>
     </View>
   );
 }

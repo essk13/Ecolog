@@ -1,12 +1,14 @@
 import React from 'react';
-import {View, Image, StyleSheet} from 'react-native';
+import {Image, TouchableOpacity, StyleSheet} from 'react-native';
+import {UserPost} from '../../../../api/user';
+import {useNavigation} from '@react-navigation/native';
+import {RootStackNavigationProp} from '../../../../screens/types';
 
 const styles = () =>
   StyleSheet.create({
     itemContainer: {
-      width: '32.5%',
-      marginBottom: '1%',
-      borderColor: '#000',
+      width: '33.3%',
+      borderColor: '#ffffff',
       borderWidth: 0.5,
     },
     img: {
@@ -15,17 +17,25 @@ const styles = () =>
     },
   });
 
-function UserCampaignItem(notUse: any) {
+interface UserCampaignItemProps {
+  userPost: UserPost;
+}
+
+function UserCampaignItem({userPost}: UserCampaignItemProps) {
+  const navigation = useNavigation<RootStackNavigationProp>();
+
   return (
-    <View style={styles().itemContainer}>
+    <TouchableOpacity
+      style={styles().itemContainer}
+      onPress={() => console.log(userPost.no)}>
       <Image
-        key={notUse}
+        key={userPost.no}
         style={styles().img}
         source={{
-          uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSb-C1FL7xV2Rka1wtiAck-IYVmP9o1pRRdB45S2rGP-WnRDvEY_SMM1ZuiCRjkNkTFCEw&usqp=CAU',
+          uri: userPost.image,
         }}
       />
-    </View>
+    </TouchableOpacity>
   );
 }
 
