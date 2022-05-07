@@ -27,6 +27,7 @@ function CommunityMy() {
     <FlatList
       style={styles.myListContainer}
       data={communityListData}
+      showsVerticalScrollIndicator={false}
       renderItem={({item}: any) => <CommunityMyItem community={item} />}
     />
   );

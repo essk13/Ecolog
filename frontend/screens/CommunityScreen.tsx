@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Text,
-  TextInput,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import {Text, View, StyleSheet, TextInput} from 'react-native';
 import CommunityTab from '../components/Community/MainTab/CommunityTab';
 
 const styles = StyleSheet.create({
@@ -22,7 +16,6 @@ const styles = StyleSheet.create({
   topInput: {
     backgroundColor: 'white',
     width: '100%',
-    height: '50%',
   },
   topTitle: {
     color: '#ffffff',
@@ -33,13 +26,27 @@ const styles = StyleSheet.create({
 });
 
 function CommunityScreen() {
+  const [keyword, setKeyword] = React.useState<string>('');
+  const [inputData, setInputData] = React.useState<string>('');
+  const keySubmit = () => {
+    setKeyword(inputData);
+    setInputData('');
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.topMenu}>
         <Text style={styles.topTitle}>커뮤니티</Text>
-        <TextInput style={styles.topInput} />
+        <TextInput
+          placeholder="검색"
+          onChangeText={setInputData}
+          value={inputData}
+          style={styles.topInput}
+          clearTextOnFocus={true}
+          onSubmitEditing={keySubmit}
+        />
       </View>
-      <CommunityTab />
+      <CommunityTab keyword={keyword} />
     </View>
   );
 }

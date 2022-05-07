@@ -13,8 +13,12 @@ const Styles = StyleSheet.create({
   },
 });
 
-function CommunityTab() {
-  const FirstRoute = () => <CommunityMain />;
+interface KeywordProps {
+  keyword: string;
+}
+
+function CommunityTab({keyword}: KeywordProps) {
+  const FirstRoute = () => <CommunityMain keyword={keyword} />;
   const SecondRoute = () => <CommunityMy />;
   const ThirdRoute = () => <CommunityFeed />;
 
