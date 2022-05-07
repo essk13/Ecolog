@@ -35,7 +35,7 @@ public class MyInfoResDto {
                 .nickname(user.getNickname())
                 .birth(user.getBirth())
                 .height(user.getHeight())
-                .weight(user.getHeight())
+                .weight(user.getWeight())
                 .phone(user.getPhone())
                 .image(user.getImage())
                 .address(user.getAddress())
