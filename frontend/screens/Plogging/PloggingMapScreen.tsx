@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Text, View, TouchableHighlight, StyleSheet} from 'react-native';
 import {
   launchCamera,
@@ -7,6 +7,13 @@ import {
 } from 'react-native-image-picker';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import Geolocation from 'react-native-geolocation-service';
+import {savePlogging} from '../../api/plogging';
+import {useMutation, useQueryClient} from 'react-query';
+import ViewShot from 'react-native-view-shot';
+import {useDispatch} from 'react-redux';
+import {ploggingActions} from '../../modules/plogging';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../modules';
 
 MapboxGL.setAccessToken(
   'pk.eyJ1IjoiaGF1bCIsImEiOiJjbDI5cTV2NzMwMW9kM2JvYjF0c29sb2hkIn0.jcIu6fuVVbuJPVGaunycOw',
@@ -69,16 +76,14 @@ const fontStyles = (size?: number, weight?: any, align?: any, color?: any) =>
     },
   });
 
-const imagePickerOption: CameraOptions = {
-  mediaType: 'photo',
-  maxWidth: 768,
-  maxHeight: 768,
-  // includeBase64: Platform.OS === 'android',
-};
-
 function PloggingMapScreen({navigation}: any) {
   // 사용자 위치 트래킹 정보
-  const [coordinates, setCoordinates] = useState([128, 36]);
+  const [coordinates, setCoordinates] = useState<number[]>([128, 36]);
+  const [centerCoordinates, setCenterCoordinates] = useState<number[]>([
+    128, 36,
+  ]);
+  const [isInit, setIsInit] = useState<Boolean>(false);
+  const [zoomLevel, setZoomLevel] = useState<number>(17);
   const [route, setRoute] = useState<{
     type: string;
     features: {
@@ -170,7 +175,33 @@ function PloggingMapScreen({navigation}: any) {
         newPosition[0],
         newPosition[1],
       );
-      setDistance(d => d + round(distance));
+      setDistance(d => round(d + round(distance)));
+    }
+  }, [route.features[0].geometry.coordinates.length]);
+
+  useEffect(() => {
+    if (isInit) {
+      setCenterCoordinates(coordinates);
+      const newRoute = route;
+      // Route가 없는 경우
+      if (route.features[0].geometry.coordinates.length === 0) {
+        newRoute.features[0].geometry.coordinates.push(coordinates);
+        setRoute(newRoute);
+      }
+      // Route 가 존재하는 경우
+      else {
+        const lastPostion =
+          route.features[0].geometry.coordinates[
+            route.features[0].geometry.coordinates.length - 1
+          ];
+        if (
+          lastPostion[0] !== coordinates[0] &&
+          lastPostion[1] !== coordinates[1]
+        ) {
+          newRoute.features[0].geometry.coordinates.push(coordinates);
+          setRoute(newRoute);
+        }
+      }
     }
   }, [coordinates]);
 
@@ -188,7 +219,17 @@ function PloggingMapScreen({navigation}: any) {
 
   // 위치 감지
   useEffect(() => {
-    updateLocation();
+    Geolocation.getCurrentPosition(
+      position => {
+        setIsInit(true);
+        setCoordinates([position.coords.longitude, position.coords.latitude]);
+        updateLocation();
+      },
+      error => {
+        console.error(error.code, error.message);
+      },
+      {enableHighAccuracy: true, timeout: 10000},
+    );
   }, []);
 
   // Set && Update Location (GPS)
@@ -197,58 +238,121 @@ function PloggingMapScreen({navigation}: any) {
       position => {
         // See My Location
         setCoordinates([position.coords.longitude, position.coords.latitude]);
-        const newRoute = route;
-        // Route가 없는 경우
-        if (route.features[0].geometry.coordinates.length === 0) {
-          newRoute.features[0].geometry.coordinates.push([
-            position.coords.longitude,
-            position.coords.latitude,
-          ]);
-          setRoute(newRoute);
-        }
-        // Route 가 존재하는 경우
-        else {
-          const lastPostion =
-            route.features[0].geometry.coordinates[
-              route.features[0].geometry.coordinates.length - 1
-            ];
-          if (
-            lastPostion[0] !== position.coords.longitude &&
-            lastPostion[1] !== position.coords.latitude
-          ) {
-            newRoute.features[0].geometry.coordinates.push([
-              position.coords.longitude,
-              position.coords.latitude,
-            ]);
-            setRoute(newRoute);
-          }
-        }
       },
       error => {
         // See error code charts below.
-        console.log(error.code, error.message);
+        console.error(error.code, error.message);
       },
-      {enableHighAccuracy: true, interval: 1000, distanceFilter: 5},
+      {enableHighAccuracy: true, interval: 3000, distanceFilter: 5},
     );
   };
 
-  const onPickImage = (res: ImagePickerResponse) => {
-    if (res.didCancel || !res) {
-      return;
-    }
-    console.log(res);
-    navigation.navigate('PloggingResult', {res});
+  // 인증 사진 촬영
+  const user = useSelector((state: RootState) => state.user.user);
+  const dispatch = useDispatch();
+  const {mutate: save, isLoading} = useMutation(savePlogging, {
+    onSuccess: data => {
+      if (user.data) {
+        dispatch(ploggingActions.getPloggingListAsync.request(user.data?.no));
+      }
+      navigation.navigate('PloggingResult', {id: data.no});
+    },
+    onError: error => {
+      console.error(error);
+    },
+  });
+
+  const imagePickerOption: CameraOptions = {
+    mediaType: 'photo',
+    maxWidth: 768,
+    maxHeight: 768,
   };
 
   const onLaunchCamera = () => {
     launchCamera(imagePickerOption, onPickImage);
   };
 
+  const onPickImage = async (res: ImagePickerResponse) => {
+    if (res.didCancel || !res) {
+      setCenterCoordinates(coordinates);
+      setZoomLevel(17);
+      return;
+    }
+    if (res.assets && res.assets[0].uri) {
+      const routeImgUri = await getRouteImgUri();
+      let start_date = new Date();
+      let end_date = new Date();
+      start_date.setSeconds(start_date.getSeconds() - count);
+      end_date.setSeconds(
+        end_date.getSeconds() - end_date.getTimezoneOffset() * 60,
+      );
+      save({
+        ploggingInfo: {
+          calories: currentKcal,
+          distance: currentDistance,
+          started_at: start_date.toISOString().split('.')[0],
+          ended_at: end_date.toISOString().split('.')[0],
+          time: count,
+        },
+        resultImgData: res.assets[0],
+        routeImgData: {
+          fileName: routeImgUri.split('/').pop(),
+          type: 'image/jpeg',
+          uri: routeImgUri,
+        },
+      });
+    }
+  };
+
+  // 지도 스크린샷
+  const mapViewRef = useRef();
+
+  const getRouteImgUri = async () => {
+    if (mapViewRef.current) {
+      try {
+        const uri = await mapViewRef.current.takeSnap(true);
+        return uri;
+      } catch (e: any) {
+        console.error(e);
+      }
+    }
+  };
+
+  const getCenterCoordinate = () => {
+    let centerCoordinate = {
+      longitude: 1,
+      latitude: 1,
+      zoom: 15,
+    };
+    const longitude = route.features[0].geometry.coordinates.map(
+      coordinate => coordinate[0],
+    );
+    const latitude = route.features[0].geometry.coordinates.map(
+      coordinate => coordinate[1],
+    );
+    centerCoordinate.longitude =
+      (Math.max(...longitude) + Math.min(...longitude)) / 2;
+    centerCoordinate.latitude =
+      (Math.max(...latitude) + Math.min(...latitude)) / 2;
+    setCenterCoordinates(() => [
+      centerCoordinate.longitude,
+      centerCoordinate.latitude,
+    ]);
+    setZoomLevel(centerCoordinate.zoom);
+    onLaunchCamera();
+  };
+
   return (
     <View style={styles.page}>
       <View style={styles.container}>
-        <MapboxGL.MapView style={styles.map} localizeLabels={true}>
-          <MapboxGL.Camera zoomLevel={17} centerCoordinate={coordinates} />
+        <MapboxGL.MapView
+          ref={mapViewRef}
+          style={styles.map}
+          localizeLabels={true}>
+          <MapboxGL.Camera
+            zoomLevel={zoomLevel}
+            centerCoordinate={centerCoordinates}
+          />
           <MapboxGL.ShapeSource id="line" shape={route}>
             <MapboxGL.LineLayer
               id="linelayer"
@@ -268,7 +372,7 @@ function PloggingMapScreen({navigation}: any) {
 
         <View style={styles.recordContainer}>
           <TouchableHighlight
-            onPress={() => onLaunchCamera()}
+            onPress={() => getCenterCoordinate()}
             underlayColor="red">
             <Text style={fontStyles(20, '500', null, '#FFFFFF').textStyle}>
               FINISH

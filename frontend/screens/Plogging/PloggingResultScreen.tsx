@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Text,
   View,
@@ -7,6 +7,10 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import {RootStackNavigationProp, RootStackParamList} from '../types';
+import {useQuery} from 'react-query';
+import {getPloggingDetail} from '../../api/plogging';
 
 const styles = (marginL?: any, marginR?: any, justify?: any, align?: any) =>
   StyleSheet.create({
@@ -43,28 +47,73 @@ const fontStyles = (size?: any, weight?: any, color?: any, align?: any) =>
     },
   });
 
-function PloggingResultScreen({navigation}: any) {
+type PloggingResultScreenRouteProp = RouteProp<
+  RootStackParamList,
+  'PloggingResult'
+>;
+
+function PloggingResultScreen() {
+  const route = useRoute<PloggingResultScreenRouteProp>();
+  const navigation = useNavigation<RootStackNavigationProp>();
+  const {data: ploggingData, isLoading} = useQuery(
+    ['ploggingDetail', route.params.id],
+    () => getPloggingDetail(route.params.id),
+  );
+  const [ploggingDate, setPloggingDate] = useState(['0000', '00', '00']);
+  const [ploggingTime, setPloggingTime] = useState({
+    hour: '00',
+    min: '00',
+    sec: '00',
+  });
+
+  useEffect(() => {
+    if (ploggingData) {
+      setPloggingDate(ploggingData.ended_at.split(' ')[0].split('-'));
+      setPloggingTime({
+        hour: String(Math.floor(ploggingData.time / 3600)).padStart(2, '0'),
+        min: String(Math.floor((ploggingData.time % 3600) / 60)).padStart(
+          2,
+          '0',
+        ),
+        sec: String(ploggingData.time % 60).padStart(2, '0'),
+      });
+    }
+  }, [ploggingData]);
+
+  if (!ploggingData || isLoading) {
+    return (
+      <View>
+        <Text>로딩중</Text>
+      </View>
+    );
+  }
+
   return (
     <View>
       <View style={styles().container}>
-        <Text style={fontStyles(30, '600', null).recordText}>2022.05.05</Text>
+        <Text
+          style={
+            fontStyles(30, '600', null).recordText
+          }>{`${ploggingDate[0]}년 ${ploggingDate[1]}월 ${ploggingDate[2]}일`}</Text>
         <Text style={fontStyles(20, '600', null).recordText}>총 거리</Text>
-        <Text style={fontStyles(24, '600', null).recordText}>3 km</Text>
+        <Text style={fontStyles(24, '600', null).recordText}>
+          {ploggingData.distance} km
+        </Text>
         <Text style={fontStyles(18, '600', null).recordText}>칼로리</Text>
-        <Text style={fontStyles(20, '600', null).recordText}>578kcal</Text>
+        <Text style={fontStyles(20, '600', null).recordText}>
+          {ploggingData.calories} kcal
+        </Text>
         <Text style={fontStyles(18, '600', null).recordText}>경과 시간</Text>
-        <Text style={fontStyles(20, '600', null).recordText}>00:01:01</Text>
+        <Text
+          style={
+            fontStyles(20, '600', null).recordText
+          }>{`${ploggingTime.hour}:${ploggingTime.min}:${ploggingTime.sec}`}</Text>
       </View>
       <ScrollView horizontal={true}>
+        <Image source={{uri: ploggingData.result_img}} style={styles(40).img} />
         <Image
           source={{
-            uri: 'https://cdn.imweb.me/upload/S2021011502a2f4eeeb339/99652ab25b094.jpeg',
-          }}
-          style={styles(40).img}
-        />
-        <Image
-          source={{
-            uri: 'https://t1.daumcdn.net/cfile/tistory/2636C73D568B80CF2F',
+            uri: ploggingData.route_img,
           }}
           style={styles(30, 40).img}
         />

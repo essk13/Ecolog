@@ -1,8 +1,31 @@
 import Api from '../lib/customApi';
 import {User} from './user';
+import {Asset} from 'react-native-image-picker';
 
 export async function savePlogging(ploggingData: PloggingData) {
-  const response = await Api.post('/plogging', ploggingData);
+  const formData = new FormData();
+  let resultImg = {
+    name: ploggingData.resultImgData.fileName,
+    type: ploggingData.resultImgData.type,
+    uri: ploggingData.resultImgData.uri,
+  };
+  let routeImg = {
+    name: ploggingData.routeImgData.fileName,
+    type: ploggingData.routeImgData.type,
+    uri: ploggingData.routeImgData.uri,
+  };
+  formData.append('images', resultImg);
+  formData.append('images', routeImg);
+  formData.append('plogging_info', {
+    string: JSON.stringify(ploggingData.ploggingInfo),
+    type: 'application/json',
+  });
+  const response = await Api.post<PloggingDetail>('/plogging', formData, {
+    headers: {
+      'Content-type': 'multipart/form-data',
+    },
+    transformRequest: formData => formData,
+  });
   return response.data;
 }
 
@@ -18,14 +41,24 @@ export async function getPloggingDetail(ploggingSeq: number) {
   return response.data;
 }
 
-export interface PloggingData {
+export interface PloggingInfo {
   calories: number;
   distance: number;
-  endedAt: string;
-  resultImg: string;
-  routeImg: string;
-  startedAt: string;
+  started_at: string;
+  ended_at: string;
   time: number;
+}
+
+export interface RouteImgData {
+  fileName: string;
+  type: string;
+  uri: string;
+}
+
+export interface PloggingData {
+  ploggingInfo: PloggingInfo;
+  resultImgData: Asset;
+  routeImgData: RouteImgData;
 }
 
 export interface Plogging {
