@@ -1,5 +1,12 @@
 import React from 'react';
-import {StyleSheet, FlatList, View, Text, Image} from 'react-native';
+import {
+  StyleSheet,
+  FlatList,
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import {Button, Card, Title} from 'react-native-paper';
 import {
   CommunityDetail,
@@ -35,6 +42,7 @@ interface CampaignItemProps {
 }
 
 function CommunityPromotion({data}: CommunityDetailProps) {
+  const navigation = useNavigation<any>();
   const PromListItem = ({campaign}: CampaignItemProps) => {
     const navigation = useNavigation<any>();
     return (
@@ -72,11 +80,17 @@ function CommunityPromotion({data}: CommunityDetailProps) {
     );
   }
   return (
-    <FlatList
-      style={styles.Container}
-      data={campaignListData}
-      renderItem={({item}: any) => <PromListItem campaign={item} />}
-    />
+    <View>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('CampaignCreate', {data: data})}>
+        <Text>생성</Text>
+      </TouchableOpacity>
+      <FlatList
+        style={styles.Container}
+        data={campaignListData}
+        renderItem={({item}: any) => <PromListItem campaign={item} />}
+      />
+    </View>
   );
 }
 

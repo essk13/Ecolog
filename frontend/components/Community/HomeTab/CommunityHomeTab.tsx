@@ -6,7 +6,7 @@ import CommunityHome from './CommunityHome';
 import CommunityNotice from './CommunityNotice';
 import CommunityPromotion from './CommunityPromotion';
 import CommunityFree from './CommunityFree';
-import CommunityMyInfo from './CommunityMyInfo';
+import CommunityCampaign from './CommunityCampaign';
 import {CommunityDetail} from '../../../api/community';
 
 const Styles = StyleSheet.create({
@@ -22,17 +22,17 @@ interface CommunityDetailProps {
 }
 function CommunityHomeTab({data}: CommunityDetailProps) {
   const FirstRoute = () => <CommunityHome data={data} />;
-  const SecondRoute = () => <CommunityNotice />;
+  const SecondRoute = () => <CommunityNotice data={data} />;
   const ThirdRoute = () => <CommunityPromotion data={data} />;
-  const fourthRoute = () => <CommunityFree />;
-  const fifthRoute = () => <CommunityMyInfo />;
+  const fourthRoute = () => <CommunityFree data={data} />;
+  const fifthRoute = () => <CommunityCampaign data={data} />;
 
   const renderScene = SceneMap({
     home: FirstRoute,
     notice: SecondRoute,
     promotion: ThirdRoute,
     free: fourthRoute,
-    myInfo: fifthRoute,
+    campaign: fifthRoute,
   });
   const layout = useWindowDimensions();
   const [index, setIndex] = React.useState(0);
@@ -41,7 +41,7 @@ function CommunityHomeTab({data}: CommunityDetailProps) {
     {key: 'notice', title: '공지사항'},
     {key: 'promotion', title: '캠페인 모집'},
     {key: 'free', title: '자유게시판'},
-    {key: 'myInfo', title: '내정보'},
+    {key: 'campaign', title: '캠페인'},
   ]);
 
   return (

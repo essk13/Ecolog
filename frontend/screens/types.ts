@@ -33,9 +33,16 @@ export type RootStackParamList = {
   };
   UserEdit: undefined;
   CommunityHome: undefined;
+  CommunityCreate: undefined;
   CampaignDetail: undefined;
+  CampaignCreate: undefined;
+  CampaignEdit: undefined;
+  CommunityEdit: undefined;
   SurveyPage: undefined;
   SurveyResult: undefined;
+  PostEdit: undefined;
+  PostCreate: undefined;
+  PostDetail: undefined;
 };
 export type RootStackNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;

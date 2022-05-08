@@ -1,62 +1,89 @@
 import React from 'react';
-import {View, ScrollView, Image, Text, StyleSheet} from 'react-native';
-
+import {
+  StyleSheet,
+  FlatList,
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
+import {Button, Card, Title} from 'react-native-paper';
+import {CommunityDetail, getPostList, Post} from '../../../api/community';
+import {useNavigation} from '@react-navigation/native';
+import {useQuery} from 'react-query';
 const styles = StyleSheet.create({
   Container: {
     flexGrow: 0,
+    minHeight: '100%',
     width: '100%',
     backgroundColor: '#ffffff',
-    paddingTop: 20,
-    height: '100%',
+    padding: 20,
   },
-  contentContainer: {
-    borderColor: '#000000',
+  CardContainer: {
+    height: 200,
+    borderColor: 'black',
     borderWidth: 1,
-    minHeight: '100%',
-    marginTop: 40,
+    marginBottom: 20,
   },
-  FreeListItem: {
-    borderBottomWidth: 1,
-    borderBottomColor: 'black',
-    height: 50,
-    justifyContent: 'center',
-    padding: 10,
-    flexDirection: 'row',
+  image: {
+    width: '100%',
+    height: '50%',
   },
-  img: {aspectRatio: 1, marginLeft: 'auto'},
 });
+interface CommunityDetailProps {
+  data: CommunityDetail;
+}
+interface CampaignItemProps {
+  post: Post;
+}
 
-const FreeListItem = () => {
-  return (
-    <View style={styles.FreeListItem}>
-      <View>
-        <Text>가입했습니다!</Text>
-        <Text>이수환</Text>
-      </View>
-      <Image
-        style={styles.img}
-        source={{
-          uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSb-C1FL7xV2Rka1wtiAck-IYVmP9o1pRRdB45S2rGP-WnRDvEY_SMM1ZuiCRjkNkTFCEw&usqp=CAU',
-        }}
-      />
-    </View>
+function CommunityFree({data}: CommunityDetailProps) {
+  const navigation = useNavigation<any>();
+  const PromListItem = ({post}: CampaignItemProps) => {
+    const navigation = useNavigation<any>();
+    return (
+      <Card style={styles.CardContainer}>
+        <Card.Content>
+          <Title>{post.title}</Title>
+        </Card.Content>
+        <Card.Actions>
+          <Text>{post.content}</Text>
+          <Text>{post.no}</Text>
+          <Button
+            onPress={() =>
+              navigation.navigate('PostDetail', {
+                id: post.no,
+                no: data.no,
+              })
+            }>
+            상세 보기
+          </Button>
+        </Card.Actions>
+      </Card>
+    );
+  };
+  const {data: campaignListData, isLoading} = useQuery(
+    ['postList', {no: data.no, type: 'free'}],
+    () => getPostList({no: data.no, type: 'free'}),
   );
-};
-
-function CommunityFree() {
+  if (!campaignListData || isLoading) {
+    return (
+      <View>
+        <Text>로딩중</Text>
+      </View>
+    );
+  }
   return (
-    <View style={styles.Container}>
-      <Text>자유 게시판</Text>
-      <ScrollView style={styles.contentContainer}>
-        <FreeListItem />
-        <FreeListItem />
-        <FreeListItem />
-        <FreeListItem />
-        <FreeListItem />
-        <FreeListItem />
-        <FreeListItem />
-        <FreeListItem />
-      </ScrollView>
+    <View>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('CampaignCreate', {data: data})}>
+        <Text>생성</Text>
+      </TouchableOpacity>
+      <FlatList
+        style={styles.Container}
+        data={campaignListData}
+        renderItem={({item}: any) => <PromListItem post={item} />}
+      />
     </View>
   );
 }

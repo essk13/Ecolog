@@ -35,7 +35,6 @@ const refresh = async (
     config.headers = {};
   }
   config.headers.Authorization = `Bearer ${accessToken}`;
-
   return config;
 };
 

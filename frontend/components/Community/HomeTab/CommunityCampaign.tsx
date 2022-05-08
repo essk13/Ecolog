@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  StyleSheet,
-  FlatList,
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import {StyleSheet, FlatList, View, Text, TouchableOpacity} from 'react-native';
 import {Button, Card, Title} from 'react-native-paper';
 import {CommunityDetail, getPostList, Post} from '../../../api/community';
 import {useNavigation} from '@react-navigation/native';
@@ -30,12 +23,14 @@ const styles = StyleSheet.create({
     height: '50%',
   },
 });
-
+interface CommunityDetailProps {
+  data: CommunityDetail;
+}
 interface CampaignItemProps {
   post: Post;
 }
 
-function CommunityFeed() {
+function CommunityCampaign({data}: CommunityDetailProps) {
   const navigation = useNavigation<any>();
   const PromListItem = ({post}: CampaignItemProps) => {
     const navigation = useNavigation<any>();
@@ -47,22 +42,22 @@ function CommunityFeed() {
         <Card.Actions>
           <Text>{post.content}</Text>
           <Text>{post.no}</Text>
+          <Button
+            onPress={() =>
+              navigation.navigate('PostDetail', {
+                id: post.no,
+                no: data.no,
+              })
+            }>
+            상세 보기
+          </Button>
         </Card.Actions>
-        <Button
-          onPress={() =>
-            navigation.navigate('PostDetail', {
-              id: post.no,
-              no: 0,
-            })
-          }>
-          상세 보기
-        </Button>
       </Card>
     );
   };
   const {data: campaignListData, isLoading} = useQuery(
-    ['postList', {no: 0, type: 'campaign'}],
-    () => getPostList({no: 0, type: 'campaign'}),
+    ['postList', {no: data.no, type: 'campaign'}],
+    () => getPostList({no: data.no, type: 'campaign'}),
   );
   if (!campaignListData || isLoading) {
     return (
@@ -73,6 +68,10 @@ function CommunityFeed() {
   }
   return (
     <View>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('CampaignCreate', {data: data})}>
+        <Text>생성</Text>
+      </TouchableOpacity>
       <FlatList
         style={styles.Container}
         data={campaignListData}
@@ -82,4 +81,4 @@ function CommunityFeed() {
   );
 }
 
-export default CommunityFeed;
+export default CommunityCampaign;

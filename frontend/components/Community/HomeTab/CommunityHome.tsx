@@ -10,6 +10,7 @@ import {
 } from '../../../api/community';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../modules';
+import {useNavigation} from '@react-navigation/native';
 const styles = StyleSheet.create({
   Container: {
     flexGrow: 0,
@@ -47,13 +48,17 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: '20%',
+    height: '10%',
+  },
+  editButton: {
+    height: '10%',
   },
 });
 interface CommunityDetailProps {
   data: CommunityDetail;
 }
 function CommunityHome({data}: CommunityDetailProps) {
+  const navigation = useNavigation<any>();
   const {mutate: communityJoin} = useMutation(postCommunityJoin);
   const {mutate: communityDeleteJoin} = useMutation(deleteCommunityJoin);
   const {mutate: communityDelete} = useMutation(deleteCommunity);
@@ -70,9 +75,17 @@ function CommunityHome({data}: CommunityDetailProps) {
     communityDelete(data.no);
     Alert.alert('삭제가 완료되었습니다.');
   };
+
   return (
     <View style={styles.Container}>
       <Image source={{uri: data.image}} style={styles.image} />
+      {data.manager.email === myInfo.data?.email && (
+        <Button
+          onPress={() => navigation.navigate('CommunityEdit', {data: data})}
+          style={styles.editButton}>
+          <Text>수정하기</Text>
+        </Button>
+      )}
       <Text>공지 사항</Text>
       <View style={styles.HomeNotice}>
         <View>

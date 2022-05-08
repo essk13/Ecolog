@@ -119,7 +119,6 @@ function CommunityMain({keyword}: KeywordProps) {
     const touchTag = () => {
       if (searchOn.on && item === searchOn.key) {
         setSearchOn({on: false, key: ''});
-        console.log(searchOn.key);
       } else {
         setSearchOn({on: true, key: item});
       }
@@ -195,9 +194,13 @@ function CommunityMain({keyword}: KeywordProps) {
     'hotCommunityList',
     getHotCommunityList,
   );
+  const navigation = useNavigation<any>();
   return (
     <View style={styles.contentContainer}>
-      <Text>커뮤니티 생성</Text>
+      <TouchableOpacity onPress={() => navigation.navigate('CommunityCreate')}>
+        <Text>커뮤니티 생성</Text>
+      </TouchableOpacity>
+
       <Text>인기 태그</Text>
       <FlatList
         style={styles.hotContainer}
