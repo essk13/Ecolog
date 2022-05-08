@@ -1,5 +1,8 @@
 import React from 'react';
 import {Text, View, StyleSheet} from 'react-native';
+import {useSelector} from 'react-redux';
+import {PloggingRank} from '../../../api/plogging';
+import {RootState} from '../../../modules';
 
 const styles = (color?: any) =>
   StyleSheet.create({
@@ -35,40 +38,45 @@ const fontStyles = (size?: any, weight?: any, color?: any, align?: any) =>
     },
   });
 
-interface RankItem {
+interface PloggingBottomRankItemProps {
   rank: number;
-  name: string;
+  rankData: PloggingRank;
 }
 
-function PloggingBottomRankItem(props: RankItem) {
+function PloggingBottomRankItem({rank, rankData}: PloggingBottomRankItemProps) {
+  const myInfo = useSelector((state: RootState) => state.user.user);
   return (
     <View>
       {/* 본인 랭킹 */}
-      {props.name === '이수환' && (
+      {myInfo.data && rankData.user.no === myInfo.data.no && (
         <View style={styles('rgba(47, 235, 63, 0.5)').mainContainer}>
           <View style={styles().itemContainer}>
             <View style={styles().rankBox}>
-              <Text style={fontStyles(18, '600').rankText}>{props.rank}</Text>
+              <Text style={fontStyles(18, '600').rankText}>{rank}</Text>
             </View>
-            <Text style={fontStyles(null, '600').rankText}>{props.name}</Text>
+            <Text style={fontStyles(null, '600').rankText}>
+              {rankData.user.name}
+            </Text>
           </View>
           <Text style={fontStyles(13, null, '#636363').rankText}>
-            15회 / 20km
+            {`${rankData.cnt}회 / ${rankData.dist}km`}
           </Text>
         </View>
       )}
 
       {/* 타인 랭킹 */}
-      {props.name !== '이수환' && (
+      {myInfo.data && rankData.user.no !== myInfo.data.no && (
         <View style={styles().mainContainer}>
           <View style={styles().itemContainer}>
             <View style={styles().rankBox}>
-              <Text style={fontStyles(18, '600').rankText}>{props.rank}</Text>
+              <Text style={fontStyles(18, '600').rankText}>{rank}</Text>
             </View>
-            <Text style={fontStyles(null, '600').rankText}>{props.name}</Text>
+            <Text style={fontStyles(null, '600').rankText}>
+              {rankData.user.name}
+            </Text>
           </View>
           <Text style={fontStyles(13, null, '#636363').rankText}>
-            15회 / 20km
+            {`${rankData.cnt}회 / ${rankData.dist}km`}
           </Text>
         </View>
       )}

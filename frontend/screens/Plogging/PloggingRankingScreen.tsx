@@ -1,8 +1,15 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text, Image, View, TouchableOpacity, StyleSheet} from 'react-native';
 // Components
 import PloggingTopRanking from '../../components/Plogging/Ranking/PloggingTopRanking';
 import PloggingBottomRanking from '../../components/Plogging/Ranking/PloggingBottomRanking';
+import {useMutation} from 'react-query';
+import {
+  getFollowRanking,
+  getRegionRanking,
+  getTimeRanking,
+  PloggingRankList,
+} from '../../api/plogging';
 
 const styles = (color?: any, marginT?: any, marginL?: any) =>
   StyleSheet.create({
@@ -46,93 +53,53 @@ const fontStyles = (size?: any, weight?: any, color?: any) =>
     },
   });
 
-// 샘플 데이터
-const rankData = [
-  {
-    rank: 1,
-    name: '박승원',
-  },
-  {
-    rank: 2,
-    name: '이종현',
-  },
-  {
-    rank: 3,
-    name: '지수연',
-  },
-  {
-    rank: 4,
-    name: '이수환',
-  },
-  {
-    rank: 5,
-    name: '이재희',
-  },
-  {
-    rank: 6,
-    name: '이진곤',
-  },
-  {
-    rank: 7,
-    name: 'Unkown',
-  },
-  {
-    rank: 8,
-    name: 'Unkown',
-  },
-  {
-    rank: 9,
-    name: 'Unkown',
-  },
-  {
-    rank: 10,
-    name: 'Unkown',
-  },
-  {
-    rank: 11,
-    name: 'Unkown',
-  },
-  {
-    rank: 12,
-    name: 'Unkown',
-  },
-  {
-    rank: 13,
-    name: 'Unkown',
-  },
-  {
-    rank: 14,
-    name: 'Unkown',
-  },
-  {
-    rank: 15,
-    name: 'Unkown',
-  },
-  {
-    rank: 16,
-    name: 'Unkown',
-  },
-  {
-    rank: 17,
-    name: 'Unkown',
-  },
-  {
-    rank: 18,
-    name: 'Unkown',
-  },
-  {
-    rank: 19,
-    name: 'Unkown',
-  },
-  {
-    rank: 20,
-    name: 'Unkown',
-  },
-];
-
 function PloggingRankingScreen() {
-  const topData = rankData.filter(element => element.rank <= 3);
-  const bottomData = rankData.filter(element => element.rank > 3);
+  const [rankData, setRankData] = useState<PloggingRankList>([]);
+  const [rankType, setRankType] = useState<string>('time');
+  const [periodType, setPeriodType] = useState<string>('all');
+  const {mutate: getTimeRank} = useMutation(getTimeRanking, {
+    onSuccess: data => {
+      setRankData(data);
+    },
+    onError: error => {
+      console.error(error);
+    },
+  });
+  const {mutate: getFollowRank} = useMutation(getFollowRanking, {
+    onSuccess: data => {
+      setRankData(data);
+    },
+    onError: error => {
+      console.error(error);
+    },
+  });
+  const {mutate: getRegionRank} = useMutation(getRegionRanking, {
+    onSuccess: data => {
+      setRankData(data);
+    },
+    onError: error => {
+      console.error(error);
+    },
+  });
+
+  const [topRankData, setTopRankData] = useState<PloggingRankList>([]);
+  const [bottomRankData, setBottomRankData] = useState<PloggingRankList>([]);
+
+  useEffect(() => {
+    if (rankType === 'time') {
+      getTimeRank(periodType);
+    } else if (rankType === 'follow') {
+      getFollowRank(periodType);
+    } else {
+      getRegionRank(periodType);
+    }
+  }, [rankType, periodType]);
+
+  useEffect(() => {
+    setTopRankData([...rankData].slice(0, 3));
+    setBottomRankData([...rankData].slice(3));
+  }, [rankData]);
+
   return (
     <View style={styles().mainContainer}>
       <View style={styles().imgContainer}>
@@ -146,29 +113,44 @@ function PloggingRankingScreen() {
 
       <View style={styles().btnContainer}>
         <Text style={fontStyles(18, '600').rankText}>플로거 랭킹</Text>
-        <TouchableOpacity style={styles(null, null, 10).btnItem}>
+        <TouchableOpacity
+          style={styles(null, null, 10).btnItem}
+          onPress={() => setRankType('time')}>
+          <Text style={fontStyles(null, '400').rankText}>전체</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles(null, null, 10).btnItem}
+          onPress={() => setRankType('follow')}>
           <Text style={fontStyles(null, '400').rankText}>친구</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles(null, null, 10).btnItem}>
-          <Text style={fontStyles(null, '400').rankText}>전체</Text>
+        <TouchableOpacity
+          style={styles(null, null, 10).btnItem}
+          onPress={() => setRankType('region')}>
+          <Text style={fontStyles(null, '400').rankText}>지역</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles(null, 10).btnContainer}>
-        <TouchableOpacity style={styles('#bdd7ff').btnItem}>
+        <TouchableOpacity
+          style={styles('#bdd7ff').btnItem}
+          onPress={() => setPeriodType('week')}>
           <Text style={fontStyles(null, '400').rankText}>주간</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles('#bdd7ff', null, 10).btnItem}>
+        <TouchableOpacity
+          style={styles('#bdd7ff', null, 10).btnItem}
+          onPress={() => setPeriodType('month')}>
           <Text style={fontStyles(null, '400').rankText}>월간</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles('#bdd7ff', null, 10).btnItem}>
+        <TouchableOpacity
+          style={styles('#bdd7ff', null, 10).btnItem}
+          onPress={() => setPeriodType('all')}>
           <Text style={fontStyles(null, '400').rankText}>누적</Text>
         </TouchableOpacity>
       </View>
 
-      <PloggingTopRanking rankData={topData} />
+      <PloggingTopRanking rankDataList={topRankData} />
 
-      <PloggingBottomRanking rankData={bottomData} />
+      <PloggingBottomRanking rankDataList={bottomRankData} />
     </View>
   );
 }

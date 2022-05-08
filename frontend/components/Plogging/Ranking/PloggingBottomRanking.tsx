@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, FlatList} from 'react-native';
+import {PloggingRankList} from '../../../api/plogging';
 // Components
 import PloggingBottomRankItem from './PloggingBottomRankItem';
 
@@ -12,25 +13,19 @@ const styles = () =>
     },
   });
 
-interface DataItem {
-  rank: number;
-  name: string;
+interface PloggingBottomRankingProps {
+  rankDataList: PloggingRankList;
 }
 
-interface RankData {
-  rankData: DataItem[];
-}
-
-function PloggingBottomRanking(props: RankData) {
-  const {rankData} = props;
+function PloggingBottomRanking({rankDataList}: PloggingBottomRankingProps) {
   return (
     <FlatList
       style={styles().scrollContainer}
-      data={rankData}
-      renderItem={({item}: any) => (
-        <PloggingBottomRankItem rank={item.rank} name={item.name} />
+      data={rankDataList}
+      renderItem={({item, index}: any) => (
+        <PloggingBottomRankItem rank={index + 4} rankData={item} />
       )}
-      keyExtractor={item => item.rank.toString()}
+      keyExtractor={(item, index) => index.toString()}
     />
   );
 }
