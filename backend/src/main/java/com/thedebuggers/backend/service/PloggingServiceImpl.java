@@ -6,6 +6,7 @@ import com.thedebuggers.backend.domain.entity.Plogging;
 import com.thedebuggers.backend.domain.entity.RankingData;
 import com.thedebuggers.backend.domain.entity.User;
 import com.thedebuggers.backend.domain.repository.PloggingRepository;
+import com.thedebuggers.backend.domain.repository.UserFollowRepository;
 import com.thedebuggers.backend.domain.repository.UserRepository;
 import com.thedebuggers.backend.dto.PloggingReqDto;
 import com.thedebuggers.backend.dto.PloggingResDto;
@@ -15,10 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +25,7 @@ public class PloggingServiceImpl implements PloggingService {
 
     private final PloggingRepository ploggingRepository;
     private final UserRepository userRepository;
+    private final UserFollowRepository userFollowRepository;
 
     private final S3Service s3Service;
 
@@ -71,6 +70,70 @@ public class PloggingServiceImpl implements PloggingService {
     public List<RankingResDto> getRankingByTime(String type) {
         List<RankingResDto> rankingResDtoList = new ArrayList<>();
 
+        Map<String, String> dateInfo = getDate(type);
+        String startDay = dateInfo.get("startDay");
+        String endDay = dateInfo.get("endDay");
+
+        if (startDay.isEmpty() || endDay.isEmpty())
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+
+        ploggingRepository.getRankingByTime(startDay, endDay, RankingData.class).forEach(
+                data -> {
+                    User u = userRepository.findByNo(data.getUserNo()).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
+                    rankingResDtoList.add(RankingResDto.of(u, data.getCnt(), data.getDist()));
+                }
+        );
+
+        return rankingResDtoList;
+    }
+
+    @Override
+    public List<RankingResDto> getRankingByFollow(User user, String type) {
+        List<RankingResDto> rankingResDtoList = new ArrayList<>();
+        List<User> followList = userFollowRepository.findAllFolloweeByFollower(user);
+        followList.add(user);
+
+        Map<String, String> dateInfo = getDate(type);
+        String startDay = dateInfo.get("startDay");
+        String endDay = dateInfo.get("endDay");
+
+        if (startDay.isEmpty() || endDay.isEmpty())
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+
+        ploggingRepository.getRankingByFollow(followList, startDay, endDay, RankingData.class).forEach(
+                data -> {
+                    User u = userRepository.findByNo(data.getUserNo()).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
+                    rankingResDtoList.add(RankingResDto.of(u, data.getCnt(), data.getDist()));
+                }
+        );
+
+        return rankingResDtoList;
+    }
+
+    @Override
+    public List<RankingResDto> getRankingByAddress(User user, String type) {
+        List<RankingResDto> rankingResDtoList = new ArrayList<>();
+        String address = user.getAddress();
+
+        Map<String, String> dateInfo = getDate(type);
+        String startDay = dateInfo.get("startDay");
+        String endDay = dateInfo.get("endDay");
+
+        if (startDay.isEmpty() || endDay.isEmpty())
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+
+        ploggingRepository.getRankingByAddress(address, startDay, endDay, RankingData.class).forEach(
+                data -> {
+                    User u = userRepository.findByNo(data.getUserNo()).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
+                    rankingResDtoList.add(RankingResDto.of(u, data.getCnt(), data.getDist()));
+                }
+        );
+
+        return rankingResDtoList;
+    }
+
+    private Map<String, String> getDate(String type) {
+        Map<String, String> dateInfo = new HashMap<>();
         String startDay = "20000101";
         String endDay = new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance(Locale.KOREA).getTime());
 
@@ -89,17 +152,9 @@ public class PloggingServiceImpl implements PloggingService {
                 throw new CustomException(ErrorCode.BAD_REQUEST);
         }
 
-        System.out.println("Start Day: " + startDay);
-        System.out.println("End Day: " + endDay);
-
-        ploggingRepository.getRankingByTime(startDay, endDay, RankingData.class).forEach(
-                data -> {
-                    User user = userRepository.findByNo(data.getUser_no()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
-                    rankingResDtoList.add(RankingResDto.of(user, data.getCnt(), data.getDist()));
-                }
-        );
-
-        return rankingResDtoList;
+        dateInfo.put("startDay", startDay);
+        dateInfo.put("endDay", endDay);
+        return dateInfo;
     }
 
     private String startOfWeek() {

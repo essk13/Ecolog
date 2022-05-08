@@ -77,4 +77,45 @@ public class PloggingController {
         List<RankingResDto> rankingResDtoList = ploggingService.getRankingByTime(type);
         return ResponseEntity.ok(rankingResDtoList);
     }
+
+    @GetMapping("/rank/follow")
+    @ApiOperation(value = "플로깅 지인 랭킹")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Server Error")
+    })
+    private ResponseEntity<List<RankingResDto>> getRankingByFollow(@ApiIgnore Authentication authentication,
+                                                                   @ApiParam(value = "입력 키워드: all, month, week") @RequestParam String type) {
+        ELUserDetails userDetails = (ELUserDetails)authentication.getDetails();
+        User user = userDetails.getUser();
+        List<RankingResDto> rankingResDtoList = ploggingService.getRankingByFollow(user, type);
+        return ResponseEntity.ok(rankingResDtoList);
+    }
+
+    @GetMapping("/rank/region")
+    @ApiOperation(value = "플로깅 지역 랭킹")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Server Error")
+    })
+    private ResponseEntity<List<RankingResDto>> getRankingByAddress(@ApiIgnore Authentication authentication,
+                                                                    @ApiParam(value = "입력 키워드: all, month, week") @RequestParam String type) {
+        ELUserDetails userDetails = (ELUserDetails)authentication.getDetails();
+        User user = userDetails.getUser();
+        List<RankingResDto> rankingResDtoList = ploggingService.getRankingByAddress(user, type);
+        return ResponseEntity.ok(rankingResDtoList);
+    }
+
+    @GetMapping("/region")
+    @ApiOperation(value = "플로깅 지역 별 진행 상황 조회")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Server Error")
+    })
+    private ResponseEntity<?> getProgressByRegion() {
+        return null;
+    }
 }

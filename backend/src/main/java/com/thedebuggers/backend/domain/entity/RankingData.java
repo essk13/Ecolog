@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public interface RankingData {
-    Long getUser_no();
+    Long getUserNo();
     Integer getCnt();
     Double getDist();
 }
