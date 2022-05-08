@@ -7,10 +7,7 @@ import com.thedebuggers.backend.domain.entity.User;
 import com.thedebuggers.backend.domain.entity.UserFollow;
 import com.thedebuggers.backend.domain.repository.UserFollowRepository;
 import com.thedebuggers.backend.domain.repository.UserRepository;
-import com.thedebuggers.backend.dto.FollowUserResDto;
-import com.thedebuggers.backend.dto.LoginReqDto;
-import com.thedebuggers.backend.dto.ProfileResDto;
-import com.thedebuggers.backend.dto.UserUpdateReqDto;
+import com.thedebuggers.backend.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -163,5 +160,29 @@ public class UserServiceImpl implements UserService {
             followRepository.save(newFollowInfo);
         }
 
+    }
+
+    @Override
+    public MyInfoResDto getMyInfo(long userNo) {
+        User user = userRepository.findByNo(userNo).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
+
+        List<User> userFollowing = followRepository.findAllFolloweeByFollower(user);
+        List<User> userFollower = followRepository.findAllFollowerByFollowee(user);
+
+        return MyInfoResDto.builder()
+                .no(user.getNo())
+                .email(user.getEmail())
+                .name(user.getName())
+                .nickname(user.getNickname())
+                .birth(user.getBirth())
+                .height(user.getHeight())
+                .weight(user.getWeight())
+                .phone(user.getPhone())
+                .image(user.getImage())
+                .address(user.getAddress())
+                .loginType(user.getLoginType())
+                .followingUser(userFollowing.stream().map(BaseUserInfoResDto::of).collect(Collectors.toList()))
+                .followerUser(userFollower.stream().map(BaseUserInfoResDto::of).collect(Collectors.toList()))
+                .build();
     }
 }

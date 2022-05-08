@@ -43,9 +43,10 @@ public class UserController {
     private ResponseEntity<MyInfoResDto> myInfo(@ApiIgnore Authentication authentication) {
 
         ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
-        User user = userDetails.getUser();
+        long userNo = userDetails.getUser().getNo();
 
-        return ResponseEntity.ok(MyInfoResDto.of(user));
+        MyInfoResDto myInfoResDto = userService.getMyInfo(userNo);
+        return ResponseEntity.ok(myInfoResDto);
     }
 
     @GetMapping("/{userNo}")

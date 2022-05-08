@@ -8,24 +8,24 @@ import io.swagger.annotations.ApiModel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
+import java.util.List;
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @ApiModel("UserInfoResponse")
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class MyInfoResDto {
-    private long no;
-    private String email;
-    private String name;
-    private String nickname;
-    private String birth;
+public class MyInfoResDto extends BaseUserInfoResDto {
     private double height;
     private double weight;
     private String phone;
-    private String image;
     private String address;
     private LoginType loginType;
+
+    private List<BaseUserInfoResDto> followingUser;
+    private List<BaseUserInfoResDto> followerUser;
 
     public static MyInfoResDto of(User user){
         return MyInfoResDto.builder()
