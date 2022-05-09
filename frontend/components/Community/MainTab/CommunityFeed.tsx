@@ -38,9 +38,9 @@ interface CampaignItemProps {
 function CommunityFeed() {
   const navigation = useNavigation<any>();
   const PromListItem = ({post}: CampaignItemProps) => {
-    const navigation = useNavigation<any>();
     return (
       <Card style={styles.CardContainer}>
+        <Image source={{uri: post.image}} style={styles.image} />
         <Card.Content>
           <Title>{post.title}</Title>
         </Card.Content>

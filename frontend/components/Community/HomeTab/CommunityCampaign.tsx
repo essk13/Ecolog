@@ -47,6 +47,7 @@ function CommunityCampaign({data}: CommunityDetailProps) {
               navigation.navigate('PostDetail', {
                 id: post.no,
                 no: data.no,
+                type: 3,
               })
             }>
             상세 보기
@@ -69,7 +70,9 @@ function CommunityCampaign({data}: CommunityDetailProps) {
   return (
     <View>
       <TouchableOpacity
-        onPress={() => navigation.navigate('CampaignCreate', {data: data})}>
+        onPress={() =>
+          navigation.navigate('PostCreate', {data: data, type: 3})
+        }>
         <Text>생성</Text>
       </TouchableOpacity>
       <FlatList

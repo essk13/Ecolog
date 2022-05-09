@@ -40,9 +40,9 @@ interface CampaignItemProps {
 function CommunityNotice({data}: CommunityDetailProps) {
   const navigation = useNavigation<any>();
   const PromListItem = ({post}: CampaignItemProps) => {
-    const navigation = useNavigation<any>();
     return (
       <Card style={styles.CardContainer}>
+        <Image source={{uri: post.image}} style={styles.image} />
         <Card.Content>
           <Title>{post.title}</Title>
         </Card.Content>
@@ -54,6 +54,7 @@ function CommunityNotice({data}: CommunityDetailProps) {
               navigation.navigate('PostDetail', {
                 id: post.no,
                 no: data.no,
+                type: 1,
               })
             }>
             상세 보기
@@ -76,7 +77,9 @@ function CommunityNotice({data}: CommunityDetailProps) {
   return (
     <View>
       <TouchableOpacity
-        onPress={() => navigation.navigate('CampaignCreate', {data: data})}>
+        onPress={() =>
+          navigation.navigate('PostCreate', {data: data, type: 1})
+        }>
         <Text>생성</Text>
       </TouchableOpacity>
       <FlatList

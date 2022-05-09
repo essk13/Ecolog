@@ -1,16 +1,102 @@
 import React from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  TextInput,
+  Alert,
+  TouchableOpacity,
+} from 'react-native';
+import {useMutation} from 'react-query';
+import {editPost, PostInfo} from '../../api/community';
+import {
+  CameraOptions,
+  ImagePickerResponse,
+  launchImageLibrary,
+} from 'react-native-image-picker';
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#5FA2E5',
+    backgroundColor: '#ffffff',
   },
 });
 
-function PostEditScreen() {
+function PostEditScreen({route}: any) {
+  const [postInfo, setCampaignInfo] = React.useState<PostInfo>({
+    title: '',
+    open: false,
+    content: '',
+    type: route.params.type,
+  });
+
+  const [uri, setUri] = React.useState<string>('');
+  React.useEffect(() => {
+    if (route.params.data) {
+      setCampaignInfo({
+        ...postInfo,
+        title: route.params.data.title,
+        open: route.params.data.open,
+        content: route.params.data.content,
+      });
+      setUri(route.params.data.image);
+    }
+  }, [route.params]);
+  const {mutate: editPo} = useMutation(editPost);
+  const submitCreate = () => {
+    const communityImgData = {
+      name: uri.split('/').pop(),
+      type: 'image/jpeg',
+      uri: uri,
+    };
+    editPo({
+      postImgData: communityImgData,
+      postInfo: postInfo,
+      no: route.params.no,
+      postNo: route.params.data.no,
+    });
+    Alert.alert('수정이 완료되었습니다.');
+  };
+  const imagePickerOption: CameraOptions = {
+    mediaType: 'photo',
+    maxWidth: 768,
+    maxHeight: 768,
+  };
+  const onPickImage = async (res: ImagePickerResponse) => {
+    if (res.didCancel || !res) {
+      return;
+    }
+    if (res.assets && res.assets[0].uri) {
+      setUri(res.assets[0].uri);
+    }
+  };
   return (
     <View style={styles.container}>
-      <Text>게시글 수정</Text>
+      <TouchableOpacity
+        onPress={() => launchImageLibrary(imagePickerOption, onPickImage)}>
+        <Text>이미지</Text>
+      </TouchableOpacity>
+      <Text>이름</Text>
+      <TextInput
+        placeholder="이름"
+        value={postInfo.title}
+        onChangeText={(text: string) =>
+          setCampaignInfo({...postInfo, title: text})
+        }
+        returnKeyType="done"
+      />
+      <Text>컨텐츠</Text>
+      <TextInput
+        placeholder="컨텐츠"
+        value={postInfo.content}
+        onChangeText={(text: string) =>
+          setCampaignInfo({...postInfo, content: text})
+        }
+        returnKeyType="done"
+      />
+      <TouchableOpacity onPress={() => submitCreate()}>
+        <Text>수정하기</Text>
+      </TouchableOpacity>
     </View>
   );
 }

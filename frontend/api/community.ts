@@ -75,6 +75,58 @@ export async function createCampaign(campaignData: CreateCampaignData) {
   );
   return response.data;
 }
+// 포스트 생성
+export async function createPost(postData: CreatePostData) {
+  const formData = new FormData();
+  formData.append('image', postData.postImgData);
+  formData.append('communityNo ', postData.no);
+  formData.append('post_info ', {
+    string: JSON.stringify(postData.postInfo),
+    type: 'application/json',
+  });
+  const response = await Api.post(`/community/${postData.no}/post`, formData, {
+    headers: {
+      'Content-type': 'multipart/form-data',
+    },
+    transformRequest: formData => formData,
+  });
+  return response.data;
+}
+// 포스트 좋아요
+export async function likePost(data: LikeData) {
+  const response = await Api.post(
+    `/community/${data.community}/post/${data.post}/like`,
+  );
+  return response.data;
+}
+// 포스트 수정
+export async function editPost(postData: EditPostData) {
+  const formData = new FormData();
+  formData.append('image', postData.postImgData);
+  formData.append('communityNo ', postData.no);
+  formData.append('post_info ', {
+    string: JSON.stringify(postData.postInfo),
+    type: 'application/json',
+  });
+  const response = await Api.put<Campaign>(
+    `/community/${postData.no}/post/${postData.postNo}`,
+    formData,
+    {
+      headers: {
+        'Content-type': 'multipart/form-data',
+      },
+      transformRequest: formData => formData,
+    },
+  );
+  return response.data;
+}
+// 포스트 삭제
+export async function deletePost(data: DeletePostData) {
+  const response = await Api.delete(
+    `/community/${data.communitySeq}/post/${data.postSeq}`,
+  );
+  return response.data;
+}
 // 캠페인 수정
 export async function editCampaign(campaignData: EditCampaignData) {
   const formData = new FormData();
@@ -100,6 +152,13 @@ export async function editCampaign(campaignData: EditCampaignData) {
 export async function deleteCampaign(data: DeleteCampaignData) {
   const response = await Api.delete(
     `/community/${data.communitySeq}/campaign/${data.campaignSeq}`,
+  );
+  return response.data;
+}
+// 댓글 삭제
+export async function deleteComment(data: DeleteCommentData) {
+  const response = await Api.delete(
+    `/community/${data.communityNo}/post/${data.postNo}/comment/${data.commentNo}`,
   );
   return response.data;
 }
@@ -141,7 +200,29 @@ export async function getPostList(data: PostListData) {
   const response = await Api.get<PostList>(
     `/community/${data.no}/post?type=${data.type}`,
   );
-  console.log(response.data);
+  return response.data;
+}
+// 댓글 리스트
+export async function getCommentList(data: CommentListData) {
+  const response = await Api.get<PostList>(
+    `/community/${data.no}/post/${data.postNo}/comment`,
+  );
+  return response.data;
+}
+// 댓글 생성
+export async function createComment(commentData: CreateCommentData) {
+  const response = await Api.post(
+    `/community/${commentData.community}/post/${commentData.post}/comment`,
+    commentData.commentInfo,
+  );
+  return response.data;
+}
+// 댓글 수정
+export async function editComment(commentData: EditCommentData) {
+  const response = await Api.put(
+    `/community/${commentData.community}/post/${commentData.post}/comment/${commentData.commentNo}`,
+    commentData.commentInfo,
+  );
   return response.data;
 }
 // 포스트 디테일
@@ -208,19 +289,62 @@ export interface PostListData {
   no: number;
   type: string;
 }
+export interface CommentListData {
+  no: number;
+  postNo: number;
+}
 export interface EditCommunityData {
   communityImgData: CommunityImgData;
   communityInfo: CommunityEditInfo;
   no: number;
 }
+
 export interface DeleteCampaignData {
   communitySeq: number;
   campaignSeq: number;
+}
+export interface DeleteCommentData {
+  communityNo: number;
+  postNo: number;
+  commentNo: number;
+}
+export interface DeletePostData {
+  communitySeq: number;
+  postSeq: number;
 }
 export interface CreateCampaignData {
   campaignImgData: CommunityImgData;
   campaignInfo: CampaignInfo;
   no: number;
+}
+export interface CreatePostData {
+  postImgData: CommunityImgData;
+  postInfo: PostInfo;
+  no: number;
+}
+export interface CreateCommentData {
+  community: number;
+  post: number;
+  commentInfo: CommentInfo;
+}
+export interface EditCommentData {
+  community: number;
+  post: number;
+  commentNo: number;
+  commentInfo: CommentInfo;
+}
+export interface CommentInfo {
+  content: string;
+}
+export interface EditPostData {
+  postImgData: CommunityImgData;
+  postInfo: PostInfo;
+  no: number;
+  postNo: number;
+}
+export interface LikeData {
+  community: number;
+  post: number;
 }
 export interface EditCampaignData {
   campaignImgData: CommunityImgData;
@@ -250,14 +374,26 @@ export interface Campaign {
   max_personnel: number;
   writer: Manager;
 }
+export interface Comment {
+  no: number;
+  content: string;
+  writer: Manager;
+}
 export interface Post {
   community_no: string;
   content: string;
   like_count: number;
   no: number;
   open: boolean;
+  image: string;
   title: string;
   writer: Manager;
+}
+export interface PostInfo {
+  content: string;
+  open: boolean;
+  title: string;
+  type: number;
 }
 export interface CampaignInfo {
   title: string;

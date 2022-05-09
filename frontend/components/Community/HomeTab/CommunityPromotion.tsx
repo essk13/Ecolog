@@ -44,7 +44,6 @@ interface CampaignItemProps {
 function CommunityPromotion({data}: CommunityDetailProps) {
   const navigation = useNavigation<any>();
   const PromListItem = ({campaign}: CampaignItemProps) => {
-    const navigation = useNavigation<any>();
     return (
       <Card style={styles.CardContainer}>
         <Image source={{uri: campaign.image}} style={styles.image} />
