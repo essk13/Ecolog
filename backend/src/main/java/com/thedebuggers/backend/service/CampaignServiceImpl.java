@@ -26,11 +26,11 @@ public class CampaignServiceImpl implements CampaignService{
     private final S3Service s3Service;
 
     @Override
-    public Campaign registCampaign(CampaignReqDto campaignReqDto, long communityNo, User user, MultipartFile imageFile) throws Exception {
+    public Campaign registCampaign(CampaignReqDto campaignReqDto, long communityNo, User user, MultipartFile imageFile) {
 
         Community community = communityService.getCommunity(communityNo);
 
-        if (community == null) throw new Exception();
+        if (community == null) throw new CustomException(ErrorCode.CONTENT_NOT_FOUND);
 
         String imageUrl = null;
 

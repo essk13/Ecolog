@@ -25,7 +25,7 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL57Dialect
+        dialect: org.hibernate.spatial.dialect.mysql.MySQL56InnoDBSpatialDialect
         format_sql: true
   data:
     web:
