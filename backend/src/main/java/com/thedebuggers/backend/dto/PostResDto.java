@@ -23,6 +23,7 @@ public class PostResDto {
     private boolean isOpen;
     private long likeCount;
     private BaseUserInfoResDto writer;
+    private boolean isLiked;
 
     public static PostResDto of(Post post) {
         return PostResDto.builder()
@@ -35,6 +36,21 @@ public class PostResDto {
                 .isOpen(post.isOpen())
                 .likeCount(post.getLikeCount())
                 .writer(BaseUserInfoResDto.of(post.getUser()))
+                .build();
+    }
+
+    public static PostResDto of(Post post, boolean isLiked) {
+        return PostResDto.builder()
+                .no(post.getNo())
+                .communityNo(post.getCommunity().getNo())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .image(post.getImage())
+                .createdAt(post.getCreatedAt())
+                .isOpen(post.isOpen())
+                .likeCount(post.getLikeCount())
+                .writer(BaseUserInfoResDto.of(post.getUser()))
+                .isLiked(isLiked)
                 .build();
     }
 }

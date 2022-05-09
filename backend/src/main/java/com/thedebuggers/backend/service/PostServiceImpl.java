@@ -104,7 +104,13 @@ public class PostServiceImpl implements PostService {
         if (!post.isOpen() && userCommunityRepository.findAllByCommunityNoAndUserNo(post.getCommunity().getNo(), user.getNo()) == null) {
             throw new CustomException(ErrorCode.CONTENT_UNAUTHORIZED);
         }
-        return PostResDto.of(post);
+
+        boolean isLiked = false;
+        if (postLikeRepository.findByPostNoAndUserNo(postNo, user.getNo()) != null) {
+            isLiked = true;
+        }
+
+        return PostResDto.of(post, isLiked);
     }
 
     @Override

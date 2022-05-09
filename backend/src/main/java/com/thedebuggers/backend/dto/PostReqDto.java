@@ -14,6 +14,6 @@ import lombok.ToString;
 public class PostReqDto {
     private String title;
     private String content;
-    private boolean isOpen;
+    private boolean isOpen = false;
     private int type = PostType.FREE.getValue();
 }
