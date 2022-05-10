@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, ScrollView, StyleSheet} from 'react-native';
+// Api & Types
 import {PloggingList} from '../../../../api/plogging';
 // Components
 import UserPloggingItem from './UserPlogginItem';

@@ -1,11 +1,13 @@
 import React from 'react';
 import {View, Text, useWindowDimensions, StyleSheet} from 'react-native';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
+// Api & Types
+import {PloggingList} from '../../../api/plogging';
+import {UserPostList} from '../../../api/user';
 // Components
 import UserPlogging from './Plogging/UserPlogging';
 import UserCampaign from './Campaign/UserCampaign';
 import UserAvatar from './Avatar/UserAvatar';
-import {PloggingList} from '../../../api/plogging';
 
 // Style
 const fontStyles = (size?: number, weight?: any) =>
@@ -18,10 +20,11 @@ const fontStyles = (size?: number, weight?: any) =>
   });
 
 interface UserTabProps {
-  ploggingList: PloggingList | null;
+  ploggingList: PloggingList | undefined | null;
+  postList: UserPostList | undefined | null;
 }
 
-function UserTab({ploggingList}: UserTabProps) {
+function UserTab({ploggingList, postList}: UserTabProps) {
   const layout = useWindowDimensions();
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
@@ -32,14 +35,21 @@ function UserTab({ploggingList}: UserTabProps) {
 
   // Tab-View
   const FirstRoute = () =>
-    ploggingList ? (
-      <UserPlogging ploggingList={ploggingList} />
-    ) : (
+    !ploggingList ? (
       <View>
         <Text>로딩중</Text>
       </View>
+    ) : (
+      <UserPlogging ploggingList={ploggingList} />
     );
-  const SecondRoute = () => <UserCampaign />;
+  const SecondRoute = () =>
+    !postList ? (
+      <View>
+        <Text>로딩중</Text>
+      </View>
+    ) : (
+      <UserCampaign postList={postList} />
+    );
   const ThirdRoute = () => <UserAvatar />;
 
   const renderScene = SceneMap({

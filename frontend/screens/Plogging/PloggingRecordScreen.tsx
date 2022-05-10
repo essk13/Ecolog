@@ -121,9 +121,7 @@ function PloggingRecordScreen() {
         <TouchableOpacity onPress={() => {}} style={styles().btn}>
           <Text style={fontStyles(20, '600', null).recordText}>공유하기</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => navigation.popToTop()}
-          style={styles().btn}>
+        <TouchableOpacity onPress={() => navigation.pop()} style={styles().btn}>
           <Text style={fontStyles(20, '600', null).recordText}>목록</Text>
         </TouchableOpacity>
       </View>

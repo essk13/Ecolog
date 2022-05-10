@@ -1,10 +1,10 @@
 import {communityActions} from './actions';
 import {ActionType} from 'typesafe-actions';
 import {AsyncState} from '../../lib/reducerUtils';
-import {CommunityList} from '../../api/types';
+import {UserPostList} from '../../api/user';
 
 export type CommunityAction = ActionType<typeof communityActions>;
 
 export type CommunityState = {
-  communityList: AsyncState<CommunityList, Error>;
+  postList: AsyncState<UserPostList, Error>;
 };

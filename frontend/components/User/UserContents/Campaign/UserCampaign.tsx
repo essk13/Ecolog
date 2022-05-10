@@ -1,9 +1,7 @@
 import React from 'react';
-import {View, ScrollView, StyleSheet, Text} from 'react-native';
-import {useQuery} from 'react-query';
-import {useSelector} from 'react-redux';
-import {getUserPost} from '../../../../api/user';
-import {RootState} from '../../../../modules';
+import {View, ScrollView, StyleSheet} from 'react-native';
+// Api & Types
+import {UserPostList} from '../../../../api/user';
 // Components
 import UserCampaignItem from './UserCampaignItem';
 
@@ -23,22 +21,12 @@ const styles = () =>
     },
   });
 
-function UserCampaign() {
-  const myInfo = useSelector((state: RootState) => state.user.user);
-  const {data: userPostList, isLoading} = useQuery(
-    ['userPostList', myInfo.data?.no],
-    () => getUserPost(myInfo.data ? myInfo.data?.no : 0),
-  );
+interface UserCampaignProps {
+  postList: UserPostList;
+}
 
-  if (!userPostList || isLoading) {
-    return (
-      <View>
-        <Text>로딩중</Text>
-      </View>
-    );
-  }
-
-  const items = userPostList.map((userPost, index) => (
+function UserCampaign({postList}: UserCampaignProps) {
+  const items = postList.map((userPost, index) => (
     <UserCampaignItem key={index} userPost={userPost} />
   ));
 

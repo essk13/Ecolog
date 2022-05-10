@@ -1,10 +1,11 @@
-import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import React, {useEffect} from 'react';
+import {View, StyleSheet, Text} from 'react-native';
+import {useSelector, useDispatch} from 'react-redux';
+import {RootState} from '../modules';
+import {communityActions} from '../modules/community';
 // Components
 import UserInfo from '../components/User/UserInfo/UserInfo';
-import UserTabScreen from '../components/User/UserContents/UserTabScreen';
-import {useSelector} from 'react-redux';
-import {RootState} from '../modules';
+import UserTab from '../components/User/UserContents/UserTab';
 
 const styles = (color?: any) =>
   StyleSheet.create({
@@ -19,11 +20,30 @@ function UserScreen() {
   const ploggingList = useSelector(
     (state: RootState) => state.plogging.ploggingList,
   );
+  const postList = useSelector((state: RootState) => state.community.postList);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (myInfo.data) {
+      dispatch(communityActions.getUserPostAsync.request(myInfo.data.no));
+    }
+  }, [dispatch, myInfo.data]);
+
+  if (!myInfo.data) {
+    return (
+      <View>
+        <Text>로딩중</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles('#5FA2E5').background}>
-      <UserInfo user={myInfo.data} />
-      <UserTabScreen ploggingList={ploggingList.data} />
+      <UserInfo
+        user={myInfo.data}
+        postCount={postList.data ? postList.data.length : 0}
+      />
+      <UserTab ploggingList={ploggingList.data} postList={postList.data} />
     </View>
   );
 }

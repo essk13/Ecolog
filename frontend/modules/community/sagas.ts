@@ -1,18 +1,19 @@
-import {communityActions, GET_COMMUNITY_LIST} from './actions';
-import {getCommunityList} from '../../api/community';
+import {communityActions, GET_USER_POST} from './actions';
 import {call, put, takeEvery} from 'redux-saga/effects';
-import {CommunityList} from '../../api/types';
+import {getUserPost, UserPostList} from '../../api/user';
 
-function* getCommunityListSaga() {
+function* getUserPostSaga(
+  action: ReturnType<typeof communityActions.getUserPostAsync.request>,
+) {
   try {
-    const communityList: CommunityList = yield call(getCommunityList);
-    yield put(communityActions.getCommunityListAsync.success(communityList));
+    const postList: UserPostList = yield call(getUserPost, action.payload);
+    yield put(communityActions.getUserPostAsync.success(postList));
   } catch (e: any) {
-    yield put(communityActions.getCommunityListAsync.failure(e));
+    yield put(communityActions.getUserPostAsync.failure(e));
     console.error(e);
   }
 }
 
 export function* communitySaga() {
-  yield takeEvery(GET_COMMUNITY_LIST, getCommunityListSaga);
+  yield takeEvery(GET_USER_POST, getUserPostSaga);
 }

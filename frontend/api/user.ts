@@ -26,36 +26,53 @@ export async function editUserInfo(editUserData: EditUserData) {
   return response.data;
 }
 
+export async function userFollow(userSeq: number) {
+  const response = await Api.post<UserProfile>(`/user/${userSeq}/follow`);
+  return response.data;
+}
+
 export async function getUserPost(userSeq: number) {
   const response = await Api.get<UserPostList>(`/user/${userSeq}/post`);
   return response.data;
 }
 
-export interface User {
+export interface FollowUser {
+  birth: string;
   email: string;
+  following: boolean;
+  image: string;
   name: string;
   nickname: string;
-  birth: string;
-  height: number;
-  weight: number;
-  phone: string;
-  image: string;
-  address: string;
-  login_type: string;
   no: number;
 }
 
-export interface UserProfile {
+export interface FollowUserList extends Array<FollowUser> {}
+
+export interface User {
+  address: string;
+  birth: string;
   email: string;
+  follower_user: FollowUserList;
+  following_user: FollowUserList;
+  height: number;
+  image: string;
+  login_type: string;
   name: string;
   nickname: string;
-  birth: string;
-  height: number;
-  weight: number;
+  no: number;
   phone: string;
+  weight: number;
+}
+
+export interface UserProfile {
+  birth: string;
+  email: string;
+  following: boolean;
+  follower_user: FollowUserList;
+  following_user: FollowUserList;
   image: string;
-  address: string;
-  login_type: string;
+  name: string;
+  nickname: string;
   no: number;
 }
 

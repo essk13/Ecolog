@@ -1,11 +1,9 @@
-import React, {useState} from 'react';
-import auth from '@react-native-firebase/auth';
+import React from 'react';
 import {
   NavigationContainer,
   DefaultTheme,
   CustomTheme,
 } from '@react-navigation/native';
-import LoginScreen from './screens/Auth/LoginScreen';
 import RootScreen from './screens/RootScreen';
 import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
@@ -33,23 +31,12 @@ const customTheme: CustomTheme = {
 const queryClient = new QueryClient();
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
-
-  auth().onAuthStateChanged(user => {
-    if (user) {
-      setLoggedIn(true);
-    } else {
-      setLoggedIn(false);
-    }
-  });
-
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <QueryClientProvider client={queryClient}>
           <NavigationContainer theme={customTheme}>
-            {!loggedIn && <LoginScreen />}
-            {loggedIn && <RootScreen />}
+            <RootScreen />
           </NavigationContainer>
         </QueryClientProvider>
       </PersistGate>

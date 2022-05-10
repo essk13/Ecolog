@@ -9,15 +9,15 @@ import {
 
 // --- recerUtils 의 asyncState 를 활용한 리팩토링 ---
 const initialState: CommunityState = {
-  communityList: asyncState.initial(),
+  postList: asyncState.initial(),
 };
 
 // --- reducerUtils 의 createAsyncReducer, transformToArray 를 활용한 리팩토링 ---
 const community = createReducer<CommunityState, CommunityAction>(
   initialState,
 ).handleAction(
-  transformToArray(communityActions.getCommunityListAsync),
-  createAsyncReducer(communityActions.getCommunityListAsync, 'communityList'),
+  transformToArray(communityActions.getUserPostAsync),
+  createAsyncReducer(communityActions.getUserPostAsync, 'postList'),
 );
 
 export default community;
