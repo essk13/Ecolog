@@ -4,6 +4,7 @@ import com.thedebuggers.backend.common.exception.CustomException;
 import com.thedebuggers.backend.common.util.ErrorCode;
 import com.thedebuggers.backend.domain.entity.*;
 import com.thedebuggers.backend.domain.repository.CampaignCommentRepository;
+import com.thedebuggers.backend.domain.repository.CampaignRespository;
 import com.thedebuggers.backend.domain.repository.CommentRepository;
 import com.thedebuggers.backend.dto.CommentReqDto;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ import java.util.List;
 public class CampaignCommentServiceImpl implements CampaignCommentService{
 
     private final CampaignCommentRepository campaignCommentRepository;
-    private final CampaignService campaignService;
+    private final CampaignRespository campaignRepository;
 
     @Override
     public List<CampaignComment> getCampaignCommentList(long campaignNo) {
@@ -26,7 +27,7 @@ public class CampaignCommentServiceImpl implements CampaignCommentService{
     @Override
     public void registCampaignComment(long campaignNo, User user, CommentReqDto commentDto) {
 
-        Campaign campaign = campaignService.getCampaign(campaignNo);
+        Campaign campaign = campaignRepository.findByNo(campaignNo).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
 
         CampaignComment campaignComment = CampaignComment.builder()
                 .campaign(campaign)
