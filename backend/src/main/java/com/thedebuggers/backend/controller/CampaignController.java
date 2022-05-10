@@ -34,7 +34,7 @@ public class CampaignController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Server Error")
     })
-    private ResponseEntity<?> registCampaign(
+    private ResponseEntity<CampaignResDto> registCampaign(
             @RequestPart(value = "campaign_info") CampaignReqDto campaignReqDto,
             @RequestPart(value = "image", required = false) MultipartFile imageFile,
             @PathVariable long communityNo,
@@ -43,17 +43,11 @@ public class CampaignController {
         ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
         User user = userDetails.getUser();
 
-        Campaign campaign = null;
 
-        try {
-            campaign = campaignService.registCampaign(campaignReqDto, communityNo, user, imageFile);
-        }catch (Exception e) {
-            return ResponseEntity.ok("Failed");
-        }
-        long campaignNo = campaign.getNo();
-        List<User> userList = campaignService.getCampaignMember(campaignNo);
+        CampaignResDto campaignResDto = campaignService.registCampaign(campaignReqDto, communityNo, user, imageFile);
 
-        return ResponseEntity.ok(CampaignResDto.of(campaign, userList));
+
+        return ResponseEntity.ok(campaignResDto);
     }
 
     @GetMapping
@@ -66,13 +60,7 @@ public class CampaignController {
     private ResponseEntity<List<CampaignResDto>> getCampaignList(
             @PathVariable long communityNo
     ) {
-        List<Campaign> campaignList = campaignService.getCampaignList(communityNo);
-
-        List<CampaignResDto> result = campaignList.stream().map(campaign -> {
-            List<User> userList = campaignService.getCampaignMember(campaign.getNo());
-            return CampaignResDto.of(campaign, userList);
-        }).collect(Collectors.toList());
-
+        List<CampaignResDto> result = campaignService.getCampaignList(communityNo);
         return ResponseEntity.ok(result);
     }
 
@@ -86,10 +74,8 @@ public class CampaignController {
     private ResponseEntity<CampaignResDto> getCampaign(
             @PathVariable long campaignNo
     ) {
-        Campaign campaign = campaignService.getCampaign(campaignNo);
-        List<User> userList = campaignService.getCampaignMember(campaignNo);
-
-        return ResponseEntity.ok(CampaignResDto.of(campaign, userList));
+        CampaignResDto campaignResDto = campaignService.getCampaign(campaignNo);
+        return ResponseEntity.ok(campaignResDto);
     }
 
     @PostMapping("/{campaignNo}")
@@ -105,13 +91,9 @@ public class CampaignController {
     ) {
         ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
         User user = userDetails.getUser();
-        long userNo = user.getNo();
-        Campaign campaign = campaignService.getCampaign(campaignNo);
 
-        campaignService.joinCampaign(campaign, user);
-        List<User> userList = campaignService.getCampaignMember(campaignNo);
-
-        return ResponseEntity.ok(CampaignResDto.of(campaign, userList));
+        CampaignResDto campaignResDto = campaignService.joinCampaign(campaignNo, user);
+        return ResponseEntity.ok(campaignResDto);
     }
 
     @PutMapping("/{campaignNo}")
@@ -130,10 +112,9 @@ public class CampaignController {
         ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
         User user = userDetails.getUser();
 
-        Campaign campaign = campaignService.updateCampaign(campaignReqDto, campaignNo, user, imageFile);
-        List<User> userList = campaignService.getCampaignMember(campaignNo);
+        CampaignResDto campaignResDto = campaignService.updateCampaign(campaignReqDto, campaignNo, user, imageFile);
 
-        return ResponseEntity.ok(CampaignResDto.of(campaign, userList));
+        return ResponseEntity.ok(campaignResDto);
     }
 
     @DeleteMapping("/{campaignNo}")

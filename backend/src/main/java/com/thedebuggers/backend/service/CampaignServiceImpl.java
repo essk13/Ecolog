@@ -9,11 +9,13 @@ import com.thedebuggers.backend.domain.entity.UserCampaign;
 import com.thedebuggers.backend.domain.repository.CampaignRespository;
 import com.thedebuggers.backend.domain.repository.UserCampaignRepository;
 import com.thedebuggers.backend.dto.CampaignReqDto;
+import com.thedebuggers.backend.dto.CampaignResDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -26,7 +28,7 @@ public class CampaignServiceImpl implements CampaignService{
     private final S3Service s3Service;
 
     @Override
-    public Campaign registCampaign(CampaignReqDto campaignReqDto, long communityNo, User user, MultipartFile imageFile) {
+    public CampaignResDto registCampaign(CampaignReqDto campaignReqDto, long communityNo, User user, MultipartFile imageFile) {
 
         Community community = communityService.getCommunity(communityNo);
 
@@ -59,13 +61,23 @@ public class CampaignServiceImpl implements CampaignService{
 
         userCampaignRepository.save(userCampaign);
 
-        return campaign;
+        List<User> userList = userCampaignRepository.findAllUserByCampaignNo(campaign.getNo());
+
+        CampaignResDto campaignResDto = CampaignResDto.of(campaign, userList);
+
+        return campaignResDto;
     }
 
     @Override
-    public List<Campaign> getCampaignList(long communityNo) {
+    public List<CampaignResDto> getCampaignList(long communityNo) {
         List<Campaign> campaignList = campaignRespository.findAllByCommunityNo(communityNo);
-        return campaignList;
+
+        List<CampaignResDto> result = campaignList.stream().map(campaign -> {
+            List<User> userList = userCampaignRepository.findAllUserByCampaignNo(campaign.getNo());
+            return CampaignResDto.of(campaign, userList);
+        }).collect(Collectors.toList());
+
+        return result;
     }
 
     @Override
@@ -75,15 +87,17 @@ public class CampaignServiceImpl implements CampaignService{
     }
 
     @Override
-    public Campaign getCampaign(long campaignNo) {
+    public CampaignResDto getCampaign(long campaignNo) {
         Campaign campaign = campaignRespository.findByNo(campaignNo).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
-        return campaign;
+        List<User> userList = userCampaignRepository.findAllUserByCampaignNo(campaignNo);
+
+        return CampaignResDto.of(campaign, userList);
     }
 
     @Override
-    public void joinCampaign(Campaign campaign, User user) {
+    public CampaignResDto joinCampaign(long campaignNo, User user) {
+        Campaign campaign = campaignRespository.findByNo(campaignNo).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
         UserCampaign existUserCampaign = userCampaignRepository.findByCampaignNoAndUserNo(campaign.getNo(), user.getNo());
-
         if (existUserCampaign == null) {
             UserCampaign userCampaign = UserCampaign.builder()
                     .campaign(campaign)
@@ -95,10 +109,13 @@ public class CampaignServiceImpl implements CampaignService{
             long existNo = existUserCampaign.getNo();
             userCampaignRepository.deleteById(existNo);
         }
+        List<User> userList = userCampaignRepository.findAllUserByCampaignNo(campaignNo);
+
+        return CampaignResDto.of(campaign, userList);
     }
 
     @Override
-    public Campaign updateCampaign(CampaignReqDto campaignReqDto, long campaignNo, User user, MultipartFile imageFile) {
+    public CampaignResDto updateCampaign(CampaignReqDto campaignReqDto, long campaignNo, User user, MultipartFile imageFile) {
         Campaign campaign = campaignRespository.findByNo(campaignNo).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
 
         if (campaign.getUser().getNo() != user.getNo()) throw new CustomException(ErrorCode.CONTENT_UNAUTHORIZED);
@@ -120,7 +137,9 @@ public class CampaignServiceImpl implements CampaignService{
 
         campaign = campaignRespository.save(campaign);
 
-        return campaign;
+        List<User> userList = userCampaignRepository.findAllUserByCampaignNo(campaignNo);
+
+        return CampaignResDto.of(campaign, userList);
 
     }
 
