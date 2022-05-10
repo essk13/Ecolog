@@ -43,6 +43,12 @@ public class User {
 
     private String address;
 
+    private int coin;
+
+    private int avatar;
+
+    private int room;
+
     @NotNull
     @Enumerated(EnumType.STRING)
     private LoginType loginType;
