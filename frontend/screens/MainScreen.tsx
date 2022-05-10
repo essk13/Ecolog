@@ -17,10 +17,28 @@ function MainScreen() {
         headerShown: false,
       }}>
       <Tab.Screen name="Plogging" component={PloggingScreen} />
-      <Tab.Screen name="User" component={UserScreen} />
-      <Tab.Screen name="Community" component={CommunityScreen} />
+      <Tab.Screen
+        name="User"
+        component={UserScreen}
+        options={{
+          unmountOnBlur: true,
+        }}
+      />
+      <Tab.Screen
+        name="Community"
+        component={CommunityScreen}
+        options={{
+          unmountOnBlur: true,
+        }}
+      />
       <Tab.Screen name="Survey" component={SurveyScreen} />
-      <Tab.Screen name="AR" component={ARScreen} />
+      <Tab.Screen
+        name="AR"
+        component={ARScreen}
+        options={{
+          unmountOnBlur: true,
+        }}
+      />
     </Tab.Navigator>
   );
 }

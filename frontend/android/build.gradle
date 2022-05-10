@@ -26,6 +26,9 @@ buildscript {
         google()
         jcenter()
         mavenCentral()
+        flatDir {
+            dirs "$rootDir/app/libs"
+        }
     }
     dependencies {
         classpath("com.android.tools.build:gradle:7.0.4")
