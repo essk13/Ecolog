@@ -3,9 +3,7 @@ import {Text, View, StyleSheet} from 'react-native';
 
 const styles = () =>
   StyleSheet.create({
-    infoConstainer: {
-      marginLeft: 25,
-    },
+    infoConstainer: {},
   });
 
 const fontStyles = (size?: number, weight?: any, align?: any, color?: any) =>

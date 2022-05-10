@@ -44,6 +44,7 @@ function UserProfileScreen() {
     <View style={styles('#5FA2E5').background}>
       <UserInfo
         user={userProfile.data}
+        userIsLoading={userProfile.isFetching}
         postCount={userPostList.data ? userPostList.data.length : 0}
       />
       <UserTab

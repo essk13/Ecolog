@@ -12,6 +12,7 @@ import PloggingRankingScreen from './Plogging/PloggingRankingScreen';
 import PloggingRecordScreen from './Plogging/PloggingRecordScreen';
 import UserEditScreen from './User/UserEditScreen';
 import UserProfileScreen from './User/UserProfileScreen';
+import UserFollowScreen from './User/UserFollowScreen';
 import CommunityHomeScreen from './Community/CommunityHome';
 import SurveyPageScreen from './Survey/SurveyPageScreen';
 import SurveyResultScreen from './Survey/SurveyResultScreen';
@@ -63,6 +64,7 @@ function RootScreen() {
           />
           <Stack.Screen name="UserEdit" component={UserEditScreen} />
           <Stack.Screen name="UserProfile" component={UserProfileScreen} />
+          <Stack.Screen name="UserFollow" component={UserFollowScreen} />
           <Stack.Screen name="CommunityHome" component={CommunityHomeScreen} />
           <Stack.Screen
             name="CommunityCreate"

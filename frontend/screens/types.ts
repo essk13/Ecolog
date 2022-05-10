@@ -37,6 +37,10 @@ export type RootStackParamList = {
   UserProfile: {
     id: number;
   };
+  UserFollow: {
+    userId: number;
+    index: number;
+  };
   CommunityHome: undefined;
   CommunityCreate: undefined;
   CampaignDetail: undefined;

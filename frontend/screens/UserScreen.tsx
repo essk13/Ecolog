@@ -41,6 +41,7 @@ function UserScreen() {
     <View style={styles('#5FA2E5').background}>
       <UserInfo
         user={myInfo.data}
+        userIsLoading={myInfo.loading}
         postCount={postList.data ? postList.data.length : 0}
       />
       <UserTab ploggingList={ploggingList.data} postList={postList.data} />
