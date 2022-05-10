@@ -1,10 +1,12 @@
 package com.thedebuggers.backend.service;
 
 import com.thedebuggers.backend.common.exception.CustomException;
+import com.thedebuggers.backend.common.util.Constants;
 import com.thedebuggers.backend.common.util.DefaultImageUrl;
 import com.thedebuggers.backend.common.util.ErrorCode;
 import com.thedebuggers.backend.domain.entity.User;
 import com.thedebuggers.backend.domain.entity.UserFollow;
+import com.thedebuggers.backend.domain.repository.UserAssetRepository;
 import com.thedebuggers.backend.domain.repository.UserFollowRepository;
 import com.thedebuggers.backend.domain.repository.UserRepository;
 import com.thedebuggers.backend.dto.*;
@@ -13,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,6 +26,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserFollowRepository followRepository;
+    private final UserAssetRepository userAssetRepository;
 
     private final S3Service s3Service;
 
@@ -180,9 +182,29 @@ public class UserServiceImpl implements UserService {
                 .phone(user.getPhone())
                 .image(user.getImage())
                 .address(user.getAddress())
+                .avatar(user.getAvatar())
+                .room(user.getRoom())
                 .loginType(user.getLoginType())
                 .followingUser(userFollowing.stream().map(BaseUserInfoResDto::of).collect(Collectors.toList()))
                 .followerUser(userFollower.stream().map(BaseUserInfoResDto::of).collect(Collectors.toList()))
                 .build();
+    }
+
+    @Override
+    public void changeAsset(User user, AssetChangeReqDto assetChangeReqDto) {
+
+        long avatarNo = assetChangeReqDto.getAvatarNo();
+        long roomNo = assetChangeReqDto.getRoomNo();
+
+        if (userAssetRepository.existsByUserNoAndAssetNo(user.getNo(), avatarNo)
+                && userAssetRepository.existsByUserNoAndAssetNo(user.getNo(), roomNo + Constants.ROOM_ITEM_NO)) {
+            user.setAvatar(avatarNo);
+            user.setRoom(roomNo);
+        }
+        else {
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+        }
+
+        userRepository.save(user);
     }
 }

@@ -1,10 +1,7 @@
 package com.thedebuggers.backend.service;
 
 import com.thedebuggers.backend.domain.entity.User;
-import com.thedebuggers.backend.dto.LoginReqDto;
-import com.thedebuggers.backend.dto.MyInfoResDto;
-import com.thedebuggers.backend.dto.ProfileResDto;
-import com.thedebuggers.backend.dto.UserUpdateReqDto;
+import com.thedebuggers.backend.dto.*;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
@@ -23,4 +20,6 @@ public interface UserService {
     void followUser(long followerNo, long followeeNo);
 
     MyInfoResDto getMyInfo(long userNo);
+
+    void changeAsset(User user, AssetChangeReqDto assetChangeReqDto);
 }

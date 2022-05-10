@@ -45,9 +45,9 @@ public class User {
 
     private int coin;
 
-    private int avatar;
+    private long avatar;
 
-    private int room;
+    private long room;
 
     @NotNull
     @Enumerated(EnumType.STRING)

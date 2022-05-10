@@ -2,16 +2,10 @@ package com.thedebuggers.backend.controller;
 
 import com.thedebuggers.backend.auth.ELUserDetails;
 import com.thedebuggers.backend.domain.entity.User;
-import com.thedebuggers.backend.dto.MyInfoResDto;
-import com.thedebuggers.backend.dto.PostResDto;
-import com.thedebuggers.backend.dto.ProfileResDto;
-import com.thedebuggers.backend.dto.UserUpdateReqDto;
+import com.thedebuggers.backend.dto.*;
 import com.thedebuggers.backend.service.PostService;
 import com.thedebuggers.backend.service.UserService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Api(value = "사용자 정보 관련 API", tags = {"User"})
 @Slf4j
@@ -127,6 +120,21 @@ public class UserController {
 
         userService.followUser(followerNo, userNo);
 
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/asset-change")
+    @ApiOperation(value = "아바타 및 배경 변경")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Server Error")
+    })
+    private ResponseEntity<User> changeAsset(@ApiIgnore Authentication authentication,
+                                             @ApiParam AssetChangeReqDto assetChangeReqDto) {
+        ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
+        User user = userDetails.getUser();
+        userService.changeAsset(user, assetChangeReqDto);
         return ResponseEntity.noContent().build();
     }
 }
