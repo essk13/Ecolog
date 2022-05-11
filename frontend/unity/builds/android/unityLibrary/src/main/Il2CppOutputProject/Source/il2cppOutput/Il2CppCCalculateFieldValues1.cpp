@@ -416,6 +416,8 @@ struct TextColorGradient_t22D94E441E8E8CD772B966C167E5C0AEB0919D70;
 struct TextElement_tCEF567A8810788262275B39DC39CBA6EBE7472DA;
 // UnityEngine.TextCore.Text.TextInfo
 struct TextInfo_t27E58E62A7552C66D38C175AF9D22622365F5D09;
+// TMPro.TextMeshProUGUI
+struct TextMeshProUGUI_t101091AF4B578BB534C92E9D1EEAF0611636D957;
 // UnityEngine.TextCore.Text.TextSettings
 struct TextSettings_tB7F55685AFFD4A96F714427BCACFD6958E357D64;
 // UnityEngine.TextCore.Text.TextStyleSheet
@@ -8174,12 +8176,12 @@ struct CharacterSelection_tA3702BEFD80A20BCA3E6E4058DF3054537B53D2A  : public Mo
 	Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C* ___myAvatarList_11;
 	// System.Int32[] CharacterSelection::myRoomList
 	Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C* ___myRoomList_12;
-	// UnityEngine.UI.Text CharacterSelection::myCoin
-	Text_tD60B2346DAA6666BF0D822FF607F0B220C2B9E62* ___myCoin_13;
-	// UnityEngine.UI.Text CharacterSelection::warningText
-	Text_tD60B2346DAA6666BF0D822FF607F0B220C2B9E62* ___warningText_14;
-	// UnityEngine.UI.Text CharacterSelection::nowConfirmText
-	Text_tD60B2346DAA6666BF0D822FF607F0B220C2B9E62* ___nowConfirmText_15;
+	// TMPro.TextMeshProUGUI CharacterSelection::myCoin
+	TextMeshProUGUI_t101091AF4B578BB534C92E9D1EEAF0611636D957* ___myCoin_13;
+	// TMPro.TextMeshProUGUI CharacterSelection::warningText
+	TextMeshProUGUI_t101091AF4B578BB534C92E9D1EEAF0611636D957* ___warningText_14;
+	// TMPro.TextMeshProUGUI CharacterSelection::nowConfirmText
+	TextMeshProUGUI_t101091AF4B578BB534C92E9D1EEAF0611636D957* ___nowConfirmText_15;
 };
 
 // RNScript

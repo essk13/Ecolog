@@ -5,7 +5,7 @@ dependencies {
     }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     buildToolsVersion '30.0.2'
 
     compileOptions {
@@ -15,7 +15,7 @@ android {
 
     defaultConfig {
         minSdkVersion 22
-        targetSdkVersion 30
+        targetSdkVersion 31
         applicationId 'com.DefaultCompany.EcologAvatar'
         ndk {
             abiFilters 'armeabi-v7a', 'arm64-v8a'
