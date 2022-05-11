@@ -43,7 +43,7 @@ public class User {
 
     private String address;
 
-    private int coin;
+    private int coin = 700;
 
     private long avatar;
 

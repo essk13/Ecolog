@@ -2,7 +2,6 @@ package com.thedebuggers.backend.service;
 
 import com.thedebuggers.backend.common.exception.CustomException;
 import com.thedebuggers.backend.common.util.Constants;
-import com.thedebuggers.backend.common.util.DefaultImageUrl;
 import com.thedebuggers.backend.common.util.ErrorCode;
 import com.thedebuggers.backend.domain.entity.User;
 import com.thedebuggers.backend.domain.entity.UserFollow;
@@ -12,6 +11,7 @@ import com.thedebuggers.backend.domain.repository.UserRepository;
 import com.thedebuggers.backend.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +23,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
+    @Value("${ecolog.default.profile}")
+    public String PROFILE_DEFAULT_URL;
 
     private final UserRepository userRepository;
     private final UserFollowRepository followRepository;
@@ -42,8 +45,9 @@ public class UserServiceImpl implements UserService {
                 .email(loginDto.getEmail())
                 .name(loginDto.getName())
                 .password("")
+                .coin(700)
                 .nickname(loginDto.getEmail().substring(0, loginDto.getEmail().indexOf('@')))
-                .image(DefaultImageUrl.PROFILE_DEFAULT_URL)
+                .image(PROFILE_DEFAULT_URL)
                 .loginType(loginDto.getLoginType())
                 .build();
 

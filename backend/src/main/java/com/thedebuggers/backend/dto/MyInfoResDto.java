@@ -22,6 +22,7 @@ public class MyInfoResDto extends BaseUserInfoResDto {
     private double weight;
     private String phone;
     private String address;
+    private long coin;
     private long avatar;
     private long room;
     private LoginType loginType;
@@ -41,6 +42,7 @@ public class MyInfoResDto extends BaseUserInfoResDto {
                 .phone(user.getPhone())
                 .image(user.getImage())
                 .address(user.getAddress())
+                .coin(user.getCoin())
                 .avatar(user.getAvatar())
                 .room(user.getRoom())
                 .loginType(user.getLoginType())
