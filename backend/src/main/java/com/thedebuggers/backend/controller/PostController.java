@@ -72,10 +72,10 @@ public class PostController {
             @ApiResponse(code = 500, message = "Server Error")
     })
     private ResponseEntity<PostResDto> getPost(@ApiIgnore Authentication authentication,
-                                               @ApiParam(defaultValue = "1") @PathVariable long postNo) throws Exception {
+                                               @ApiParam(defaultValue = "1") @PathVariable long postNo) {
         ELUserDetails userDetails = (ELUserDetails)authentication.getDetails();
-        User user = userDetails.getUser();
-        PostResDto postResDto = postService.getPost(user, postNo);
+        long userNo = userDetails.getUser().getNo();
+        PostResDto postResDto = postService.getPost(userNo, postNo);
         return ResponseEntity.ok(postResDto);
     }
 
@@ -91,8 +91,8 @@ public class PostController {
                                                @RequestPart(value = "post_info") PostReqDto postDto,
                                                @RequestPart(value = "image", required = false) MultipartFile imageFile) {
         ELUserDetails userDetails = (ELUserDetails)authentication.getDetails();
-        User user = userDetails.getUser();
-        boolean result = postService.modifyPost(user, postNo, postDto, imageFile);
+        long userNo = userDetails.getUser().getNo();
+        boolean result = postService.modifyPost(userNo, postNo, postDto, imageFile);
         return ResponseEntity.ok(result);
     }
 
@@ -106,8 +106,8 @@ public class PostController {
     private ResponseEntity<Boolean> deletePost(@ApiIgnore Authentication authentication,
                                                @PathVariable long postNo) {
         ELUserDetails userDetails = (ELUserDetails)authentication.getDetails();
-        User user = userDetails.getUser();
-        boolean result = postService.deletePost(user, postNo);
+        long userNo = userDetails.getUser().getNo();
+        boolean result = postService.deletePost(userNo, postNo);
         return ResponseEntity.ok(result);
     }
 
@@ -122,7 +122,7 @@ public class PostController {
                                              @PathVariable long postNo) {
         ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
         long userNo = userDetails.getUser().getNo();
-        boolean result = postService.likePost(postNo, userNo);
+        boolean result = postService.likePost(userNo, postNo);
         return ResponseEntity.ok(result);
     }
 
@@ -133,8 +133,8 @@ public class PostController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Server Error")
     })
-    private ResponseEntity<List<PostResDto>> getMyPostList(
-            @ApiParam(defaultValue = "1") @PathVariable long communityNo, Authentication authentication) {
+    private ResponseEntity<List<PostResDto>> getMyPostList(@ApiIgnore Authentication authentication,
+                                                           @ApiParam(defaultValue = "1") @PathVariable long communityNo) {
         ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
         long userNo = userDetails.getUser().getNo();
 

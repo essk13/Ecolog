@@ -6,21 +6,15 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<Post> findAllByTypeAndIsOpenTrue(int type);
     List<Post> findAllByCommunityNoAndType(long communityNo, int type);
-    Optional<Post> findByNo(long postNo);
 
     @Modifying
-    @Query("update Post p set p.likeCount = p.likeCount + 1 where p.no = :postNo")
-    void updateLikePlus(long postNo);
-
-    @Modifying
-    @Query("update Post p set p.likeCount = p.likeCount - 1 where p.no = :postNo")
-    void updateLikeMinus(long postNo);
+    @Query("update Post p set p.likeCount = p.likeCount + :count where p.no = :postNo")
+    void updateLike(long postNo, int count);
 
     List<Post> findAllByCommunityNoAndUserNo(long communityNo, long userNo);
 

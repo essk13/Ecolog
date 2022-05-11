@@ -46,7 +46,7 @@ public class PostServiceImpl implements PostService {
                 .image(imageUrl)
                 .createdAt(LocalDateTime.now())
                 .isOpen(postReqDto.isOpen())
-                .type(postReqDto.getType())
+                .type(postReqDto.getType() != null ? postReqDto.getType() : PostType.FREE.getValue())
                 .community(communityRepository.findByNo(communityNo))
                 .user(user)
                 .build();
@@ -93,20 +93,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post getPost(long postNo) {
-        Post post = postRepository.findByNo(postNo).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
-        return post;
-    }
-
-    @Override
-    public PostResDto getPost(User user, long postNo) {
-        Post post = postRepository.findByNo(postNo).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
-        if (!post.isOpen() && userCommunityRepository.findAllByCommunityNoAndUserNo(post.getCommunity().getNo(), user.getNo()) == null) {
+    public PostResDto getPost(long userNo, long postNo) {
+        Post post = postRepository.findById(postNo).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
+        if (!post.isOpen() && userCommunityRepository.findAllByCommunityNoAndUserNo(post.getCommunity().getNo(), userNo) == null) {
             throw new CustomException(ErrorCode.CONTENT_UNAUTHORIZED);
         }
 
         boolean isLiked = false;
-        if (postLikeRepository.findByPostNoAndUserNo(postNo, user.getNo()) != null) {
+        if (postLikeRepository.existsByPostNoAndUserNo(postNo, userNo)) {
             isLiked = true;
         }
 
@@ -114,9 +108,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public boolean modifyPost(User user, long postNo, PostReqDto postDto, MultipartFile imageFile) {
-        Post post = postRepository.findByNo(postNo).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
-        if (user.getNo() != post.getUser().getNo())
+    public boolean modifyPost(long userNo, long postNo, PostReqDto postReqDto, MultipartFile imageFile) {
+        Post post = postRepository.findById(postNo).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
+        if (userNo != post.getUser().getNo())
             throw new CustomException(ErrorCode.CONTENT_UNAUTHORIZED);
 
         String imageUrl = null;
@@ -125,23 +119,26 @@ public class PostServiceImpl implements PostService {
             imageUrl = s3Service.upload(imageFile);
         }
 
-        if (postDto.getTitle() != null)
-            post.setTitle(postDto.getTitle());
+        if (postReqDto.getTitle() != null)
+            post.setTitle(postReqDto.getTitle());
 
-        if (postDto.getContent() != null)
-            post.setContent(postDto.getContent());
+        if (postReqDto.getContent() != null)
+            post.setContent(postReqDto.getContent());
 
         post.setImage(imageUrl);
-        post.setOpen(postDto.isOpen());
+        post.setOpen(postReqDto.isOpen());
+
+        if (postReqDto.getType() != null)
+            post.setType(postReqDto.getType());
 
         postRepository.save(post);
         return true;
     }
 
     @Override
-    public boolean deletePost(User user, long postNo) {
-        Post post = postRepository.findByNo(postNo).orElse(null);
-        if (user.getNo() != post.getUser().getNo())
+    public boolean deletePost(long userNo, long postNo) {
+        Post post = postRepository.findById(postNo).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
+        if (userNo != post.getUser().getNo())
             throw new CustomException(ErrorCode.CONTENT_UNAUTHORIZED);
 
         postRepository.deleteById(postNo);
@@ -150,22 +147,21 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public boolean likePost(long postNo, long userNo) {
-        PostLike like = PostLike.builder()
-                .post(postRepository.findByNo(postNo).orElse(null))
-                .user(userRepository.findByNo(userNo).orElse(null))
-                .build();
+    public boolean likePost(long userNo, long postNo) {
+        boolean isLiked = postLikeRepository.existsByPostNoAndUserNo(postNo, userNo);
 
-        PostLike existLike = postLikeRepository.findByPostNoAndUserNo(postNo, userNo);
+        if (!isLiked) {
+            PostLike like = PostLike.builder()
+                    .post(postRepository.findById(postNo).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND)))
+                    .user(userRepository.findByNo(userNo).orElseThrow(() -> new CustomException(ErrorCode.BAD_REQUEST)))
+                    .build();
 
-        if (existLike == null) {
             postLikeRepository.save(like);
-            postRepository.updateLikePlus(postNo);
+            postRepository.updateLike(postNo, 1);
         }
         else {
-            long existNo = existLike.getNo();
-            postRepository.updateLikeMinus(postNo);
-            postLikeRepository.deleteById(existNo);
+            postLikeRepository.deleteByPostNoAndUserNo(postNo, userNo);
+            postRepository.updateLike(postNo, -1);
         }
         return true;
     }

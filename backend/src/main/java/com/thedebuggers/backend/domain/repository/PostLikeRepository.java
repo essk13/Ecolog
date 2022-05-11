@@ -5,5 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PostLikeRepository extends JpaRepository<PostLike, Long> {
 
-    PostLike findByPostNoAndUserNo(long postNo, long userNo);
+    boolean existsByPostNoAndUserNo(long postNo, long userNo);
+
+    void deleteByPostNoAndUserNo(long postNo, long userNo);
 }

@@ -30,7 +30,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void registComment(long postNo, User user, CommentReqDto commentDto) {
-        Post post = postRepository.findByNo(postNo).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+        Post post = postRepository.findById(postNo).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
 
         Comment comment = Comment.builder()
                 .post(post)

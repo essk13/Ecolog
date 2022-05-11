@@ -1,6 +1,5 @@
 package com.thedebuggers.backend.service;
 
-import com.thedebuggers.backend.domain.entity.Post;
 import com.thedebuggers.backend.domain.entity.User;
 import com.thedebuggers.backend.dto.PostReqDto;
 import com.thedebuggers.backend.dto.PostResDto;
@@ -19,14 +18,12 @@ public interface PostService {
 
     List<PostResDto> getMyPostListInCommunity(long communityNo, long userNo);
 
-    Post getPost(long postNo);
+    PostResDto getPost(long userNo, long postNo);
 
-    PostResDto getPost(User user, long postNo) throws Exception;
+    boolean modifyPost(long userNo, long postNo, PostReqDto postDto, MultipartFile imageFile);
 
-    boolean modifyPost(User user, long postNo, PostReqDto postDto, MultipartFile imageFile);
+    boolean deletePost(long userNo, long postNo);
 
-    boolean deletePost(User user, long postNo);
-
-    boolean likePost(long postNo, long userNo);
+    boolean likePost(long userNo, long postNo);
 
 }

@@ -6,6 +6,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -26,7 +28,7 @@ public class Post {
     private String image;
     private LocalDateTime createdAt;
     private boolean isOpen;
-    private long likeCount;
+    private int likeCount;
     private int type;
 
     @ManyToOne
@@ -36,5 +38,8 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "user_no")
     private User user;
+
+    @OneToMany(mappedBy = "post", cascade = {CascadeType.REMOVE})
+    private Set<Comment> comments = new HashSet<>();
 
 }

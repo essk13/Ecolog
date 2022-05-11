@@ -16,6 +16,7 @@ public class GlobalExceptionHandler {
     // Custom Exception
     @ExceptionHandler(CustomException.class)
     protected ResponseEntity<ErrorResponseBody> customException(final CustomException ex) {
+        ex.printStackTrace();
         log.error("customException: {}", ex.getErrorCode());
         return ResponseEntity.status(ex.getErrorCode().getStatus().value()).body(ErrorResponseBody.of(ex.getErrorCode()));
     }
@@ -23,6 +24,7 @@ public class GlobalExceptionHandler {
     // 401 Unauthorized
     @ExceptionHandler(AuthorizationServiceException.class)
     protected ResponseEntity<ErrorResponseBody> authorizationException(final AuthorizationServiceException ex) {
+        ex.printStackTrace();
         log.error("authorizationException: {}", ex.getMessage());
         return ResponseEntity.status(ErrorCode.UNAUTHORIZED.getStatus().value()).body(ErrorResponseBody.of(ErrorCode.UNAUTHORIZED));
     }
@@ -30,6 +32,7 @@ public class GlobalExceptionHandler {
     // 404 Not Found
     @ExceptionHandler(NoHandlerFoundException.class)
     protected ResponseEntity<ErrorResponseBody> notFoundException(final NoHandlerFoundException ex) {
+        ex.printStackTrace();
         log.error("notFoundException: {}", ex.getMessage());
         return ResponseEntity.status(ErrorCode.NOT_FOUND.getStatus().value()).body(ErrorResponseBody.of(ErrorCode.NOT_FOUND));
     }
