@@ -33,10 +33,9 @@ public class CommentController {
             @ApiResponse(code = 500, message = "Server Error")
     })
     private ResponseEntity<List<CommentResDto>> getCommentList(@ApiParam(defaultValue = "1") @PathVariable long postNo) {
-        List<Comment> commentList = commentService.getCommentList(postNo);
 
-        List<CommentResDto> result = commentList.stream().map(CommentResDto::of).collect(Collectors.toList());
-        return ResponseEntity.ok(result);
+        List<CommentResDto> commentList = commentService.getCommentList(postNo);
+        return ResponseEntity.ok(commentList);
     }
 
     @PostMapping("/{communityNo}/post/{postNo}/comment")
@@ -62,11 +61,11 @@ public class CommentController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Server Error")
     })
-    private ResponseEntity<?> getCommentDetail(@ApiParam(defaultValue = "1") @PathVariable long commentNo) {
+    private ResponseEntity<CommentResDto> getCommentDetail(@ApiParam(defaultValue = "1") @PathVariable long commentNo) {
 
-        Comment comment = commentService.getCommentByNo(commentNo);
+        CommentResDto comment = commentService.getCommentByNo(commentNo);
 
-        return ResponseEntity.ok(CommentResDto.of(comment));
+        return ResponseEntity.ok(comment);
     }
 
     @PutMapping("/{communityNo}/post/{postNo}/comment/{commentNo}")
@@ -112,9 +111,8 @@ public class CommentController {
         ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
         long userNo = userDetails.getUser().getNo();
 
-        List<Comment> commentList = commentService.getUserCommentsInCommunity(communityNo, userNo);
+        List<CommentResDto> commentList = commentService.getUserCommentsInCommunity(communityNo, userNo);
 
-        List<CommentResDto> result = commentList.stream().map(CommentResDto::of).collect(Collectors.toList());
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(commentList);
     }
 }

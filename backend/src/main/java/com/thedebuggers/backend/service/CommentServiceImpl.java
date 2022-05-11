@@ -6,29 +6,31 @@ import com.thedebuggers.backend.domain.entity.Comment;
 import com.thedebuggers.backend.domain.entity.Post;
 import com.thedebuggers.backend.domain.entity.User;
 import com.thedebuggers.backend.domain.repository.CommentRepository;
+import com.thedebuggers.backend.domain.repository.PostRepository;
 import com.thedebuggers.backend.dto.CommentReqDto;
+import com.thedebuggers.backend.dto.CommentResDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class CommentServiceImpl implements CommentService{
+public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
-    private final PostService postService;
+    private final PostRepository postRepository;
 
     @Override
-    public List<Comment> getCommentList(long postNo) {
-        return commentRepository.findByPostNo(postNo);
+    public List<CommentResDto> getCommentList(long postNo) {
+
+        return commentRepository.findByPostNo(postNo).stream().map(CommentResDto::of).collect(Collectors.toList());
     }
 
     @Override
     public void registComment(long postNo, User user, CommentReqDto commentDto) {
-        Post post = postService.getPost(postNo);
-
-        if (post == null) throw new CustomException(ErrorCode.NOT_FOUND);
+        Post post = postRepository.findByNo(postNo).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
 
         Comment comment = Comment.builder()
                 .post(post)
@@ -40,16 +42,17 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public Comment getCommentByNo(long commentNo) {
-        return commentRepository.findByNo(commentNo).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+    public CommentResDto getCommentByNo(long commentNo) {
+        Comment comment = getComment(commentNo);
+        return CommentResDto.of(comment);
     }
 
     @Override
-    public void updateComment(long commentNo, CommentReqDto commentDto, User user){
+    public void updateComment(long commentNo, CommentReqDto commentDto, User user) {
 
-        Comment comment = commentRepository.findByNo(commentNo).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+        Comment comment = getComment(commentNo);
 
-        if (comment.getUser().getNo() != user.getNo()) throw new CustomException(ErrorCode.METHOD_NOT_ALLOWED);
+        validateCommentOwner(user, comment);
 
         comment.setContent(commentDto.getContent());
 
@@ -59,15 +62,23 @@ public class CommentServiceImpl implements CommentService{
     @Override
     public void deleteComment(long commentNo, User user) {
 
-        Comment comment = commentRepository.findByNo(commentNo).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+        Comment comment = getComment(commentNo);
 
-        if (comment.getUser().getNo() != user.getNo()) throw new CustomException(ErrorCode.METHOD_NOT_ALLOWED);
+        validateCommentOwner(user, comment);
 
         commentRepository.delete(comment);
     }
 
     @Override
-    public List<Comment> getUserCommentsInCommunity(long communityNo, long userNo) {
-        return commentRepository.getUserCommentsInCommunity(communityNo, userNo);
+    public List<CommentResDto> getUserCommentsInCommunity(long communityNo, long userNo) {
+        return commentRepository.getUserCommentsInCommunity(communityNo, userNo).stream().map(CommentResDto::of).collect(Collectors.toList());
+    }
+
+    private Comment getComment(long commentNo) {
+        return commentRepository.findByNo(commentNo).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+    }
+
+    private void validateCommentOwner(User user, Comment comment) {
+        if (comment.getUser().getNo() != user.getNo()) throw new CustomException(ErrorCode.METHOD_NOT_ALLOWED);
     }
 }

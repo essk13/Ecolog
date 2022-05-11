@@ -5,12 +5,13 @@ import com.thedebuggers.backend.common.util.ErrorCode;
 import com.thedebuggers.backend.domain.entity.*;
 import com.thedebuggers.backend.domain.repository.CampaignCommentRepository;
 import com.thedebuggers.backend.domain.repository.CampaignRespository;
-import com.thedebuggers.backend.domain.repository.CommentRepository;
 import com.thedebuggers.backend.dto.CommentReqDto;
+import com.thedebuggers.backend.dto.CommentResDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -20,8 +21,8 @@ public class CampaignCommentServiceImpl implements CampaignCommentService{
     private final CampaignRespository campaignRepository;
 
     @Override
-    public List<CampaignComment> getCampaignCommentList(long campaignNo) {
-        return campaignCommentRepository.findByCampaignNo(campaignNo);
+    public List<CommentResDto> getCampaignCommentList(long campaignNo) {
+        return campaignCommentRepository.findByCampaignNo(campaignNo).stream().map(CommentResDto::of).collect(Collectors.toList());
     }
 
     @Override
@@ -39,16 +40,19 @@ public class CampaignCommentServiceImpl implements CampaignCommentService{
     }
 
     @Override
-    public CampaignComment getCampaignCommentByNo(long campaignCommentNo) {
-        return campaignCommentRepository.findByNo(campaignCommentNo).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+    public CommentResDto getCampaignCommentByNo(long campaignCommentNo) {
+        CampaignComment comment = getCampaignComment(campaignCommentNo);
+        return CommentResDto.of(comment);
     }
+
+
 
     @Override
     public void updateCampaignComment(long campaignCommentNo, CommentReqDto commentDto, User user){
 
-        CampaignComment campaignComment = getCampaignCommentByNo(campaignCommentNo);
+        CampaignComment campaignComment = getCampaignComment(campaignCommentNo);
 
-        validateCampaignCommentUser(campaignComment, user);
+        validateCampaignCommentOwner(campaignComment, user);
 
         campaignComment.setContent(commentDto.getContent());
 
@@ -58,19 +62,22 @@ public class CampaignCommentServiceImpl implements CampaignCommentService{
     @Override
     public void deleteCampaignComment(long campaignCommentNo, User user) {
 
-        CampaignComment campaignComment = getCampaignCommentByNo(campaignCommentNo);
+        CampaignComment campaignComment = getCampaignComment(campaignCommentNo);
 
-        validateCampaignCommentUser(campaignComment, user);
+        validateCampaignCommentOwner(campaignComment, user);
 
         campaignCommentRepository.delete(campaignComment);
     }
 
     @Override
-    public List<CampaignComment> getUserCampaignCommentsInCommunity(long communityNo, long userNo) {
-        return campaignCommentRepository.getUserCampaignCommentsInCommunity(communityNo, userNo);
+    public List<CommentResDto> getUserCampaignCommentsInCommunity(long communityNo, long userNo) {
+        return campaignCommentRepository.getUserCampaignCommentsInCommunity(communityNo, userNo).stream().map(CommentResDto::of).collect(Collectors.toList());
     }
 
-    public void validateCampaignCommentUser(CampaignComment campaignComment, User user){
+    public void validateCampaignCommentOwner(CampaignComment campaignComment, User user){
         if (campaignComment.getUser().getNo() != user.getNo()) throw new CustomException(ErrorCode.METHOD_NOT_ALLOWED);
+    }
+    private CampaignComment getCampaignComment(long campaignCommentNo) {
+        return campaignCommentRepository.findByNo(campaignCommentNo).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
     }
 }

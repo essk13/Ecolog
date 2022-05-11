@@ -35,10 +35,9 @@ public class CampaignCommentController {
             @ApiResponse(code = 500, message = "Server Error")
     })
     private ResponseEntity<List<CommentResDto>> getCampaignCommentList(@ApiParam(defaultValue = "1") @PathVariable long campaignNo) {
-        List<CampaignComment> commentList = campaignCommentService.getCampaignCommentList(campaignNo);
+        List<CommentResDto> commentList = campaignCommentService.getCampaignCommentList(campaignNo);
 
-        List<CommentResDto> result = commentList.stream().map(CommentResDto::of).collect(Collectors.toList());
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(commentList);
     }
 
     @PostMapping("/{communityNo}/campaign/{campaignNo}/comment")
@@ -64,11 +63,11 @@ public class CampaignCommentController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Server Error")
     })
-    private ResponseEntity<?> getCampaignCommentDetail(@ApiParam(defaultValue = "1") @PathVariable long commentNo) {
+    private ResponseEntity<CommentResDto> getCampaignCommentDetail(@ApiParam(defaultValue = "1") @PathVariable long commentNo) {
 
-        CampaignComment comment = campaignCommentService.getCampaignCommentByNo(commentNo);
+        CommentResDto comment = campaignCommentService.getCampaignCommentByNo(commentNo);
 
-        return ResponseEntity.ok(CommentResDto.of(comment));
+        return ResponseEntity.ok(comment);
     }
 
     @PutMapping("/{communityNo}/campaign/{campaignNo}/comment/{commentNo}")
