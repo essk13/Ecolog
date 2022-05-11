@@ -8,8 +8,7 @@ import {
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import Geolocation from 'react-native-geolocation-service';
 import {savePlogging} from '../../api/plogging';
-import {useMutation, useQueryClient} from 'react-query';
-import ViewShot from 'react-native-view-shot';
+import {useMutation} from 'react-query';
 import {useDispatch} from 'react-redux';
 import {ploggingActions} from '../../modules/plogging';
 import {useSelector} from 'react-redux';
