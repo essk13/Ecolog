@@ -4,7 +4,9 @@ import com.thedebuggers.backend.common.exception.CustomException;
 import com.thedebuggers.backend.common.util.Constants;
 import com.thedebuggers.backend.common.util.ErrorCode;
 import com.thedebuggers.backend.domain.entity.User;
+import com.thedebuggers.backend.domain.entity.UserAsset;
 import com.thedebuggers.backend.domain.entity.UserFollow;
+import com.thedebuggers.backend.domain.repository.AssetRepository;
 import com.thedebuggers.backend.domain.repository.UserAssetRepository;
 import com.thedebuggers.backend.domain.repository.UserFollowRepository;
 import com.thedebuggers.backend.domain.repository.UserRepository;
@@ -30,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserFollowRepository followRepository;
     private final UserAssetRepository userAssetRepository;
+    private final AssetRepository assetRepository;
 
     private final S3Service s3Service;
 
@@ -51,7 +54,14 @@ public class UserServiceImpl implements UserService {
                 .loginType(loginDto.getLoginType())
                 .build();
 
-        return userRepository.save(user);
+        user = userRepository.save(user);
+
+        UserAsset userAsset = UserAsset.builder().user(user).asset(assetRepository.findById(0L).orElse(null)).build();
+        userAssetRepository.save(userAsset);
+        userAsset = UserAsset.builder().user(user).asset(assetRepository.findById(0L + Constants.ROOM_ITEM_NO).orElse(null)).build();
+        userAssetRepository.save(userAsset);
+
+        return user;
     }
 
     @Override
