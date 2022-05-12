@@ -8,4 +8,9 @@ services:
     restart: always
     volumes:
       - ./data/:/data
-      - ./conf/redis.conf:/usr/local/conf/redis.conf
+      - ./conf/redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    labels:
+      - "name=redis"
+      - "mode=standalone"
+~
