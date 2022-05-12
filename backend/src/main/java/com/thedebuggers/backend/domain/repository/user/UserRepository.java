@@ -18,6 +18,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByNickname(String nickname);
 
     @Modifying
-    @Query("update User u set u.coin = u.coin - :price where u.no = :no")
+    @Query("update User u set u.coin = u.coin + :price where u.no = :no")
     void updateCoinByNo(Long no, int price);
 }

@@ -5,6 +5,7 @@ import com.thedebuggers.backend.common.util.ErrorCode;
 import com.thedebuggers.backend.domain.entity.community.post.Post;
 import com.thedebuggers.backend.domain.entity.community.post.PostLike;
 import com.thedebuggers.backend.domain.entity.community.post.PostType;
+import com.thedebuggers.backend.domain.entity.user.Reward;
 import com.thedebuggers.backend.domain.entity.user.User;
 import com.thedebuggers.backend.domain.repository.community.CommunityRepository;
 import com.thedebuggers.backend.domain.repository.community.post.PostLikeRepository;
@@ -60,6 +61,11 @@ public class PostServiceImpl implements PostService {
                 .build();
 
         post = postRepository.save(post);
+
+        if (postReqDto.getType() == PostType.CAMPAIGN.getValue()) {
+            userRepository.updateCoinByNo(user.getNo(), Reward.CAMPAIGN_REWARD.getPoint());
+        }
+
         PostResDto postResDto = PostResDto.of(post);
         return postResDto;
     }

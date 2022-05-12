@@ -6,8 +6,10 @@ import com.thedebuggers.backend.common.util.ErrorCode;
 import com.thedebuggers.backend.common.util.GeometryUtil;
 import com.thedebuggers.backend.common.util.Location;
 import com.thedebuggers.backend.domain.entity.plogging.TrashCan;
+import com.thedebuggers.backend.domain.entity.user.Reward;
 import com.thedebuggers.backend.domain.entity.user.User;
 import com.thedebuggers.backend.domain.repository.plogging.TrashCanRepository;
+import com.thedebuggers.backend.domain.repository.user.UserRepository;
 import com.thedebuggers.backend.dto.plogging.TrashCanReqDto;
 
 import com.thedebuggers.backend.dto.plogging.TrashCanResDto;
@@ -33,6 +35,8 @@ import java.util.stream.Collectors;
 public class TrashCanServiceImpl implements TrashCanService{
 
     private final TrashCanRepository trashCanRepository;
+    private final UserRepository userRepository;
+
     private final S3Service s3Service;
 
     @Override
@@ -58,6 +62,7 @@ public class TrashCanServiceImpl implements TrashCanService{
 
         trashCanRepository.save(trashCan);
 
+        userRepository.updateCoinByNo(user.getNo(), Reward.TRASH_CAN_REWARD.getPoint());
         return true;
     }
 

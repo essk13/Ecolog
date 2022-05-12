@@ -4,10 +4,12 @@ import com.thedebuggers.backend.common.exception.CustomException;
 import com.thedebuggers.backend.common.util.ErrorCode;
 import com.thedebuggers.backend.domain.entity.community.campaign.Campaign;
 import com.thedebuggers.backend.domain.entity.community.Community;
+import com.thedebuggers.backend.domain.entity.user.Reward;
 import com.thedebuggers.backend.domain.entity.user.User;
 import com.thedebuggers.backend.domain.entity.user.UserCampaign;
 import com.thedebuggers.backend.domain.repository.community.campaign.CampaignRespository;
 import com.thedebuggers.backend.domain.repository.user.UserCampaignRepository;
+import com.thedebuggers.backend.domain.repository.user.UserRepository;
 import com.thedebuggers.backend.dto.community.campaign.CampaignReqDto;
 import com.thedebuggers.backend.dto.community.campaign.CampaignResDto;
 import com.thedebuggers.backend.service.community.CommunityService;
@@ -23,9 +25,11 @@ import java.util.stream.Collectors;
 @Service
 public class CampaignServiceImpl implements CampaignService{
 
-    private final CampaignRespository campaignRespository;
     private final CommunityService communityService;
+
+    private final CampaignRespository campaignRespository;
     private final UserCampaignRepository userCampaignRepository;
+    private final UserRepository userRepository;
 
     private final S3Service s3Service;
 

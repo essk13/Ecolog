@@ -55,7 +55,7 @@ public class AssetServiceImpl implements AssetService {
                 .asset(asset)
                 .build();
 
-        userRepository.updateCoinByNo(user.getNo(), price);
+        userRepository.updateCoinByNo(user.getNo(), -price);
         userAssetRepository.save(userAsset);
         return true;
     }
