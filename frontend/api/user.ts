@@ -62,6 +62,9 @@ export interface User {
   no: number;
   phone: string;
   weight: number;
+  avatar: number;
+  room: number;
+  coin: number;
 }
 
 export interface UserProfile {
@@ -74,6 +77,9 @@ export interface UserProfile {
   name: string;
   nickname: string;
   no: number;
+  avatar: number;
+  room: number;
+  coin: number;
 }
 
 export interface UserImgData {
