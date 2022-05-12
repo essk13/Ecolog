@@ -2,6 +2,7 @@ package com.thedebuggers.backend.service.plogging;
 
 import com.thedebuggers.backend.common.exception.CustomException;
 import com.thedebuggers.backend.common.util.ErrorCode;
+import com.thedebuggers.backend.common.util.S3Service;
 import com.thedebuggers.backend.domain.entity.plogging.Plogging;
 import com.thedebuggers.backend.domain.entity.user.RankingData;
 import com.thedebuggers.backend.domain.entity.user.Reward;
@@ -11,8 +12,8 @@ import com.thedebuggers.backend.domain.repository.user.UserFollowRepository;
 import com.thedebuggers.backend.domain.repository.user.UserRepository;
 import com.thedebuggers.backend.dto.plogging.PloggingReqDto;
 import com.thedebuggers.backend.dto.plogging.PloggingResDto;
+import com.thedebuggers.backend.dto.plogging.RegionProgressResDto;
 import com.thedebuggers.backend.dto.user.RankingResDto;
-import com.thedebuggers.backend.common.util.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -71,6 +72,32 @@ public class PloggingServiceImpl implements PloggingService {
         Plogging plogging = ploggingRepository.findById(ploggingNo).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
         PloggingResDto ploggingResDto = PloggingResDto.of(plogging);
         return ploggingResDto;
+    }
+
+    @Override
+    public RankingResDto getMyRanking(User user) {
+
+        List<RankingResDto> rankingResDtoList = getRankingByTime("all");
+        RankingResDto myRanking = null;
+
+        int rank = 0;
+        for (RankingResDto r : rankingResDtoList) {
+            rank++;
+            if (r.getUser().getNo() == user.getNo()) {
+                try {
+                    myRanking = (RankingResDto) r.clone();
+                } catch (CloneNotSupportedException e) {
+                    throw new CustomException(ErrorCode.BAD_REQUEST);
+                }
+                myRanking.setNo(rank);
+                break;
+            }
+        }
+
+        if (myRanking == null)
+            throw new CustomException(ErrorCode.CONTENT_EMPTY);
+
+        return myRanking;
     }
 
     @Override
@@ -137,6 +164,24 @@ public class PloggingServiceImpl implements PloggingService {
         );
 
         return rankingResDtoList;
+    }
+
+    @Override
+    public List<RegionProgressResDto> getRegionProgress(String type) {
+        List<RegionProgressResDto> regionProgressResDtoList = new ArrayList<>();
+
+        Map<String, String> dateInfo = getDate(type);
+        String startDay = dateInfo.get("startDay");
+        String endDay = dateInfo.get("endDay");
+
+        if (startDay.isEmpty() || endDay.isEmpty())
+            throw new CustomException(ErrorCode.BAD_REQUEST);
+
+        ploggingRepository.getRegionProgress(startDay, endDay, RankingData.class).forEach(
+                data -> regionProgressResDtoList.add(RegionProgressResDto.of(data))
+        );
+
+        return regionProgressResDtoList;
     }
 
     private Map<String, String> getDate(String type) {

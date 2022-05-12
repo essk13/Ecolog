@@ -11,13 +11,28 @@ import lombok.Setter;
 @Setter
 @Builder
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class RankingResDto {
+public class RankingResDto implements Cloneable {
+    private int no;
     private BaseUserInfoResDto user;
     private int cnt;
     private double dist;
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
     public static RankingResDto of(User user, int cnt, double dist) {
         return RankingResDto.builder()
+                .user(BaseUserInfoResDto.of(user))
+                .cnt(cnt)
+                .dist(dist)
+                .build();
+    }
+
+    public static RankingResDto of(int no, User user, int cnt, double dist) {
+        return RankingResDto.builder()
+                .no(no)
                 .user(BaseUserInfoResDto.of(user))
                 .cnt(cnt)
                 .dist(dist)

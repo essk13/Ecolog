@@ -4,6 +4,7 @@ import com.thedebuggers.backend.auth.ELUserDetails;
 import com.thedebuggers.backend.domain.entity.user.User;
 import com.thedebuggers.backend.dto.plogging.PloggingReqDto;
 import com.thedebuggers.backend.dto.plogging.PloggingResDto;
+import com.thedebuggers.backend.dto.plogging.RegionProgressResDto;
 import com.thedebuggers.backend.dto.user.RankingResDto;
 import com.thedebuggers.backend.service.plogging.PloggingService;
 import io.swagger.annotations.*;
@@ -66,6 +67,20 @@ public class PloggingController {
         return ResponseEntity.ok(ploggingResDto);
     }
 
+    @GetMapping("/rank/myrank")
+    @ApiOperation(value = "내 랭킹 조회")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Server Error")
+    })
+    private ResponseEntity<RankingResDto> getMyRanking(@ApiIgnore Authentication authentication) {
+        ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
+        User user = userDetails.getUser();
+        RankingResDto rankingResDto = ploggingService.getMyRanking(user);
+        return ResponseEntity.ok(rankingResDto);
+    }
+
     @GetMapping("/rank/time")
     @ApiOperation(value = "플로깅 기간 별 랭킹")
     @ApiResponses({
@@ -115,7 +130,8 @@ public class PloggingController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Server Error")
     })
-    private ResponseEntity<?> getProgressByRegion() {
-        return null;
+    private ResponseEntity<List<RegionProgressResDto>> getProgressByAddress(@ApiParam(value = "입력 키워드: all, month, week") @RequestParam String type) {
+        List<RegionProgressResDto> regionProgressResDtoList = ploggingService.getRegionProgress(type);
+        return ResponseEntity.ok(regionProgressResDtoList);
     }
 }
