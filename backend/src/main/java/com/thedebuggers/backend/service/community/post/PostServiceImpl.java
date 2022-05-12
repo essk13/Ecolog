@@ -36,6 +36,7 @@ public class PostServiceImpl implements PostService {
 
     private final S3Service s3Service;
 
+    @Transactional
     @Override
     public PostResDto registPost(User user, PostReqDto postReqDto, long communityNo, MultipartFile imageFile) {
         if (userCommunityRepository.findAllByCommunityNoAndUserNo(communityNo, user.getNo()) == null)

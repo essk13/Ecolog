@@ -24,6 +24,7 @@ import org.locationtech.jts.io.WKTReader;
 
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -39,6 +40,7 @@ public class TrashCanServiceImpl implements TrashCanService{
 
     private final S3Service s3Service;
 
+    @Transactional
     @Override
     public boolean registTrashCan(TrashCanReqDto trashCanReqDto, MultipartFile imageFile, User user) throws ParseException {
 

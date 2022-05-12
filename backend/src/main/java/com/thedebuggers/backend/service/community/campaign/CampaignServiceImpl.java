@@ -4,7 +4,6 @@ import com.thedebuggers.backend.common.exception.CustomException;
 import com.thedebuggers.backend.common.util.ErrorCode;
 import com.thedebuggers.backend.domain.entity.community.campaign.Campaign;
 import com.thedebuggers.backend.domain.entity.community.Community;
-import com.thedebuggers.backend.domain.entity.user.Reward;
 import com.thedebuggers.backend.domain.entity.user.User;
 import com.thedebuggers.backend.domain.entity.user.UserCampaign;
 import com.thedebuggers.backend.domain.repository.community.campaign.CampaignRespository;
@@ -29,9 +28,9 @@ public class CampaignServiceImpl implements CampaignService{
 
     private final CampaignRespository campaignRespository;
     private final UserCampaignRepository userCampaignRepository;
-    private final UserRepository userRepository;
 
     private final S3Service s3Service;
+
 
     @Override
     public CampaignResDto registCampaign(CampaignReqDto campaignReqDto, long communityNo, User user, MultipartFile imageFile) {
