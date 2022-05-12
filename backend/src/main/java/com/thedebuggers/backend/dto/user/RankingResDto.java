@@ -12,7 +12,7 @@ import lombok.Setter;
 @Builder
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class RankingResDto implements Cloneable {
-    private int no;
+    private int ranking;
     private BaseUserInfoResDto user;
     private int cnt;
     private double dist;
@@ -30,9 +30,9 @@ public class RankingResDto implements Cloneable {
                 .build();
     }
 
-    public static RankingResDto of(int no, User user, int cnt, double dist) {
+    public static RankingResDto of(int ranking, User user, int cnt, double dist) {
         return RankingResDto.builder()
-                .no(no)
+                .ranking(ranking)
                 .user(BaseUserInfoResDto.of(user))
                 .cnt(cnt)
                 .dist(dist)

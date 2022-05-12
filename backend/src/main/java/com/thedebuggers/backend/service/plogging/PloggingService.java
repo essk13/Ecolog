@@ -18,11 +18,7 @@ public interface PloggingService {
 
     RankingResDto getMyRanking(User user);
 
-    List<RankingResDto> getRankingByTime(String type);
-
-    List<RankingResDto> getRankingByFollow(User user, String type);
-
-    List<RankingResDto> getRankingByAddress(User user, String type);
+    List<RankingResDto> getRanking(User user, String type, String sort);
 
     List<RegionProgressResDto> getRegionProgress(String type);
 }

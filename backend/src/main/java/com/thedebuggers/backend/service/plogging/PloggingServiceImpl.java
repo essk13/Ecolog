@@ -4,7 +4,7 @@ import com.thedebuggers.backend.common.exception.CustomException;
 import com.thedebuggers.backend.common.util.ErrorCode;
 import com.thedebuggers.backend.common.util.S3Service;
 import com.thedebuggers.backend.domain.entity.plogging.Plogging;
-import com.thedebuggers.backend.domain.entity.user.RankingData;
+import com.thedebuggers.backend.domain.entity.plogging.RankingData;
 import com.thedebuggers.backend.domain.entity.user.Reward;
 import com.thedebuggers.backend.domain.entity.user.User;
 import com.thedebuggers.backend.domain.repository.plogging.PloggingRepository;
@@ -36,17 +36,16 @@ public class PloggingServiceImpl implements PloggingService {
     @Transactional
     @Override
     public PloggingResDto registPlogging(User user, PloggingReqDto ploggingReqDto, List<MultipartFile> imageFileList) {
-
         if (imageFileList.size() < 2) {
             throw new CustomException(ErrorCode.CONTENT_NOT_FILLED);
         }
-        List<String> imageUrls = s3Service.upload(imageFileList);
+        Map<String, String> imageUrls = s3Service.upload(imageFileList);
 
         Plogging plogging = Plogging.builder()
                 .startedAt(ploggingReqDto.getStartedAt())
                 .endedAt(ploggingReqDto.getEndedAt())
-                .resultImg(imageUrls.get(0))
-                .routeImg(imageUrls.get(1))
+                .resultImg(imageUrls.get("result"))
+                .routeImg(imageUrls.get("route"))
                 .time(ploggingReqDto.getTime())
                 .distance(ploggingReqDto.getDistance())
                 .calories(ploggingReqDto.getCalories())
@@ -78,8 +77,7 @@ public class PloggingServiceImpl implements PloggingService {
 
     @Override
     public RankingResDto getMyRanking(User user) {
-
-        List<RankingResDto> rankingResDtoList = getRankingByTime("all");
+        List<RankingResDto> rankingResDtoList = getRanking(null, "all", "all");
         RankingResDto myRanking = null;
 
         int rank = 0;
@@ -91,7 +89,7 @@ public class PloggingServiceImpl implements PloggingService {
                 } catch (CloneNotSupportedException e) {
                     throw new CustomException(ErrorCode.BAD_REQUEST);
                 }
-                myRanking.setNo(rank);
+                myRanking.setRanking(rank);
                 break;
             }
         }
@@ -103,69 +101,47 @@ public class PloggingServiceImpl implements PloggingService {
     }
 
     @Override
-    public List<RankingResDto> getRankingByTime(String type) {
-        List<RankingResDto> rankingResDtoList = new ArrayList<>();
+    public List<RankingResDto> getRanking(User user, String period, String type) {
+        List<RankingResDto> rankingList = new ArrayList<>();
 
-        Map<String, String> dateInfo = getDate(type);
+        Map<String, String> dateInfo = getDate(period);
         String startDay = dateInfo.get("startDay");
         String endDay = dateInfo.get("endDay");
 
         if (startDay.isEmpty() || endDay.isEmpty())
             throw new CustomException(ErrorCode.BAD_REQUEST);
 
-        ploggingRepository.getRankingByTime(startDay, endDay, RankingData.class).forEach(
-                data -> {
-                    User u = userRepository.findByNo(data.getUserNo()).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
-                    rankingResDtoList.add(RankingResDto.of(u, data.getCnt(), data.getDist()));
-                }
-        );
+        switch (type) {
+            case "follow":
+                List<User> followList = userFollowRepository.findAllFolloweeByFollower(user);
+                followList.add(user);
+                ploggingRepository.getRankingByFollow(followList, startDay, endDay, RankingData.class).forEach(
+                        data -> {
+                            User u = userRepository.findById(data.getUserNo()).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
+                            rankingList.add(RankingResDto.of(u, data.getCnt(), data.getDist()));
+                        }
+                );
+                break;
+            case "region":
+                String address = user.getAddress();
+                ploggingRepository.getRankingByAddress(address, startDay, endDay, RankingData.class).forEach(
+                        data -> {
+                            User u = userRepository.findByNo(data.getUserNo()).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
+                            rankingList.add(RankingResDto.of(u, data.getCnt(), data.getDist()));
+                        }
+                );
+                break;
+            default:
+                ploggingRepository.getRankingByTime(startDay, endDay, RankingData.class).forEach(
+                        data -> {
+                            User u = userRepository.findByNo(data.getUserNo()).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
+                            rankingList.add(RankingResDto.of(u, data.getCnt(), data.getDist()));
+                        }
+                );
+                break;
+        }
 
-        return rankingResDtoList;
-    }
-
-    @Override
-    public List<RankingResDto> getRankingByFollow(User user, String type) {
-        List<RankingResDto> rankingResDtoList = new ArrayList<>();
-        List<User> followList = userFollowRepository.findAllFolloweeByFollower(user);
-        followList.add(user);
-
-        Map<String, String> dateInfo = getDate(type);
-        String startDay = dateInfo.get("startDay");
-        String endDay = dateInfo.get("endDay");
-
-        if (startDay.isEmpty() || endDay.isEmpty())
-            throw new CustomException(ErrorCode.BAD_REQUEST);
-
-        ploggingRepository.getRankingByFollow(followList, startDay, endDay, RankingData.class).forEach(
-                data -> {
-                    User u = userRepository.findByNo(data.getUserNo()).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
-                    rankingResDtoList.add(RankingResDto.of(u, data.getCnt(), data.getDist()));
-                }
-        );
-
-        return rankingResDtoList;
-    }
-
-    @Override
-    public List<RankingResDto> getRankingByAddress(User user, String type) {
-        List<RankingResDto> rankingResDtoList = new ArrayList<>();
-        String address = user.getAddress();
-
-        Map<String, String> dateInfo = getDate(type);
-        String startDay = dateInfo.get("startDay");
-        String endDay = dateInfo.get("endDay");
-
-        if (startDay.isEmpty() || endDay.isEmpty())
-            throw new CustomException(ErrorCode.BAD_REQUEST);
-
-        ploggingRepository.getRankingByAddress(address, startDay, endDay, RankingData.class).forEach(
-                data -> {
-                    User u = userRepository.findByNo(data.getUserNo()).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
-                    rankingResDtoList.add(RankingResDto.of(u, data.getCnt(), data.getDist()));
-                }
-        );
-
-        return rankingResDtoList;
+        return rankingList;
     }
 
     @Override

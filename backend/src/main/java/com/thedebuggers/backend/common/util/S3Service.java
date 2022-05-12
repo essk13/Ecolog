@@ -8,7 +8,6 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.thedebuggers.backend.common.exception.CustomException;
-import com.thedebuggers.backend.common.util.ErrorCode;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -17,9 +16,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @NoArgsConstructor
@@ -66,10 +66,10 @@ public class S3Service {
         return amazonS3Client.getUrl(bucket, filename).toString();
     }
 
-    public List<String> upload(List<MultipartFile> multipartFileList) {
+    public Map<String, String> upload(List<MultipartFile> multipartFileList) {
 
         int fileIdx = 0;
-        List<String> urlList = new ArrayList<>();
+        Map<String, String> urlList = new HashMap<>();
         for (MultipartFile multipartFile : multipartFileList) {
             String ext = multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf(".") + 1);
 
@@ -79,7 +79,12 @@ public class S3Service {
             try {
                 amazonS3Client.putObject(new PutObjectRequest(bucket, filename, multipartFile.getInputStream(), null)
                         .withCannedAcl(CannedAccessControlList.PublicRead));
-                urlList.add(amazonS3Client.getUrl(bucket, filename).toString());
+                if (urlList.isEmpty()) {
+                    urlList.put("result", amazonS3Client.getUrl(bucket, filename).toString());
+                }
+                else {
+                    urlList.put("route", amazonS3Client.getUrl(bucket, filename).toString());
+                }
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new CustomException(ErrorCode.IMAGE_UPLOAD_ERROR);
