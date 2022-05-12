@@ -1,6 +1,6 @@
 package com.thedebuggers.backend.auth;
 
-import com.thedebuggers.backend.domain.entity.User;
+import com.thedebuggers.backend.domain.entity.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

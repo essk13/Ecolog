@@ -1,9 +1,8 @@
 package com.thedebuggers.backend.auth;
 
-import com.thedebuggers.backend.domain.entity.User;
-import com.thedebuggers.backend.service.UserService;
+import com.thedebuggers.backend.domain.entity.user.User;
+import com.thedebuggers.backend.service.user.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

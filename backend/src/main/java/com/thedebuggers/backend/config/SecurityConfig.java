@@ -3,7 +3,7 @@ package com.thedebuggers.backend.config;
 
 import com.thedebuggers.backend.auth.ELUserDetailsService;
 import com.thedebuggers.backend.auth.JwtAuthenticationFilter;
-import com.thedebuggers.backend.service.UserService;
+import com.thedebuggers.backend.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
@@ -68,7 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), userService))
 
                 .authorizeRequests()
-                .antMatchers("/api/v1/user/**", "/api/v1/community/**", "/api/v1/image/**").authenticated()
+                .antMatchers("/api/v1/user/**", "/api/v1/community/**", "/api/v1/plogging/**", "/api/v1/trash_can/**", "/api/v1/asset/**").authenticated()
                 .anyRequest().permitAll();
     }
 
