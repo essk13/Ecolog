@@ -33,7 +33,7 @@ public class TrashCanController {
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "Server Error")
     })
-    private ResponseEntity<Boolean> registTrashCan(
+    private ResponseEntity<TrashCanResDto> registTrashCan(
             @RequestPart(value = "trash_can_info") TrashCanReqDto trashCanReqDto,
             @RequestPart(value = "image", required = false) MultipartFile imageFile,
             Authentication authentication
@@ -41,7 +41,7 @@ public class TrashCanController {
         ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
         User user = userDetails.getUser();
 
-        boolean result = trashCanService.registTrashCan(trashCanReqDto, imageFile, user);
+        TrashCanResDto result = trashCanService.registTrashCan(trashCanReqDto, imageFile, user);
 
         return ResponseEntity.ok(result);
     }

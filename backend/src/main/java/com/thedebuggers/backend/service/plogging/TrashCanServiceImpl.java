@@ -42,7 +42,7 @@ public class TrashCanServiceImpl implements TrashCanService{
 
     @Transactional
     @Override
-    public boolean registTrashCan(TrashCanReqDto trashCanReqDto, MultipartFile imageFile, User user) throws ParseException {
+    public TrashCanResDto registTrashCan(TrashCanReqDto trashCanReqDto, MultipartFile imageFile, User user) throws ParseException {
 
         String pointWKT = String.format("POINT(%s %s)", trashCanReqDto.getLng(), trashCanReqDto.getLat());
         Geometry geometry = new WKTReader().read(pointWKT);
@@ -62,10 +62,11 @@ public class TrashCanServiceImpl implements TrashCanService{
                 .user(user)
                 .build();
 
-        trashCanRepository.save(trashCan);
+        trashCan = trashCanRepository.save(trashCan);
+        TrashCanResDto trashCanResDto = TrashCanResDto.of(trashCan);
 
         userRepository.updateCoinByNo(user.getNo(), Reward.TRASH_CAN_REWARD.getPoint());
-        return true;
+        return trashCanResDto;
     }
 
     @Override
