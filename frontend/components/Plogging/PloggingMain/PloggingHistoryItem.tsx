@@ -12,6 +12,8 @@ const styles = () =>
       width: 80,
       height: 80,
       borderRadius: 10,
+      borderColor: '#ABABAB',
+      borderWidth: 0.5,
       marginBottom: 4,
     },
   });

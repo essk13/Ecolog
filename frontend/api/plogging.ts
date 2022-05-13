@@ -41,6 +41,11 @@ export async function getPloggingDetail(ploggingSeq: number) {
   return response.data;
 }
 
+export async function getMyRanking() {
+  const response = await Api.get<PloggingRank>('plogging/rank/myrank');
+  return response.data;
+}
+
 export async function getTimeRanking(periodType: string) {
   const response = await Api.get<PloggingRankList>(
     `/plogging/rank/time?type=${periodType}`,
@@ -120,6 +125,7 @@ export interface RankingUser {
 export interface PloggingRank {
   cnt: number;
   dist: number;
+  ranking: number;
   user: RankingUser;
 }
 

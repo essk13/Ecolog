@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text, View, TouchableOpacity, Image, StyleSheet} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
@@ -9,11 +9,14 @@ import {RootState} from '../modules';
 import PloggingRankingInfo from '../components/Plogging/PloggingMain/PloggingRankingInfo';
 import PloggingStartButton from '../components/Plogging/PloggingMain/PloggingStartButton';
 import PloggingHistoryList from '../components/Plogging/PloggingMain/PloggingHistoryList';
+import {Snackbar} from 'react-native-paper';
 
 const styles = (color?: any) =>
   StyleSheet.create({
     background: {
       backgroundColor: color,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     rankingContainer: {
       flexDirection: 'row',
@@ -34,6 +37,11 @@ const styles = (color?: any) =>
       alignItems: 'center',
       width: '100%',
       height: '65%',
+    },
+    snackBar: {
+      backgroundColor: '#5FA2E5',
+      color: '#ffffff',
+      marginBottom: '30%',
     },
     historyContainer: {
       width: '100%',
@@ -64,9 +72,15 @@ const fontStyles = (size?: number, weight?: any, color?: string) =>
       color: color || '#000000',
       marginLeft: 6,
     },
+    textStyle: {
+      fontSize: size || 16,
+      fontWeight: weight || 'normal',
+      color: color || '#000000',
+    },
   });
 
 function PloggingScreen({navigation}: any) {
+  const [visible, setVisible] = useState(false);
   const myInfo = useSelector((state: RootState) => state.user.user);
   const {colors} = useTheme();
   const dispatch = useDispatch();
@@ -100,7 +114,16 @@ function PloggingScreen({navigation}: any) {
           }}
           style={imageStyles(250, 250).normalImage}
         />
-        <PloggingStartButton navigation={navigation} />
+        <PloggingStartButton navigation={navigation} setVisible={setVisible} />
+        <Snackbar
+          visible={visible}
+          style={styles().snackBar}
+          onDismiss={() => setVisible(false)}
+          action={{label: '확인', onPress: () => setVisible(false)}}>
+          <Text style={fontStyles(16, 'normal', '#ffffff').textStyle}>
+            위치 정보 권한이 필요합니다.
+          </Text>
+        </Snackbar>
       </View>
       <View style={styles().historyContainer}>
         <View style={styles().historyTitle}>

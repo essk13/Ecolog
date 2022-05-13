@@ -21,17 +21,17 @@ import {ActivityIndicator, Colors} from 'react-native-paper';
 const styles = (direction?: any, padding?: number, paddingBottom?: number) =>
   StyleSheet.create({
     loadingContainer: {
-      width: '100%',
+      flexDirection: 'row',
+      width: '112%',
       height: 32,
       justifyContent: 'center',
       alignItems: 'center',
     },
-    userContainer: {
-      flexDirection: direction || 'column',
-      padding: padding || 0,
-      paddingBottom: paddingBottom || 5,
-      justifyContent: 'space-between',
-      flexGrow: 1,
+    profileImgBox: {
+      width: 120,
+      height: 120,
+      borderRadius: 10,
+      elevation: 6,
     },
     profileImg: {
       width: 120,
@@ -44,6 +44,13 @@ const styles = (direction?: any, padding?: number, paddingBottom?: number) =>
       marginLeft: 25,
       marginRight: 10,
     },
+    userContainer: {
+      flexDirection: direction || 'column',
+      padding: padding || 0,
+      paddingBottom: paddingBottom || 5,
+      justifyContent: 'space-between',
+      flexGrow: 1,
+    },
     followingButton: {
       flexDirection: 'row',
       width: '100%',
@@ -52,6 +59,7 @@ const styles = (direction?: any, padding?: number, paddingBottom?: number) =>
       alignItems: 'center',
       borderRadius: 8,
       backgroundColor: '#4e5fff',
+      elevation: 4,
     },
     followButton: {
       flexDirection: 'row',
@@ -120,12 +128,14 @@ function UserInfo({user, userIsLoading, postCount}: UserInfoProps) {
   return (
     <View>
       <View style={styles('row', 20, 10).userContainer}>
-        <Image
-          style={styles().profileImg}
-          source={{
-            uri: user?.image,
-          }}
-        />
+        <View style={styles().profileImgBox}>
+          <Image
+            style={styles().profileImg}
+            source={{
+              uri: user?.image,
+            }}
+          />
+        </View>
         <View style={styles().userInfoContainer}>
           <Text style={fontStyles(20, '600').userName}>
             {user ? user.name : null}
@@ -174,6 +184,7 @@ function UserInfo({user, userIsLoading, postCount}: UserInfoProps) {
                   .map(follower => follower.no)
                   .includes(myInfo.data.no) && (
                   <TouchableOpacity
+                    activeOpacity={0.7}
                     style={styles().followingButton}
                     onPress={() => follow.mutate(user.no)}>
                     <Icon name="user-following" size={16} color="#ffffff" />

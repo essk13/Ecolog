@@ -41,6 +41,7 @@ const styles = () =>
       borderRadius: 10,
       marginTop: 25,
       marginBottom: 5,
+      elevation: 4,
     },
     profileImg: {
       width: 100,
@@ -71,6 +72,7 @@ const styles = () =>
       borderWidth: 1,
       textAlign: 'center',
       marginTop: 2,
+      color: '#000000',
     },
     infoTitleContainer: {
       width: '100%',
@@ -93,6 +95,7 @@ const styles = () =>
       width: '100%',
       flexGrow: 1,
       paddingLeft: 14,
+      color: '#000000',
     },
     statusEditContainer: {
       flexDirection: 'row',
@@ -122,6 +125,7 @@ const styles = () =>
       flexGrow: 1,
       paddingLeft: 14,
       textAlign: 'right',
+      color: '#000000',
     },
     buttonContainer: {
       width: '100%',
@@ -167,9 +171,12 @@ interface NicknameEditProps {
 function NicknameEdit({userInfo, setUserInfo}: NicknameEditProps) {
   return (
     <View style={styles().nicknameContainer}>
-      <Text>닉네임 (필수)</Text>
+      <Text style={fontStyles(12, 'normal', '#6C6C6C').normalText}>
+        닉네임 (필수)
+      </Text>
       <TextInput
         placeholder="닉네임을 입력하세요."
+        placeholderTextColor="#ABABAB"
         style={styles().nicknameInput}
         value={userInfo.nickname}
         onChangeText={(text: string) =>
@@ -209,7 +216,7 @@ function UserEditScreen() {
     phone: '',
     address: '',
   });
-  const {mutate: editUser, isLoading} = useMutation(editUserInfo, {
+  const {mutate: editUser} = useMutation(editUserInfo, {
     onSuccess: () => {
       dispatch(userActions.getMyInfoAsync.request(null));
       navigation.pop();
@@ -268,6 +275,7 @@ function UserEditScreen() {
       <UserEditHeader />
       <ScrollView contentContainerStyle={{flexGrow: 1, alignItems: 'center'}}>
         <TouchableOpacity
+          activeOpacity={0.8}
           style={styles().imageContainer}
           onPress={() => launchImageLibrary(imagePickerOption, onPickImage)}>
           <Image
@@ -294,6 +302,7 @@ function UserEditScreen() {
             <Text style={fontStyles(12).editTitle}>이름 (필수)</Text>
             <TextInput
               placeholder="이름을 입력하세요."
+              placeholderTextColor="#ABABAB"
               style={styles().infoInput}
               value={userInfo.name}
               onChangeText={(text: string) =>
@@ -306,6 +315,7 @@ function UserEditScreen() {
             <Text style={fontStyles(12).editTitle}>생년월일</Text>
             <TextInput
               placeholder="생년월일을 입력하세요."
+              placeholderTextColor="#ABABAB"
               style={styles().infoInput}
               value={userInfo.birth}
               onChangeText={(text: string) =>
@@ -358,6 +368,7 @@ function UserEditScreen() {
             <Text style={fontStyles(12).editTitle}>연락처</Text>
             <TextInput
               placeholder="연락처를 입력하세요."
+              placeholderTextColor="#ABABAB"
               style={styles().infoInput}
               value={userInfo.phone}
               onChangeText={(text: string) =>
@@ -370,6 +381,7 @@ function UserEditScreen() {
             <Text style={fontStyles(12).editTitle}>주소지</Text>
             <TextInput
               placeholder="주소지를 입력하세요."
+              placeholderTextColor="#ABABAB"
               style={styles().infoInput}
               value={userInfo.address}
               onChangeText={(text: string) =>

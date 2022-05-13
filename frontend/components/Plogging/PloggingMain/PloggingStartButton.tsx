@@ -1,5 +1,13 @@
 import React from 'react';
-import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  Platform,
+  PermissionsAndroid,
+} from 'react-native';
 
 const styles = () =>
   StyleSheet.create({
@@ -7,7 +15,7 @@ const styles = () =>
       width: 250,
       height: 70,
       borderRadius: 10,
-      elevation: 2,
+      elevation: 3,
       backgroundColor: '#ffffff',
     },
     buttonContainer: {
@@ -31,25 +39,39 @@ const styles = () =>
 
 interface PloggingStartButtonProps {
   navigation: any;
+  setVisible: any;
 }
 
-function PloggingStartButton({navigation}: PloggingStartButtonProps) {
+function PloggingStartButton({
+  navigation,
+  setVisible,
+}: PloggingStartButtonProps) {
+  async function requestPermissions() {
+    if (Platform.OS === 'android') {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        navigation.navigate('PloggingMap');
+      } else {
+        setVisible(true);
+      }
+    }
+  }
+
   return (
     <View style={styles().buttonWrapper}>
       <TouchableOpacity
+        style={styles().buttonContainer}
         activeOpacity={0.7}
-        onPress={() => {
-          navigation.navigate('PloggingMap');
-        }}>
-        <View style={styles().buttonContainer}>
-          <Image
-            source={{
-              uri: 'https://user-images.githubusercontent.com/87461594/165669676-c6cc020b-fb73-49c3-9828-cc7e4c3ed1ee.png',
-            }}
-            style={styles().startImage}
-          />
-          <Text style={styles().startText}>플로깅 시작</Text>
-        </View>
+        onPress={requestPermissions}>
+        <Image
+          source={{
+            uri: 'https://user-images.githubusercontent.com/87461594/165669676-c6cc020b-fb73-49c3-9828-cc7e4c3ed1ee.png',
+          }}
+          style={styles().startImage}
+        />
+        <Text style={styles().startText}>플로깅 시작</Text>
       </TouchableOpacity>
     </View>
   );

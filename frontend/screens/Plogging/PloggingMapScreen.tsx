@@ -1,35 +1,50 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Text, View, TouchableHighlight, StyleSheet} from 'react-native';
+// Hooks
+import {useMutation, useQueryClient} from 'react-query';
+import {useDispatch} from 'react-redux';
+import {useSelector} from 'react-redux';
+// Api & Types
+import {savePlogging} from '../../api/plogging';
+import {RootState} from '../../modules';
+import {ploggingActions} from '../../modules/plogging';
+import Geolocation from 'react-native-geolocation-service';
+import MapboxGL from '@react-native-mapbox-gl/maps';
 import {
   launchCamera,
   CameraOptions,
   ImagePickerResponse,
 } from 'react-native-image-picker';
-import MapboxGL from '@react-native-mapbox-gl/maps';
-import Geolocation from 'react-native-geolocation-service';
-import {savePlogging} from '../../api/plogging';
-import {useMutation} from 'react-query';
-import {useDispatch} from 'react-redux';
-import {ploggingActions} from '../../modules/plogging';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../modules';
+// Components
+import {
+  Text,
+  View,
+  StyleSheet,
+  Platform,
+  PermissionsAndroid,
+  TouchableOpacity,
+  BackHandler,
+} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import {Dialog, Portal, Provider, Snackbar} from 'react-native-paper';
+import {ActivityIndicator, Colors} from 'react-native-paper';
 
 MapboxGL.setAccessToken(
   'pk.eyJ1IjoiaGF1bCIsImEiOiJjbDI5cTV2NzMwMW9kM2JvYjF0c29sb2hkIn0.jcIu6fuVVbuJPVGaunycOw',
 );
 
-// 위치 권한 설정
-// async function requestPermissions() {
-//   if (Platform.OS === 'android') {
-//     const granted = await PermissionsAndroid.request(
-//       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-//     );
-//     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-//       console.log('Yes');
-//     }
-// };
-
 const styles = StyleSheet.create({
+  loadingContainer: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    fontSize: 20,
+    color: Colors.blueA100,
+    marginTop: 10,
+  },
   page: {
     flex: 1,
   },
@@ -47,6 +62,21 @@ const styles = StyleSheet.create({
   map: {
     flex: 1,
   },
+  finishBox: {
+    position: 'absolute',
+    top: -40,
+    width: 80,
+    height: 80,
+    borderRadius: 45,
+    elevation: 5,
+  },
+  finishButton: {
+    width: 80,
+    height: 80,
+    borderRadius: 45,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   recordContainer: {
     position: 'absolute',
     alignItems: 'center',
@@ -54,14 +84,44 @@ const styles = StyleSheet.create({
     height: '30%',
     bottom: 0,
     padding: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    borderTopRightRadius: 20,
-    borderTopLeftRadius: 20,
+    paddingTop: 30,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    borderTopRightRadius: 25,
+    borderTopLeftRadius: 25,
   },
   itemContainer: {
     flexDirection: 'row',
     alignItems: 'baseline',
     marginTop: 20,
+  },
+  dialogContainer: {
+    height: 200,
+    borderRadius: 20,
+    backgroundColor: '#ffffff',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    elevation: 5,
+    paddingTop: 10,
+  },
+  buttonContainer: {
+    width: 120,
+    height: 50,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+    marginHorizontal: 10,
+    elevation: 2,
+  },
+  buttonFlex: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+  },
+  snackBar: {
+    backgroundColor: '#5FA2E5',
+    marginBottom: '90%',
   },
 });
 
@@ -76,6 +136,9 @@ const fontStyles = (size?: number, weight?: any, align?: any, color?: any) =>
   });
 
 function PloggingMapScreen({navigation}: any) {
+  const [visible, setVisible] = useState<boolean>(false);
+  const [backDialog, setBackDialog] = useState<boolean>(false);
+  const [finishDialog, setFinishDialog] = useState<boolean>(false);
   // 사용자 위치 트래킹 정보
   const [coordinates, setCoordinates] = useState<number[]>([128, 36]);
   const [centerCoordinates, setCenterCoordinates] = useState<number[]>([
@@ -122,10 +185,12 @@ function PloggingMapScreen({navigation}: any) {
     setMinutes(minutes);
     setSecons(seconds);
   }
+
   // 타이머 표시 형식
   useEffect(() => {
     timer();
   }, [count]);
+
   // 타이머 시작
   useEffect(() => {
     setInterval(() => {
@@ -249,10 +314,12 @@ function PloggingMapScreen({navigation}: any) {
   // 인증 사진 촬영
   const user = useSelector((state: RootState) => state.user.user);
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
   const {mutate: save, isLoading} = useMutation(savePlogging, {
     onSuccess: data => {
+      queryClient.invalidateQueries('myRank');
       if (user.data) {
-        dispatch(ploggingActions.getPloggingListAsync.request(user.data?.no));
+        dispatch(ploggingActions.getPloggingListAsync.request(user.data.no));
       }
       navigation.navigate('PloggingResult', {id: data.no});
     },
@@ -281,7 +348,9 @@ function PloggingMapScreen({navigation}: any) {
       const routeImgUri = await getRouteImgUri();
       let start_date = new Date();
       let end_date = new Date();
-      start_date.setSeconds(start_date.getSeconds() - count);
+      start_date.setSeconds(
+        start_date.getSeconds() - count - start_date.getTimezoneOffset() * 60,
+      );
       end_date.setSeconds(
         end_date.getSeconds() - end_date.getTimezoneOffset() * 60,
       );
@@ -341,89 +410,202 @@ function PloggingMapScreen({navigation}: any) {
     onLaunchCamera();
   };
 
+  async function requestPermissions() {
+    setFinishDialog(false);
+    if (Platform.OS === 'android') {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        getCenterCoordinate();
+      } else {
+        setVisible(true);
+      }
+    }
+  }
+
+  const clickFinish = () => {
+    setFinishDialog(true);
+  };
+
+  // 뒤로가기 체크
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+    return () =>
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+  }, []);
+
+  const handleBackPress = () => {
+    setBackDialog(true);
+    return true;
+  };
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator animating={true} size={48} color={Colors.blueA100} />
+        <Text style={styles.loadingText}>플로깅 기록하는 중</Text>
+      </View>
+    );
+  }
+
   return (
-    <View style={styles.page}>
-      <View style={styles.container}>
-        <MapboxGL.MapView
-          ref={mapViewRef}
-          style={styles.map}
-          localizeLabels={true}>
-          <MapboxGL.Camera
-            zoomLevel={zoomLevel}
-            centerCoordinate={centerCoordinates}
-          />
-          <MapboxGL.ShapeSource id="line" shape={route}>
-            <MapboxGL.LineLayer
-              id="linelayer"
-              style={{
-                lineColor: 'red',
-                lineWidth: 5,
-                lineCap: 'round',
-                lineJoin: 'round',
-              }}
+    <Provider>
+      <View style={styles.page}>
+        <View style={styles.container}>
+          <MapboxGL.MapView
+            ref={mapViewRef}
+            style={styles.map}
+            localizeLabels={true}>
+            <MapboxGL.Camera
+              zoomLevel={zoomLevel}
+              centerCoordinate={centerCoordinates}
             />
-          </MapboxGL.ShapeSource>
-          <MapboxGL.PointAnnotation
-            id={'myPosition'}
-            coordinate={coordinates}
-          />
-        </MapboxGL.MapView>
+            <MapboxGL.ShapeSource id="line" shape={route}>
+              <MapboxGL.LineLayer
+                id="linelayer"
+                style={{
+                  lineColor: 'red',
+                  lineWidth: 5,
+                  lineCap: 'round',
+                  lineJoin: 'round',
+                }}
+              />
+            </MapboxGL.ShapeSource>
+            <MapboxGL.PointAnnotation
+              id={'myPosition'}
+              coordinate={coordinates}
+            />
+          </MapboxGL.MapView>
 
-        <View style={styles.recordContainer}>
-          <TouchableHighlight
-            onPress={() => getCenterCoordinate()}
-            underlayColor="red">
-            <Text style={fontStyles(20, '500', null, '#FFFFFF').textStyle}>
-              FINISH
-            </Text>
-          </TouchableHighlight>
+          <View style={styles.recordContainer}>
+            <LinearGradient
+              style={styles.finishBox}
+              colors={['#7BFFB0', '#7DBEFF']}
+              start={{x: 0, y: 0}}
+              end={{x: 1, y: 1}}>
+              <TouchableOpacity
+                style={styles.finishButton}
+                activeOpacity={0.5}
+                onPress={clickFinish}>
+                <Icon name="stop" size={65} color="#ffffff" />
+              </TouchableOpacity>
+            </LinearGradient>
 
-          {/* 타이머 */}
-          <View style={styles.itemContainer}>
-            <Text style={fontStyles(45, '600', null, '#FFFFFF').textStyle}>
-              {currentHours < 10 ? `0${currentHours}` : currentHours}
-            </Text>
-            <Text style={fontStyles(25, '500', null, '#FFFFFF').textStyle}>
-              시간{'  '}
-            </Text>
-
-            <Text style={fontStyles(45, '600', null, '#FFFFFF').textStyle}>
-              {currentMinutes < 10 ? `0${currentMinutes}` : currentMinutes}
-            </Text>
-            <Text style={fontStyles(25, '500', null, '#FFFFFF').textStyle}>
-              분{'  '}
-            </Text>
-
-            <Text style={fontStyles(45, '600', null, '#FFFFFF').textStyle}>
-              {currentSeconds < 10 ? `0${currentSeconds}` : currentSeconds}
-            </Text>
-            <Text style={fontStyles(25, '500', null, '#FFFFFF').textStyle}>
-              초{'  '}
-            </Text>
-          </View>
-
-          {/* 거리 및 칼로리 */}
-          <View style={styles.itemContainer}>
-            <View>
-              <Text style={fontStyles(15, '500', null, '#FFFFFF').textStyle}>
-                이동 거리
+            {/* 타이머 */}
+            <View style={styles.itemContainer}>
+              <Text style={fontStyles(45, '600', null, '#FFFFFF').textStyle}>
+                {currentHours < 10 ? `0${currentHours}` : currentHours}
               </Text>
               <Text style={fontStyles(25, '500', null, '#FFFFFF').textStyle}>
-                {currentDistance} km
+                시간{'  '}
               </Text>
-            </View>
-            <View style={{marginLeft: 50}}>
-              <Text style={fontStyles(15, '500', null, '#FFFFFF').textStyle}>
-                칼로리
+
+              <Text style={fontStyles(45, '600', null, '#FFFFFF').textStyle}>
+                {currentMinutes < 10 ? `0${currentMinutes}` : currentMinutes}
               </Text>
               <Text style={fontStyles(25, '500', null, '#FFFFFF').textStyle}>
-                {currentKcal} kcal
+                분{'  '}
+              </Text>
+
+              <Text style={fontStyles(45, '600', null, '#FFFFFF').textStyle}>
+                {currentSeconds < 10 ? `0${currentSeconds}` : currentSeconds}
+              </Text>
+              <Text style={fontStyles(25, '500', null, '#FFFFFF').textStyle}>
+                초{'  '}
               </Text>
             </View>
+
+            {/* 거리 및 칼로리 */}
+            <View style={styles.itemContainer}>
+              <View>
+                <Text style={fontStyles(15, '500', null, '#FFFFFF').textStyle}>
+                  이동 거리
+                </Text>
+                <Text style={fontStyles(25, '500', null, '#FFFFFF').textStyle}>
+                  {currentDistance} km
+                </Text>
+              </View>
+              <View style={{marginLeft: 50}}>
+                <Text style={fontStyles(15, '500', null, '#FFFFFF').textStyle}>
+                  칼로리
+                </Text>
+                <Text style={fontStyles(25, '500', null, '#FFFFFF').textStyle}>
+                  {currentKcal} kcal
+                </Text>
+              </View>
+            </View>
           </View>
+          <Portal>
+            <Dialog
+              style={styles.dialogContainer}
+              visible={backDialog}
+              onDismiss={() => setBackDialog(false)}>
+              <Text style={fontStyles(22, 'bold').textStyle}>
+                플로깅을 포기하실 건가요?
+              </Text>
+              <Dialog.Actions>
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity
+                    style={styles.buttonFlex}
+                    activeOpacity={0.6}
+                    onPress={() => navigation.pop()}>
+                    <Icon name="reply" size={22} color="#5FA2E5" />
+                    <Text style={fontStyles(22, '600').textStyle}>포기</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity
+                    style={styles.buttonFlex}
+                    activeOpacity={0.6}
+                    onPress={() => setBackDialog(false)}>
+                    <Icon name="directions-run" size={22} color="#5FA2E5" />
+                    <Text style={fontStyles(22, '600').textStyle}>계속</Text>
+                  </TouchableOpacity>
+                </View>
+              </Dialog.Actions>
+            </Dialog>
+            <Dialog
+              style={styles.dialogContainer}
+              visible={finishDialog}
+              onDismiss={() => setFinishDialog(false)}>
+              <Text style={fontStyles(22, 'bold').textStyle}>
+                플로깅을 완료하실 건가요?
+              </Text>
+              <Dialog.Actions>
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity
+                    style={styles.buttonFlex}
+                    activeOpacity={0.6}
+                    onPress={requestPermissions}>
+                    <Icon name="assistant-photo" size={22} color="#5FA2E5" />
+                    <Text style={fontStyles(22, '600').textStyle}>완료</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity
+                    style={styles.buttonFlex}
+                    activeOpacity={0.6}
+                    onPress={() => setFinishDialog(false)}>
+                    <Icon name="directions-run" size={22} color="#5FA2E5" />
+                    <Text style={fontStyles(22, '600').textStyle}>계속</Text>
+                  </TouchableOpacity>
+                </View>
+              </Dialog.Actions>
+            </Dialog>
+          </Portal>
+          <Snackbar
+            visible={visible}
+            style={styles.snackBar}
+            onDismiss={() => setVisible(false)}
+            action={{label: '확인', onPress: () => setVisible(false)}}>
+            <Text style={fontStyles(16, 'normal', null, '#ffffff').textStyle}>
+              카메라 권한이 필요합니다.
+            </Text>
+          </Snackbar>
         </View>
       </View>
-    </View>
+    </Provider>
   );
 }
 

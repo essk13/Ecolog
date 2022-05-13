@@ -1,15 +1,18 @@
 import React, {useEffect, useState} from 'react';
-import {Text, Image, View, TouchableOpacity, StyleSheet} from 'react-native';
-// Components
-import PloggingTopRanking from '../../components/Plogging/Ranking/PloggingTopRanking';
-import PloggingBottomRanking from '../../components/Plogging/Ranking/PloggingBottomRanking';
+// Hooks
 import {useMutation} from 'react-query';
+// Api & Types
 import {
   getFollowRanking,
   getRegionRanking,
   getTimeRanking,
   PloggingRankList,
 } from '../../api/plogging';
+// Components
+import {Text, Image, View, TouchableOpacity, StyleSheet} from 'react-native';
+import PloggingTopRanking from '../../components/Plogging/Ranking/PloggingTopRanking';
+import PloggingBottomRanking from '../../components/Plogging/Ranking/PloggingBottomRanking';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 const styles = (color?: any, marginT?: any, marginL?: any) =>
   StyleSheet.create({
@@ -25,13 +28,31 @@ const styles = (color?: any, marginT?: any, marginL?: any) =>
     headerImg: {
       width: '100%',
       aspectRatio: 2.5,
-      marginBottom: 20,
+      marginBottom: 15,
       borderRadius: 10,
+    },
+    titleContainer: {
+      width: '100%',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: 10,
+      paddingRight: 10,
+    },
+    titleImg: {
+      width: 30,
+      height: 30,
+      marginRight: 12,
+    },
+    filterContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingHorizontal: 20,
     },
     btnContainer: {
       flexDirection: 'row',
-      marginTop: marginT || 0,
-      paddingHorizontal: 20,
+      alignItems: 'center',
+      paddingTop: 10,
     },
     btnItem: {
       width: 50,
@@ -41,6 +62,7 @@ const styles = (color?: any, marginT?: any, marginL?: any) =>
       marginLeft: marginL || 0,
       backgroundColor: color || '#d4d4d4',
       borderRadius: 10,
+      elevation: 2,
     },
   });
 
@@ -54,6 +76,14 @@ const fontStyles = (size?: any, weight?: any, color?: any) =>
   });
 
 function PloggingRankingScreen() {
+  const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
+  const [dropdownItems, setDropdownItems] = useState<
+    Array<{label: string; value: string}>
+  >([
+    {label: '전체', value: 'all'},
+    {label: '주간', value: 'week'},
+    {label: '월간', value: 'month'},
+  ]);
   const [rankData, setRankData] = useState<PloggingRankList>([]);
   const [rankType, setRankType] = useState<string>('time');
   const [periodType, setPeriodType] = useState<string>('all');
@@ -110,46 +140,49 @@ function PloggingRankingScreen() {
           }}
         />
       </View>
-
-      <View style={styles().btnContainer}>
-        <Text style={fontStyles(18, '600').rankText}>플로거 랭킹</Text>
-        <TouchableOpacity
-          style={styles(null, null, 10).btnItem}
-          onPress={() => setRankType('time')}>
-          <Text style={fontStyles(null, '400').rankText}>전체</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles(null, null, 10).btnItem}
-          onPress={() => setRankType('follow')}>
-          <Text style={fontStyles(null, '400').rankText}>친구</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles(null, null, 10).btnItem}
-          onPress={() => setRankType('region')}>
-          <Text style={fontStyles(null, '400').rankText}>지역</Text>
-        </TouchableOpacity>
+      <View style={styles().titleContainer}>
+        <Image
+          source={{
+            uri: 'https://cdn-icons-png.flaticon.com/512/1603/1603847.png',
+          }}
+          style={styles().titleImg}
+        />
+        <Text style={fontStyles(22, '600').rankText}>플로거 랭킹</Text>
       </View>
 
-      <View style={styles(null, 10).btnContainer}>
-        <TouchableOpacity
-          style={styles('#bdd7ff').btnItem}
-          onPress={() => setPeriodType('week')}>
-          <Text style={fontStyles(null, '400').rankText}>주간</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles('#bdd7ff', null, 10).btnItem}
-          onPress={() => setPeriodType('month')}>
-          <Text style={fontStyles(null, '400').rankText}>월간</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles('#bdd7ff', null, 10).btnItem}
-          onPress={() => setPeriodType('all')}>
-          <Text style={fontStyles(null, '400').rankText}>누적</Text>
-        </TouchableOpacity>
+      <View style={styles().filterContainer}>
+        <View style={styles().btnContainer}>
+          <TouchableOpacity
+            style={styles(rankType === 'time' ? '#bdd7ff' : null).btnItem}
+            onPress={() => setRankType('time')}>
+            <Text style={fontStyles(null, '400').rankText}>전체</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={
+              styles(rankType === 'follow' ? '#bdd7ff' : null, null, 10).btnItem
+            }
+            onPress={() => setRankType('follow')}>
+            <Text style={fontStyles(null, '400').rankText}>친구</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={
+              styles(rankType === 'region' ? '#bdd7ff' : null, null, 10).btnItem
+            }
+            onPress={() => setRankType('region')}>
+            <Text style={fontStyles(null, '400').rankText}>지역</Text>
+          </TouchableOpacity>
+        </View>
+        <DropDownPicker
+          containerStyle={{width: 80, height: 40}}
+          open={dropdownOpen}
+          value={periodType}
+          items={dropdownItems}
+          setOpen={setDropdownOpen}
+          setValue={setPeriodType}
+          setItems={setDropdownItems}
+        />
       </View>
-
       <PloggingTopRanking rankDataList={topRankData} />
-
       <PloggingBottomRanking rankDataList={bottomRankData} />
     </View>
   );

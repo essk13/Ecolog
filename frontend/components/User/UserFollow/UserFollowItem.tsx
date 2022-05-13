@@ -21,21 +21,30 @@ const styles = () =>
       justifyContent: 'space-between',
       alignItems: 'center',
       borderRadius: 15,
-      borderWidth: 1,
+      // borderWidth: 1,
+      marginTop: '1%',
       marginLeft: '5%',
-      paddingLeft: 15,
+      paddingLeft: 20,
       marginBottom: 15,
+      backgroundColor: '#ffffff',
+      elevation: 3,
     },
     contentContainer: {
       flexDirection: 'row',
       height: '100%',
       alignItems: 'center',
     },
-    userImage: {
+    imageBox: {
       width: 60,
       height: 60,
       borderRadius: 30,
       marginRight: 15,
+      elevation: 3,
+    },
+    userImage: {
+      width: 60,
+      height: 60,
+      borderRadius: 30,
     },
     followingButton: {
       flexDirection: 'row',
@@ -46,6 +55,7 @@ const styles = () =>
       borderRadius: 8,
       backgroundColor: '#4e5fff',
       marginRight: 15,
+      elevation: 3,
     },
     followButton: {
       flexDirection: 'row',
@@ -65,6 +75,7 @@ const fontStyles = (size?: number, weight?: any, color?: string) =>
     nameText: {
       fontSize: 20,
       fontWeight: '600',
+      color: color || '#000000',
     },
     buttonText: {
       fontSize: size || 15,
@@ -96,10 +107,13 @@ function UserFollowItem({followUser}: UserFollowItemProps) {
 
   return (
     <TouchableOpacity
+      activeOpacity={0.8}
       style={styles().mainContainer}
       onPress={() => navigation.push('UserProfile', {id: followUser.no})}>
       <View style={styles().contentContainer}>
-        <Image style={styles().userImage} source={{uri: followUser.image}} />
+        <View style={styles().imageBox}>
+          <Image style={styles().userImage} source={{uri: followUser.image}} />
+        </View>
         <Text style={fontStyles().nameText}>{followUser.name}</Text>
       </View>
       <View style={styles().contentContainer}>
