@@ -95,7 +95,7 @@ public class PloggingServiceImpl implements PloggingService {
         }
 
         if (myRanking == null)
-            throw new CustomException(ErrorCode.CONTENT_EMPTY);
+            myRanking = RankingResDto.of(0, user, 0, 0);
 
         return myRanking;
     }
