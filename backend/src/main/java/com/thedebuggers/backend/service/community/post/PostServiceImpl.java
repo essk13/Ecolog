@@ -2,6 +2,7 @@ package com.thedebuggers.backend.service.community.post;
 
 import com.thedebuggers.backend.common.exception.CustomException;
 import com.thedebuggers.backend.common.util.ErrorCode;
+import com.thedebuggers.backend.domain.entity.community.Community;
 import com.thedebuggers.backend.domain.entity.community.post.Post;
 import com.thedebuggers.backend.domain.entity.community.post.PostLike;
 import com.thedebuggers.backend.domain.entity.community.post.PostType;
@@ -39,6 +40,8 @@ public class PostServiceImpl implements PostService {
     @Transactional
     @Override
     public PostResDto registPost(User user, PostReqDto postReqDto, long communityNo, MultipartFile imageFile) {
+        Community community = communityRepository.findById(communityNo).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
+
         if (userCommunityRepository.findAllByCommunityNoAndUserNo(communityNo, user.getNo()) == null)
             throw new CustomException(ErrorCode.CONTENT_UNAUTHORIZED);
 
@@ -48,6 +51,12 @@ public class PostServiceImpl implements PostService {
         String imageUrl = null;
         if (imageFile != null) {
             imageUrl = s3Service.upload(imageFile);
+        }
+
+        if (postReqDto.getType() == 1) {
+            if (user.getNo() != community.getManager().getNo()) {
+                throw new CustomException(ErrorCode.CONTENT_UNAUTHORIZED);
+            }
         }
 
         Post post = Post.builder()
