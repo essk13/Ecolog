@@ -71,6 +71,13 @@ const styles = (direction?: any, padding?: number, paddingBottom?: number) =>
       borderWidth: 1,
       borderColor: '#ffffff',
     },
+    userNameContainer: {
+      flexDirection: direction || 'column',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 8,
+      flexGrow: 1,
+    },
   });
 
 const fontStyles = (size?: number, weight?: any, color?: string) =>
@@ -78,7 +85,6 @@ const fontStyles = (size?: number, weight?: any, color?: string) =>
     userName: {
       fontSize: size || 15,
       fontWeight: weight || 'normal',
-      marginBottom: 8,
       color: color || '#FFFFFF',
     },
     buttonText: {
@@ -137,9 +143,19 @@ function UserInfo({user, userIsLoading, postCount}: UserInfoProps) {
           />
         </View>
         <View style={styles().userInfoContainer}>
-          <Text style={fontStyles(20, '600').userName}>
-            {user ? user.name : null}
-          </Text>
+          <View style={styles('row').userNameContainer}>
+            <Text style={fontStyles(20, '600').userName}>
+              {user ? user.name : null}
+            </Text>
+            {myInfo.data && user && myInfo.data.no === user.no && (
+              <>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('UserEdit')}>
+                  <Icon name="settings" size={16} color="#ffffff" />
+                </TouchableOpacity>
+              </>
+            )}
+          </View>
           <View style={styles('row', 0, 5).userContainer}>
             <UserInfoText title={'게시물'} count={postCount} />
             <TouchableOpacity
@@ -163,11 +179,13 @@ function UserInfo({user, userIsLoading, postCount}: UserInfoProps) {
           </View>
           {myInfo.data && user && myInfo.data.no === user.no && (
             <>
-              <TouchableOpacity onPress={() => navigation.navigate('UserEdit')}>
-                <Text>내 정보 수정</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => googleLogout()}>
-                <Text>로그아웃</Text>
+              <TouchableOpacity
+                style={styles().followButton}
+                onPress={() => googleLogout()}>
+                <Icon name="logout" size={16} color="#ffffff" />
+                <Text style={fontStyles(14, 'normal', '#ffffff').buttonText}>
+                  로그아웃
+                </Text>
               </TouchableOpacity>
             </>
           )}

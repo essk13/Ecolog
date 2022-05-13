@@ -7,7 +7,6 @@ import {UserPostList} from '../../../api/user';
 // Components
 import UserPlogging from './Plogging/UserPlogging';
 import UserCampaign from './Campaign/UserCampaign';
-import UserAvatar from './Avatar/UserAvatar';
 
 // Style
 const fontStyles = (size?: number, weight?: any) =>
@@ -30,7 +29,6 @@ function UserTab({ploggingList, postList}: UserTabProps) {
   const [routes] = React.useState([
     {key: 'plogging', title: '플로깅'},
     {key: 'campaign', title: '캠페인'},
-    {key: 'avatar', title: '아바타'},
   ]);
 
   // Tab-View
@@ -50,12 +48,10 @@ function UserTab({ploggingList, postList}: UserTabProps) {
     ) : (
       <UserCampaign postList={postList} />
     );
-  const ThirdRoute = () => <UserAvatar />;
 
   const renderScene = SceneMap({
     plogging: FirstRoute,
     campaign: SecondRoute,
-    avatar: ThirdRoute,
   });
 
   return (
