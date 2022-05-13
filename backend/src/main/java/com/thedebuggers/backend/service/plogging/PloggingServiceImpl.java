@@ -162,12 +162,15 @@ public class PloggingServiceImpl implements PloggingService {
         return regionProgressResDtoList;
     }
 
-    private Map<String, String> getDate(String type) {
+    private Map<String, String> getDate(String period) {
         Map<String, String> dateInfo = new HashMap<>();
         String startDay = "20000101";
-        String endDay = new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance(Locale.KOREA).getTime());
 
-        switch (type) {
+        Calendar cal = Calendar.getInstance(Locale.KOREA);
+        cal.add(Calendar.DATE, 1);
+        String endDay = new SimpleDateFormat("yyyyMMdd").format(cal.getTime());
+
+        switch (period) {
             case "week":
                 startDay = startOfWeek();
                 endDay = endOfWeek();
@@ -200,6 +203,7 @@ public class PloggingServiceImpl implements PloggingService {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 
         calendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+        calendar.add(Calendar.DATE, 1);
         return dateFormat.format(calendar.getTime());
     }
 
@@ -208,6 +212,7 @@ public class PloggingServiceImpl implements PloggingService {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 
         calendar.set(Calendar.DATE, calendar.getActualMaximum(calendar.DAY_OF_MONTH));
+        calendar.add(Calendar.DATE, 1);
         return dateFormat.format(calendar.getTime());
     }
 }

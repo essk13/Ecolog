@@ -6,10 +6,12 @@ import com.thedebuggers.backend.domain.entity.user.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @Builder
+@ToString
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class RankingResDto implements Cloneable {
     private int ranking;
