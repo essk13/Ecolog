@@ -5,7 +5,7 @@ import PloggingScreen from './PloggingScreen';
 import UserScreen from './UserScreen';
 import CommunityScreen from './CommunityScreen';
 import SurveyScreen from './SurveyScreen';
-import ARScreen from './ARScreen';
+import AvatarScreen from './AvatarScreen';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
@@ -33,8 +33,8 @@ function MainScreen() {
       />
       <Tab.Screen name="Survey" component={SurveyScreen} />
       <Tab.Screen
-        name="AR"
-        component={ARScreen}
+        name="Avatar"
+        component={AvatarScreen}
         options={{
           unmountOnBlur: true,
         }}

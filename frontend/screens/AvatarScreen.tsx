@@ -22,7 +22,7 @@ interface MyAsset {
   myRoomList: number[];
 }
 
-function ARScreen() {
+function AvatarScreen() {
   const dispatch = useDispatch();
   // Asset API
   const {data: assetData} = useQuery('AssetData', getAssetData);
@@ -163,4 +163,4 @@ function ARScreen() {
   );
 }
 
-export default ARScreen;
+export default AvatarScreen;

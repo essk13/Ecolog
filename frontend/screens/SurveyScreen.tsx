@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import {Text, View, Image, StyleSheet} from 'react-native';
 import {Button} from 'react-native-paper';
 
 const styles = StyleSheet.create({
@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    marginTop: '40%',
+    marginTop: '10%',
     fontSize: 30,
     fontWeight: '600',
   },
@@ -17,7 +17,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgb(0, 242, 96)',
     width: '55%',
     height: '10%',
-    marginTop: '60%',
     justifyContent: 'center',
   },
   buttonText: {
@@ -25,11 +24,24 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '600',
   },
+  img: {
+    width: '65%',
+    aspectRatio: 1,
+    marginTop: '15%',
+    marginBottom: '15%',
+  },
 });
+
 function SurveyScreen({navigation}: any) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>ECO MBTI 테스트</Text>
+      <Text style={styles.title}>에코지수 테스트</Text>
+      <Image
+        style={styles.img}
+        source={{
+          uri: 'https://www.kindpng.com/picc/m/63-631859_we-love-the-earth-hd-png-download.png',
+        }}
+      />
       <Button
         mode="contained"
         style={styles.button}

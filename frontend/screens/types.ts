@@ -12,7 +12,7 @@ export type MainTabParamList = {
   User: undefined;
   Community: undefined;
   Survey: undefined;
-  AR: undefined;
+  Avatar: undefined;
 };
 export type MainTabNavigationScreenParams =
   NavigatorScreenParams<MainTabParamList>;
