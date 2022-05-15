@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useSelector} from 'react-redux';
+import {useQueryClient} from 'react-query';
 import {RootState} from '../modules';
 import auth from '@react-native-firebase/auth';
 import {RootStackParamList} from './types';
@@ -31,12 +32,14 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 function RootScreen() {
   const myInfo = useSelector((state: RootState) => state.user.user);
   const [loggedIn, setLoggedIn] = useState(false);
+  const queryClient = useQueryClient();
 
   auth().onAuthStateChanged(user => {
     if (user && myInfo.data) {
       setLoggedIn(true);
     } else {
       setLoggedIn(false);
+      queryClient.clear();
     }
   });
 

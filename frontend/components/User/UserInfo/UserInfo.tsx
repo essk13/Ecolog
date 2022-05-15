@@ -111,6 +111,7 @@ function UserInfo({user, userIsLoading, postCount}: UserInfoProps) {
       AsyncStorage.removeItem('accessToken');
       AsyncStorage.removeItem('refreshToken');
       AsyncStorage.removeItem('persist:root');
+      queryClient.clear();
       auth().signOut();
     },
     onError: error => {

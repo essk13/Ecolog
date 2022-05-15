@@ -67,6 +67,64 @@ export async function getRegionRanking(periodType: string) {
   return response.data;
 }
 
+export async function getTrashCanList(locationData: LocationData) {
+  const response = await Api.get<TrashCanList>(
+    `/trash_can?lat=${locationData.lat}&lng=${locationData.lng}&range=${locationData.range}`,
+  );
+  return response.data;
+}
+
+export async function saveTrashCan(trashCanInput: TrashCanInput) {
+  const formData = new FormData();
+  let trashCanImg = {
+    name: trashCanInput.trashCanImgData.fileName,
+    type: trashCanInput.trashCanImgData.type,
+    uri: trashCanInput.trashCanImgData.uri,
+  };
+  formData.append('image', trashCanImg);
+  formData.append('trash_can_info', {
+    string: JSON.stringify(trashCanInput.trashCanInfo),
+    type: 'application/json',
+  });
+  const response = await Api.post<TrashCan>('/trash_can', formData, {
+    headers: {
+      'Content-type': 'multipart/form-data',
+    },
+    transformRequest: formData => formData,
+  });
+  return response.data;
+}
+
+export async function editTrashCan(trashCanInput: TrashCanInput) {
+  const formData = new FormData();
+  let trashCanImg = {
+    name: trashCanInput.trashCanImgData.fileName,
+    type: trashCanInput.trashCanImgData.type,
+    uri: trashCanInput.trashCanImgData.uri,
+  };
+  formData.append('image', trashCanImg);
+  formData.append('trash_can_info', {
+    string: JSON.stringify(trashCanInput.trashCanInfo),
+    type: 'application/json',
+  });
+  const response = await Api.put<TrashCan>(
+    `/trash_can/${trashCanInput.no}`,
+    formData,
+    {
+      headers: {
+        'Content-type': 'multipart/form-data',
+      },
+      transformRequest: formData => formData,
+    },
+  );
+  return response.data;
+}
+
+export async function deleteTrashCan(no: number) {
+  const response = await Api.delete<boolean>(`/trash_can/${no}`);
+  return response.data;
+}
+
 export interface PloggingInfo {
   calories: number;
   distance: number;
@@ -75,7 +133,7 @@ export interface PloggingInfo {
   time: number;
 }
 
-export interface RouteImgData {
+export interface ImgData {
   fileName: string;
   type: string;
   uri: string;
@@ -84,7 +142,7 @@ export interface RouteImgData {
 export interface PloggingData {
   ploggingInfo: PloggingInfo;
   resultImgData: Asset;
-  routeImgData: RouteImgData;
+  routeImgData: ImgData;
 }
 
 export interface Plogging {
@@ -114,7 +172,7 @@ export interface PloggingDetail {
 }
 
 export interface RankingUser {
-  bitrh: string;
+  birth: string | null;
   email: string;
   image: string;
   name: string;
@@ -130,3 +188,34 @@ export interface PloggingRank {
 }
 
 export interface PloggingRankList extends Array<PloggingRank> {}
+
+export interface LocationData {
+  lat: number;
+  lng: number;
+  range: number;
+}
+
+export interface CreatedUser extends RankingUser {}
+
+export interface TrashCan {
+  address: string;
+  image: string;
+  lat: number;
+  lng: number;
+  no: number;
+  user: CreatedUser;
+}
+
+export interface TrashCanList extends Array<TrashCan> {}
+
+export interface TrashCanInfo {
+  address: string;
+  lat: number;
+  lng: number;
+}
+
+export interface TrashCanInput {
+  trashCanImgData: Asset;
+  trashCanInfo: TrashCanInfo;
+  no: number | null;
+}

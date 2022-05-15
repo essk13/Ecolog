@@ -59,7 +59,6 @@ function UserPloggingItem({ploggingData}: UserPloggingItemProps) {
         navigation.navigate('PloggingRecord', {id: ploggingData.no})
       }>
       <Image
-        key={ploggingData.no}
         style={styles().img}
         source={{
           uri: ploggingData.result_img,
@@ -79,7 +78,6 @@ function UserPloggingItem({ploggingData}: UserPloggingItemProps) {
         </Text>
       </View>
       <Image
-        key={ploggingData.no}
         style={styles(1.5).img}
         source={{
           uri: ploggingData.route_img,

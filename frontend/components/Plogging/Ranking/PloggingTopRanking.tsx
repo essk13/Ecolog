@@ -103,7 +103,7 @@ function PloggingTopRanking({rankDataList}: PloggingTopRankingProps) {
         <Image
           style={styles(30, 30).titleImg}
           source={{
-            uri: 'https://cdn-icons.flaticon.com/png/512/2838/premium/2838625.png?token=exp=1652380951~hmac=6fe69137a5ede0aed154ab4c2d627b2d',
+            uri: 'https://cdn-icons-png.flaticon.com/512/3593/3593645.png',
           }}
         />
         <Text style={fontStyles(18, '600').rankText}>명예의 전당</Text>
