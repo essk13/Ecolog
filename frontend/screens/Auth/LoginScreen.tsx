@@ -33,8 +33,8 @@ const styles = () =>
       justifyContent: 'center',
     },
     mainImage: {
+      width: 300,
       height: 250,
-      width: 250,
       marginTop: 90,
       marginBottom: 35,
     },
@@ -101,9 +101,7 @@ function LoginScreen() {
         <>
           <View style={styles().logoContainer}>
             <Image
-              source={{
-                uri: 'https://user-images.githubusercontent.com/87461594/165668437-f7141eee-4de2-4f76-bae4-16a9762b7259.png',
-              }}
+              source={require('../../assets/animation/earth_normal.gif')}
               style={styles().mainImage}
             />
             <Animatable.Image

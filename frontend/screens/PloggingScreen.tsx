@@ -80,8 +80,13 @@ const fontStyles = (size?: number, weight?: any, color?: string) =>
   });
 
 function PloggingScreen({navigation}: any) {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState<boolean>(false);
+  const [warning, setWarning] = useState<boolean>(false);
+  const [visibleStatus, setVisibleStatus] = useState<boolean>(false);
   const myInfo = useSelector((state: RootState) => state.user.user);
+  const ploggingList = useSelector(
+    (state: RootState) => state.plogging.ploggingList,
+  );
   const {colors} = useTheme();
   const dispatch = useDispatch();
 
@@ -90,6 +95,25 @@ function PloggingScreen({navigation}: any) {
       dispatch(ploggingActions.getPloggingListAsync.request(myInfo.data.no));
     }
   }, [dispatch, myInfo.data]);
+
+  useEffect(() => {
+    if (ploggingList.data && ploggingList.data.length > 0) {
+      let ploggingDate = new Date(
+        ploggingList.data[ploggingList.data.length - 1].ended_at.split(' ')[0],
+      );
+      let nowDate = new Date();
+      if (nowDate.getDate() - ploggingDate.getDate() >= 7) {
+        setVisibleStatus(true);
+        setWarning(true);
+      } else {
+        setVisibleStatus(false);
+        setWarning(false);
+      }
+    } else {
+      setVisibleStatus(false);
+      setWarning(false);
+    }
+  }, [ploggingList.data]);
 
   return (
     <View style={styles(colors.background).background}>
@@ -108,12 +132,18 @@ function PloggingScreen({navigation}: any) {
         </TouchableOpacity>
       </View>
       <View style={styles().bodyContainer}>
-        <Image
-          source={{
-            uri: 'https://user-images.githubusercontent.com/87461594/165668437-f7141eee-4de2-4f76-bae4-16a9762b7259.png',
-          }}
-          style={imageStyles(250, 250).normalImage}
-        />
+        {warning && (
+          <Image
+            source={require('../assets/animation/earth_dead.gif')}
+            style={imageStyles(300, 250).normalImage}
+          />
+        )}
+        {!warning && (
+          <Image
+            source={require('../assets/animation/earth_normal.gif')}
+            style={imageStyles(300, 250).normalImage}
+          />
+        )}
         <PloggingStartButton navigation={navigation} setVisible={setVisible} />
         <Snackbar
           visible={visible}
@@ -122,6 +152,15 @@ function PloggingScreen({navigation}: any) {
           action={{label: '확인', onPress: () => setVisible(false)}}>
           <Text style={fontStyles(16, 'normal', '#ffffff').textStyle}>
             위치 정보 권한이 필요합니다.
+          </Text>
+        </Snackbar>
+        <Snackbar
+          visible={visibleStatus}
+          style={styles().snackBar}
+          onDismiss={() => setVisibleStatus(false)}
+          action={{label: '확인', onPress: () => setVisible(false)}}>
+          <Text style={fontStyles(16, 'normal', '#ffffff').textStyle}>
+            지구에 플로깅이 필요합니다!
           </Text>
         </Snackbar>
       </View>

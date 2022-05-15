@@ -108,7 +108,7 @@ function TrashCanDetail({
           <Image
             style={styles().titleImg}
             source={{
-              uri: 'https://cdn-icons.flaticon.com/png/512/1587/premium/1587516.png?token=exp=1652530067~hmac=e3153082689ae65b3b28c77fcacffd4b',
+              uri: 'https://user-images.githubusercontent.com/87461594/168479817-a7632e66-77b5-4484-9cbe-ca86f0f4345e.png',
             }}
           />
           <Text style={styles().title}>쓰레기통 정보</Text>

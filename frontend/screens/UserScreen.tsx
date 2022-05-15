@@ -29,7 +29,7 @@ function UserScreen() {
     }
   }, [dispatch, myInfo.data]);
 
-  if (!myInfo.data) {
+  if (!myInfo.data || !postList) {
     return (
       <View>
         <Text>로딩중</Text>

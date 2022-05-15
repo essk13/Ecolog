@@ -70,6 +70,10 @@ const styles = (color?: any) =>
     map: {
       flex: 1,
     },
+    avatarImage: {
+      width: 80,
+      height: 80,
+    },
     markerImage: {
       width: 50,
       height: 50,
@@ -171,6 +175,7 @@ const fontStyles = (size?: number, weight?: any, align?: any, color?: any) =>
   });
 
 function PloggingMapScreen({navigation}: any) {
+  const [userMarker, setUserMarker] = useState<boolean>(true);
   const [visible, setVisible] = useState<boolean>(false);
   const [backDialog, setBackDialog] = useState<boolean>(false);
   const [finishDialog, setFinishDialog] = useState<boolean>(false);
@@ -377,6 +382,7 @@ function PloggingMapScreen({navigation}: any) {
     if (res.didCancel || !res) {
       setCenterCoordinates(coordinates);
       setZoomLevel(17);
+      setUserMarker(true);
       return;
     }
     if (res.assets && res.assets[0].uri) {
@@ -442,6 +448,7 @@ function PloggingMapScreen({navigation}: any) {
       centerCoordinate.latitude,
     ]);
     setZoomLevel(centerCoordinate.zoom);
+    setUserMarker(false);
     onLaunchCamera();
   };
 
@@ -589,7 +596,7 @@ function PloggingMapScreen({navigation}: any) {
         <Image
           style={styles().trashCanImage}
           source={{
-            uri: 'https://cdn-icons.flaticon.com/png/512/1587/premium/1587516.png?token=exp=1652530067~hmac=e3153082689ae65b3b28c77fcacffd4b',
+            uri: 'https://user-images.githubusercontent.com/87461594/168479817-a7632e66-77b5-4484-9cbe-ca86f0f4345e.png',
           }}
           resizeMode="contain"
         />
@@ -634,15 +641,24 @@ function PloggingMapScreen({navigation}: any) {
             anchor={{x: 0.5, y: 1}}>
             <TouchableOpacity
               activeOpacity={0.6}
-              style={styles().markerImage}
-              onPress={() => {}}>
-              <Image
-                style={styles().markerImage}
-                source={{
-                  uri: 'https://cdn-icons-png.flaticon.com/512/4899/4899329.png',
-                }}
-                resizeMode="contain"
-              />
+              style={userMarker ? styles().avatarImage : styles().markerImage}
+              onPress={() => setUserMarker(!userMarker)}>
+              {userMarker && user.data && (
+                <Image
+                  style={styles().avatarImage}
+                  source={require('../../assets/animation/avatar_0.gif')}
+                  resizeMode="contain"
+                />
+              )}
+              {!userMarker && user.data && (
+                <Image
+                  style={styles().markerImage}
+                  source={{
+                    uri: 'https://cdn-icons-png.flaticon.com/512/4899/4899329.png',
+                  }}
+                  resizeMode="contain"
+                />
+              )}
             </TouchableOpacity>
           </MapboxGL.MarkerView>
           {visibleTrashCan && getTrashCan.data && <View>{trashCanItems}</View>}
@@ -721,7 +737,7 @@ function PloggingMapScreen({navigation}: any) {
           <Image
             style={styles().trashCanImage}
             source={{
-              uri: 'https://cdn-icons.flaticon.com/png/512/1587/premium/1587516.png?token=exp=1652530067~hmac=e3153082689ae65b3b28c77fcacffd4b',
+              uri: 'https://user-images.githubusercontent.com/87461594/168479817-a7632e66-77b5-4484-9cbe-ca86f0f4345e.png',
             }}
             resizeMode="contain"
           />
