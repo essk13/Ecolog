@@ -195,6 +195,15 @@ export async function getCampaignList(communitySeq: number) {
   );
   return response.data;
 }
+
+// 캠페인 참가
+export async function postCampaignJoin(data: CampaignJoinData) {
+  const response = await Api.post<Campaign>(
+    `/community/${data.communityNo}/campaign/${data.campaignNo}`,
+  );
+  return response.data;
+}
+
 // 포스트 리스트
 export async function getPostList(data: PostListData) {
   const response = await Api.get<PostList>(
@@ -258,6 +267,7 @@ export interface Community {
 export interface Manager {
   email: string;
   image: string;
+  nickname: string;
 }
 
 export interface CommunityInfo {
@@ -327,6 +337,10 @@ export interface CreateCommentData {
   post: number;
   commentInfo: CommentInfo;
 }
+export interface CampaignJoinData {
+  communityNo: number;
+  campaignNo: number;
+}
 export interface EditCommentData {
   community: number;
   post: number;
@@ -373,6 +387,9 @@ export interface Campaign {
   content: string;
   max_personnel: number;
   writer: Manager;
+  join_personnel: JoinList;
+  end_date: string;
+  start_date: string;
 }
 export interface Comment {
   no: number;
@@ -388,6 +405,7 @@ export interface Post {
   image: string;
   title: string;
   writer: Manager;
+  created_at: string;
 }
 export interface PostInfo {
   content: string;
@@ -401,6 +419,7 @@ export interface CampaignInfo {
   content: string;
   max_personnel: number;
 }
+export interface JoinList extends Array<Manager> {}
 export interface CommunityList extends Array<Community> {}
 export interface CampaignList extends Array<Campaign> {}
 export interface PostList extends Array<Post> {}

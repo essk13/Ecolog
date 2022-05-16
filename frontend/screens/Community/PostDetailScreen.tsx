@@ -127,6 +127,7 @@ function PostDetailScreen({route}: any) {
               returnKeyType="done"
             />
             <TouchableOpacity onPress={() => editCommentSubmit()}>
+              {/* 연필 아이콘 */}
               <Text>수정</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => deleteCo()}>
@@ -165,6 +166,7 @@ function PostDetailScreen({route}: any) {
               type: route.params.type,
             })
           }>
+          {/* 연필 아이콘 */}
           <Text>수정</Text>
         </TouchableOpacity>
       )}

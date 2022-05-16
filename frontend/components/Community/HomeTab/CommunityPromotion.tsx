@@ -4,10 +4,9 @@ import {
   FlatList,
   View,
   Text,
-  Image,
   TouchableOpacity,
+  ImageBackground,
 } from 'react-native';
-import {Button, Card, Title} from 'react-native-paper';
 import {
   CommunityDetail,
   getCampaignList,
@@ -16,22 +15,56 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import {useQuery} from 'react-query';
 const styles = StyleSheet.create({
+  listContainer: {
+    flexGrow: 0,
+    width: '100%',
+    Height: '100%',
+  },
   Container: {
     flexGrow: 0,
     minHeight: '100%',
     width: '100%',
-    backgroundColor: '#ffffff',
-    padding: 20,
+    padding: 10,
   },
   CardContainer: {
-    height: 200,
-    borderColor: 'black',
-    borderWidth: 1,
-    marginBottom: 20,
-  },
-  image: {
     width: '100%',
-    height: '50%',
+    marginBottom: 10,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  create: {
+    position: 'absolute',
+    bottom: 30,
+    right: 30,
+    zIndex: 1,
+  },
+  cardImg: {
+    height: 180,
+    padding: 20,
+    justifyContent: 'flex-end',
+  },
+  title: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  countContainer: {
+    borderColor: '#ffffff',
+    borderWidth: 2,
+    padding: 3,
+    width: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 8,
+    marginTop: 5,
+  },
+  count: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+  },
+  titleContainer: {
+    marginBottom: 5,
+    marginTop: 5,
   },
 });
 interface CommunityDetailProps {
@@ -43,28 +76,28 @@ interface CampaignItemProps {
 
 function CommunityPromotion({data}: CommunityDetailProps) {
   const navigation = useNavigation<any>();
+
   const PromListItem = ({campaign}: CampaignItemProps) => {
+    const joinCount = campaign.join_personnel.length;
     return (
-      <Card style={styles.CardContainer}>
-        <Image source={{uri: campaign.image}} style={styles.image} />
-        <Card.Content>
-          <Title>{campaign.title}</Title>
-        </Card.Content>
-        <Card.Actions>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('CampaignDetail', {
+            id: campaign.no,
+            no: data.no,
+          })
+        }
+        style={styles.CardContainer}>
+        <ImageBackground source={{uri: campaign.image}} style={styles.cardImg}>
           <Text>{campaign.location}</Text>
-          <Text>{campaign.content}</Text>
-          <Text>{campaign.no}</Text>
-          <Button
-            onPress={() =>
-              navigation.navigate('CampaignDetail', {
-                id: campaign.no,
-                no: data.no,
-              })
-            }>
-            상세 보기
-          </Button>
-        </Card.Actions>
-      </Card>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>{campaign.title}</Text>
+          </View>
+          <Text style={styles.count}>
+            {joinCount} / {campaign.max_personnel}
+          </Text>
+        </ImageBackground>
+      </TouchableOpacity>
     );
   };
   const {data: campaignListData, isLoading} = useQuery(
@@ -79,14 +112,17 @@ function CommunityPromotion({data}: CommunityDetailProps) {
     );
   }
   return (
-    <View>
+    <View style={styles.listContainer}>
       <TouchableOpacity
-        onPress={() => navigation.navigate('CampaignCreate', {data: data})}>
+        onPress={() => navigation.navigate('CampaignCreate', {data: data})}
+        style={styles.create}>
+        {/* 글쓰기 버튼 */}
         <Text>생성</Text>
       </TouchableOpacity>
       <FlatList
         style={styles.Container}
         data={campaignListData}
+        showsVerticalScrollIndicator={false}
         renderItem={({item}: any) => <PromListItem campaign={item} />}
       />
     </View>

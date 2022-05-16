@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, StyleSheet, TextInput} from 'react-native';
+import {Text, View, StyleSheet, TextInput, ImageBackground} from 'react-native';
 import CommunityHomeTab from '../../components/Community/HomeTab/CommunityHomeTab';
 import {useQuery} from 'react-query';
 import {getCommunityDetail} from '../../api/community';
@@ -7,24 +7,26 @@ import {getCommunityDetail} from '../../api/community';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#5FA2E5',
   },
   topInput: {
-    backgroundColor: 'white',
-    width: '100%',
-    height: '50%',
+    backgroundColor: '#dfdfdf',
+    borderRadius: 10,
+    height: 30,
+    padding: 0,
+    paddingLeft: 10,
   },
   topTitle: {
     color: '#ffffff',
-    fontWeight: '700',
-    alignSelf: 'flex-start',
-    marginBottom: 10,
+    alignSelf: 'center',
+    margin: 20,
+    fontSize: 18,
+    fontWeight: '800',
   },
   topMenu: {
     width: '100%',
-    height: '10%',
-    color: '#ffffff',
     padding: 10,
+    paddingTop: 20,
+    paddingBottom: 20,
   },
 });
 
@@ -42,10 +44,12 @@ function CommunityHomeScreen({route}: any) {
   }
   return (
     <View style={styles.container}>
-      <View style={styles.topMenu}>
-        <Text style={styles.topTitle}>{communityDetailData.title}</Text>
-        <TextInput style={styles.topInput} />
-      </View>
+      <ImageBackground source={{uri: communityDetailData.image}}>
+        <View style={styles.topMenu}>
+          <Text style={styles.topTitle}>{communityDetailData.title}</Text>
+          {/* <TextInput placeholder="검색" style={styles.topInput} /> */}
+        </View>
+      </ImageBackground>
       <CommunityHomeTab data={communityDetailData} />
     </View>
   );

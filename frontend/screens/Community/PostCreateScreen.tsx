@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
 function PostCreateScreen({route}: any) {
   const [postInfo, setCampaignInfo] = React.useState<PostInfo>({
     title: '',
-    open: false,
+    open: true,
     content: '',
     type: route.params.type,
   });

@@ -9,15 +9,6 @@ const styles = StyleSheet.create({
     width: '100%',
     minHeight: '100%',
     backgroundColor: '#ffffff',
-    padding: 20,
-  },
-  myItem: {
-    height: 150,
-    backgroundColor: 'grey',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20,
-    borderRadius: 15,
   },
 });
 

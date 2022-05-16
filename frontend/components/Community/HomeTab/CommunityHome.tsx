@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, Image, Alert} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import {CommunityDetail} from '../../../api/community';
 import {Button} from 'react-native-paper';
 import {useMutation} from 'react-query';
@@ -17,6 +17,8 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#ffffff',
     height: '100%',
+    padding: 10,
+    paddingTop: 30,
   },
   HomeNotice: {
     backgroundColor: '#6b6b6b',
@@ -28,36 +30,70 @@ const styles = StyleSheet.create({
   button: {
     width: '100%',
     alignSelf: 'center',
-    backgroundColor: '#9c9c9c',
+    backgroundColor: '#dfdfdf',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 5,
+    padding: 10,
+    marginTop: 'auto',
+    borderWidth: 1,
+    borderColor: '#868686',
+    borderRadius: 5,
   },
+  // 그림자 효과
   intro: {
-    height: '20%',
-    backgroundColor: '#523636',
     marginBottom: 20,
+    marginTop: 20,
     width: '100%',
     alignSelf: 'center',
+    borderWidth: 1,
+    borderColor: '#868686',
+    padding: 10,
+    borderRadius: 10,
   },
+  // 그림자 효과
   commuInfo: {
     width: '100%',
-    backgroundColor: '#9e7373',
+    backgroundColor: '#ffffff',
     alignSelf: 'center',
-    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#868686',
+    marginBottom: 30,
+    marginTop: 20,
+    padding: 10,
+    borderRadius: 10,
   },
   image: {
     width: '100%',
-    height: '10%',
+    height: '20%',
   },
   editButton: {
-    height: '10%',
+    marginLeft: 'auto',
+    color: '#992f2f',
+  },
+  editContainer: {
+    flexDirection: 'row',
+  },
+  joinButton: {
+    width: '100%',
+    alignSelf: 'center',
+    backgroundColor: '#70d81b',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#868686',
+    borderRadius: 5,
+    marginBottom: 20,
+  },
+  joinText: {
+    color: '#ffffff',
   },
 });
 interface CommunityDetailProps {
   data: CommunityDetail;
 }
 function CommunityHome({data}: CommunityDetailProps) {
+  console.log(data.join);
   const navigation = useNavigation<any>();
   const {mutate: communityJoin} = useMutation(postCommunityJoin);
   const {mutate: communityDeleteJoin} = useMutation(deleteCommunityJoin);
@@ -78,30 +114,22 @@ function CommunityHome({data}: CommunityDetailProps) {
 
   return (
     <View style={styles.Container}>
-      <Image source={{uri: data.image}} style={styles.image} />
-      {data.manager.email === myInfo.data?.email && (
-        <Button
-          onPress={() => navigation.navigate('CommunityEdit', {data: data})}
-          style={styles.editButton}>
-          <Text>수정하기</Text>
-        </Button>
+      {!data.join && (
+        <TouchableOpacity onPress={() => Join()} style={styles.joinButton}>
+          <Text style={styles.joinText}>가입하기</Text>
+        </TouchableOpacity>
       )}
-      <Text>공지 사항</Text>
-      <View style={styles.HomeNotice}>
-        <View>
-          <Text>이것은 공지입니다</Text>
-        </View>
-        <View>
-          <Text>이것은 공지입니다</Text>
-        </View>
-        <View>
-          <Text>이것은 공지입니다</Text>
-        </View>
-        <View>
-          <Text>이것은 공지입니다</Text>
-        </View>
+      <View style={styles.editContainer}>
+        <Text>커뮤니티 정보</Text>
+        <TouchableOpacity
+          style={styles.editButton}
+          onPress={() => navigation.navigate('CommunityEdit', {data: data})}>
+          {data.manager.email === myInfo.data?.email && (
+            // 연필 아이콘
+            <Text style={styles.editButton}>수정</Text>
+          )}
+        </TouchableOpacity>
       </View>
-      <Text>커뮤니티 정보</Text>
       <View style={styles.commuInfo}>
         <Text>회원 수 </Text>
         <Text>개설일</Text>
@@ -109,24 +137,19 @@ function CommunityHome({data}: CommunityDetailProps) {
         <Text>캠페인 태그 : {data.tag}</Text>
         <Text>지역 </Text>
       </View>
-      <Text>소개글</Text>
+      <Text>커뮤니티 소개</Text>
       <View style={styles.intro}>
         <Text>{data.description}</Text>
       </View>
-      {!data.join && (
-        <Button onPress={() => Join()} style={styles.button}>
-          <Text>가입하기</Text>
-        </Button>
-      )}
       {data.join && data.manager.email !== myInfo.data?.email && (
-        <Button onPress={() => deleteJoin()} style={styles.button}>
+        <TouchableOpacity onPress={() => deleteJoin()} style={styles.button}>
           <Text>탈퇴하기</Text>
-        </Button>
+        </TouchableOpacity>
       )}
       {data.manager.email === myInfo.data?.email && (
-        <Button onPress={() => deleteCommu()} style={styles.button}>
+        <TouchableOpacity onPress={() => deleteCommu()} style={styles.button}>
           <Text>삭제하기</Text>
-        </Button>
+        </TouchableOpacity>
       )}
     </View>
   );

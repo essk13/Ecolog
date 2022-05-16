@@ -7,20 +7,14 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import {Community} from '../../../api/community';
+import {
+  Community,
+  getCommunityList,
+  getHotCommunityList,
+} from '../../../api/community';
 import {useQuery} from 'react-query';
-import {getCommunityList} from '../../../api/community';
 import {useNavigation} from '@react-navigation/native';
-import {getHotCommunityList} from '../../../api/community';
-
 const styles = StyleSheet.create({
-  contentContainer: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#FFFFFF',
-    padding: 10,
-    flexGrow: 0,
-  },
   img: {
     width: '100%',
     aspectRatio: 0.75,
@@ -33,16 +27,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 10,
   },
-  hotContainer: {
-    height: '10%',
-    flexGrow: 0,
-    marginBottom: 10,
-  },
-  hotCommuContainer: {
-    height: '30%',
-    flexGrow: 0,
-    marginBottom: 10,
-  },
+  // 그림자 효과
   myItem: {
     height: 150,
     backgroundColor: '#ffffff',
@@ -70,19 +55,16 @@ const styles = StyleSheet.create({
     marginRight: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 5,
     overflow: 'hidden',
-    borderColor: '#919191',
-    borderWidth: 1,
   },
-  myListContainer: {
-    flexGrow: 0,
-    width: '100%',
-    Height: '60%',
-  },
+
   hotimage: {
     height: '80%',
     width: '100%',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 5,
+    borderBottomLeftRadius: 5,
+    borderBottomRightRadius: 20,
     backgroundColor: '#bbbbbb',
   },
   hotItemTitle: {
@@ -102,6 +84,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  hotItemSelected: {
+    width: 100,
+    height: '100%',
+    marginRight: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+    borderColor: '#cecece',
+    borderWidth: 1,
+    backgroundColor: '#28c222',
+  },
 });
 
 interface CommunityItemProps {
@@ -112,8 +105,9 @@ interface CommunityItemProps {
 interface KeywordProps {
   keyword: string;
 }
+
 function CommunityMain({keyword}: KeywordProps) {
-  const [searchOn, setSearchOn] = React.useState({on: false, key: 'ㄴㅇㄹ'});
+  const [searchOn, setSearchOn] = React.useState({on: false, key: ''});
 
   const hotItem = ({item}: any) => {
     const touchTag = () => {
@@ -123,12 +117,23 @@ function CommunityMain({keyword}: KeywordProps) {
         setSearchOn({on: true, key: item});
       }
     };
-    return (
-      <TouchableOpacity onPress={() => touchTag()} style={styles.hotItem}>
-        <Text>{item}</Text>
-      </TouchableOpacity>
-    );
+    if (searchOn.key === item) {
+      return (
+        <TouchableOpacity
+          onPress={() => touchTag()}
+          style={styles.hotItemSelected}>
+          <Text>{item}</Text>
+        </TouchableOpacity>
+      );
+    } else {
+      return (
+        <TouchableOpacity onPress={() => touchTag()} style={styles.hotItem}>
+          <Text>{item}</Text>
+        </TouchableOpacity>
+      );
+    }
   };
+
   function HotCommu({community}: CommunityItemProps) {
     const navigation = useNavigation<any>();
     return (
@@ -155,7 +160,6 @@ function CommunityMain({keyword}: KeywordProps) {
             <Image source={{uri: community.image}} style={styles.image} />
             <View style={styles.ItemContent}>
               <Text>{community.title}</Text>
-
               <Text>{community.description}</Text>
               <Text>{community.join_count}</Text>
               <Text>{community.tag}</Text>
@@ -181,7 +185,6 @@ function CommunityMain({keyword}: KeywordProps) {
     );
   }
   const hotCampaignData = [
-    'tag1',
     '용기내',
     '플로깅',
     '고고',
@@ -194,16 +197,50 @@ function CommunityMain({keyword}: KeywordProps) {
     'hotCommunityList',
     getHotCommunityList,
   );
+  const mainStyles = StyleSheet.create({
+    container: {
+      width: '100%',
+      height: '100%',
+      backgroundColor: '#ffffff',
+      padding: 10,
+      justifyContent: 'flex-start',
+    },
+    tagContainer: {
+      height: '6%',
+      marginTop: 10,
+      marginBottom: 10,
+      flexGrow: 0,
+    },
+    hotContainer: {
+      height: '25%',
+      marginTop: 10,
+      marginBottom: 10,
+      flexGrow: 0,
+    },
+    myListContainer: {
+      marginTop: 10,
+      width: '100%',
+      height: '60%',
+    },
+    createButton: {
+      position: 'absolute',
+      bottom: 30,
+      right: 30,
+      zIndex: 1,
+    },
+  });
   const navigation = useNavigation<any>();
   return (
-    <View style={styles.contentContainer}>
-      <TouchableOpacity onPress={() => navigation.navigate('CommunityCreate')}>
-        <Text>커뮤니티 생성</Text>
+    <View style={mainStyles.container}>
+      <TouchableOpacity
+        style={mainStyles.createButton}
+        onPress={() => navigation.navigate('CommunityCreate')}>
+        {/* 글쓰기 버튼 */}
+        <Text>생성</Text>
       </TouchableOpacity>
-
       <Text>인기 태그</Text>
       <FlatList
-        style={styles.hotContainer}
+        style={mainStyles.tagContainer}
         horizontal={true}
         data={hotCampaignData}
         renderItem={hotItem}
@@ -211,7 +248,7 @@ function CommunityMain({keyword}: KeywordProps) {
       />
       <Text>인기 커뮤니티</Text>
       <FlatList
-        style={styles.hotCommuContainer}
+        style={mainStyles.hotContainer}
         horizontal={true}
         data={hotCommunity}
         showsHorizontalScrollIndicator={false}
@@ -221,7 +258,7 @@ function CommunityMain({keyword}: KeywordProps) {
       />
       <Text>{keyword}</Text>
       <FlatList
-        style={styles.myListContainer}
+        style={mainStyles.myListContainer}
         data={communityListData}
         showsVerticalScrollIndicator={false}
         renderItem={({item}: any) => (

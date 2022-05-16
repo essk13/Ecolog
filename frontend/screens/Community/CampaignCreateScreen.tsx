@@ -110,7 +110,7 @@ function CampaignCreateScreen({route}: any) {
         returnKeyType="done"
       />
       <TouchableOpacity onPress={() => submitCreate()}>
-        <Text>생성하기</Text>
+        <Text>생성</Text>
       </TouchableOpacity>
     </View>
   );

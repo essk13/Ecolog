@@ -7,27 +7,49 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import {Button, Card, Title} from 'react-native-paper';
 import {CommunityDetail, getPostList, Post} from '../../../api/community';
 import {useNavigation} from '@react-navigation/native';
 import {useQuery} from 'react-query';
 const styles = StyleSheet.create({
+  mainContainer: {
+    flexGrow: 0,
+    Height: '100%',
+    width: '100%',
+    backgroundColor: '#ffffff',
+  },
   Container: {
     flexGrow: 0,
     minHeight: '100%',
     width: '100%',
-    backgroundColor: '#ffffff',
-    padding: 20,
   },
   CardContainer: {
-    height: 200,
-    borderColor: 'black',
-    borderWidth: 1,
-    marginBottom: 20,
+    padding: 15,
+    borderColor: '#cfcfcf',
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 80,
   },
   image: {
-    width: '100%',
-    height: '50%',
+    height: 40,
+    aspectRatio: 1,
+    borderRadius: 35,
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  create: {
+    position: 'absolute',
+    bottom: 30,
+    right: 30,
+  },
+  postDate: {
+    color: '#919191',
+    marginLeft: 'auto',
+  },
+  postTitle: {
+    fontSize: 16,
+    marginBottom: 5,
+    fontWeight: '800',
   },
 });
 interface CommunityDetailProps {
@@ -40,27 +62,26 @@ interface CampaignItemProps {
 function CommunityFree({data}: CommunityDetailProps) {
   const navigation = useNavigation<any>();
   const PromListItem = ({post}: CampaignItemProps) => {
+    const date = post.created_at.split('T');
     return (
-      <Card style={styles.CardContainer}>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('PostDetail', {
+            id: post.no,
+            no: data.no,
+            type: 2,
+          })
+        }
+        style={styles.CardContainer}>
+        <Text>{post.no}</Text>
         <Image source={{uri: post.image}} style={styles.image} />
-        <Card.Content>
-          <Title>{post.title}</Title>
-        </Card.Content>
-        <Card.Actions>
-          <Text>{post.content}</Text>
-          <Text>{post.no}</Text>
-          <Button
-            onPress={() =>
-              navigation.navigate('PostDetail', {
-                id: post.no,
-                no: data.no,
-                type: 2,
-              })
-            }>
-            상세 보기
-          </Button>
-        </Card.Actions>
-      </Card>
+        <View>
+          <Text style={styles.postTitle}>{post.title}</Text>
+
+          <Text>{post.writer.nickname}</Text>
+        </View>
+        <Text style={styles.postDate}>{date[0]}</Text>
+      </TouchableOpacity>
     );
   };
   const {data: campaignListData, isLoading} = useQuery(
@@ -75,16 +96,17 @@ function CommunityFree({data}: CommunityDetailProps) {
     );
   }
   return (
-    <View>
+    <View style={styles.mainContainer}>
       <TouchableOpacity
-        onPress={() =>
-          navigation.navigate('PostCreate', {data: data, type: 2})
-        }>
+        onPress={() => navigation.navigate('PostCreate', {data: data, type: 2})}
+        style={styles.create}>
+        {/* 글쓰기 버튼 */}
         <Text>생성</Text>
       </TouchableOpacity>
       <FlatList
         style={styles.Container}
         data={campaignListData}
+        showsVerticalScrollIndicator={false}
         renderItem={({item}: any) => <PromListItem post={item} />}
       />
     </View>
