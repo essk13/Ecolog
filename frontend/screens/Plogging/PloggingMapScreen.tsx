@@ -646,7 +646,9 @@ function PloggingMapScreen({navigation}: any) {
               {userMarker && user.data && (
                 <Image
                   style={styles().avatarImage}
-                  source={require('../../assets/animation/avatar_0.gif')}
+                  source={{
+                    uri: `https://ecolog-bucket.s3.ap-northeast-2.amazonaws.com/avatar_${user.data.avatar}.gif`,
+                  }}
                   resizeMode="contain"
                 />
               )}

@@ -132,18 +132,14 @@ function PloggingScreen({navigation}: any) {
         </TouchableOpacity>
       </View>
       <View style={styles().bodyContainer}>
-        {warning && (
-          <Image
-            source={require('../assets/animation/earth_dead.gif')}
-            style={imageStyles(300, 250).normalImage}
-          />
-        )}
-        {!warning && (
-          <Image
-            source={require('../assets/animation/earth_normal.gif')}
-            style={imageStyles(300, 250).normalImage}
-          />
-        )}
+        <Image
+          source={{
+            uri: `https://ecolog-bucket.s3.ap-northeast-2.amazonaws.com/earth_${
+              warning ? 'dead' : 'normal'
+            }.gif`,
+          }}
+          style={imageStyles(300, 250).normalImage}
+        />
         <PloggingStartButton navigation={navigation} setVisible={setVisible} />
         <Snackbar
           visible={visible}

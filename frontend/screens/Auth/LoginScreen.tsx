@@ -101,7 +101,9 @@ function LoginScreen() {
         <>
           <View style={styles().logoContainer}>
             <Image
-              source={require('../../assets/animation/earth_normal.gif')}
+              source={{
+                uri: 'https://ecolog-bucket.s3.ap-northeast-2.amazonaws.com/earth_normal.gif',
+              }}
               style={styles().mainImage}
             />
             <Animatable.Image
