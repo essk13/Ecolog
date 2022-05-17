@@ -1,12 +1,23 @@
-import React from 'react';
-import {Text, View, Image, TouchableHighlight, StyleSheet} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  Text,
+  View,
+  Image,
+  TouchableHighlight,
+  TouchableOpacity,
+  StyleSheet,
+  BackHandler,
+} from 'react-native';
 import {Button} from 'react-native-paper';
-import Icon from 'react-native-vector-icons/AntDesign';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import {Dialog, Portal, Provider} from 'react-native-paper';
 
 function SurveyPageScreen({navigation}: any) {
   const [step, setStep] = React.useState(0);
   const [point, setPoint] = React.useState([]);
   const [result, setResult] = React.useState(0);
+  // 뒤로가기
+  const [backDialog, setBackDialog] = useState<boolean>(false);
   const survey = [
     {
       q: '1. 페트병 분리수거 시 당신의 행동은?',
@@ -90,6 +101,17 @@ function SurveyPageScreen({navigation}: any) {
     },
   ];
 
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+    return () =>
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+  }, []);
+
+  const handleBackPress = () => {
+    setBackDialog(true);
+    return true;
+  };
+
   const routeNext = (p: number) => {
     setResult(result + p);
     setPoint([...point, p]);
@@ -144,41 +166,99 @@ function SurveyPageScreen({navigation}: any) {
       marginTop: '10%',
       marginBottom: '5%',
     },
+    dialogContainer: {
+      height: 200,
+      borderRadius: 20,
+      backgroundColor: '#ffffff',
+      justifyContent: 'space-evenly',
+      alignItems: 'center',
+      elevation: 5,
+      paddingTop: 10,
+    },
+    buttonContainer: {
+      width: 120,
+      height: 50,
+      borderRadius: 10,
+      flexDirection: 'row',
+      justifyContent: 'space-evenly',
+      alignItems: 'center',
+      backgroundColor: '#ffffff',
+      marginHorizontal: 10,
+      elevation: 4,
+    },
   });
 
+  const fontStyles = (size?: number, weight?: any, align?: any, color?: any) =>
+    StyleSheet.create({
+      textStyle: {
+        fontSize: size || 15,
+        fontWeight: weight || 'normal',
+        color: color || '#000000',
+        textAlign: align || 'auto',
+      },
+    });
+
   return (
-    <View style={styles.container}>
-      <TouchableHighlight
-        style={styles.back}
-        onPress={() => {
-          routePrev();
-        }}>
-        <Icon name="left" size={28} color="#4D4D4D" />
-      </TouchableHighlight>
-      <Text style={styles.question}>{survey[step].q}</Text>
-      <Image
-        style={styles.img}
-        source={{
-          uri: survey[step].img,
-        }}
-      />
-      <Button
-        mode="contained"
-        style={styles.button}
-        onPress={() => {
-          routeNext(survey[step].s1);
-        }}>
-        <Text style={styles.buttonText}>{survey[step].a1}</Text>
-      </Button>
-      <Button
-        mode="contained"
-        style={styles.button}
-        onPress={() => {
-          routeNext(survey[step].s2);
-        }}>
-        <Text style={styles.buttonText}>{survey[step].a2}</Text>
-      </Button>
-    </View>
+    <Provider>
+      <View style={styles.container}>
+        <TouchableHighlight
+          style={styles.back}
+          onPress={() => {
+            routePrev();
+          }}>
+          <Icon name="arrow-back-ios" size={28} color="#4D4D4D" />
+        </TouchableHighlight>
+        <Text style={styles.question}>{survey[step].q}</Text>
+        <Image
+          style={styles.img}
+          source={{
+            uri: survey[step].img,
+          }}
+        />
+        <Button
+          mode="contained"
+          style={styles.button}
+          onPress={() => {
+            routeNext(survey[step].s1);
+          }}>
+          <Text style={styles.buttonText}>{survey[step].a1}</Text>
+        </Button>
+        <Button
+          mode="contained"
+          style={styles.button}
+          onPress={() => {
+            routeNext(survey[step].s2);
+          }}>
+          <Text style={styles.buttonText}>{survey[step].a2}</Text>
+        </Button>
+        <Portal>
+          <Dialog
+            style={styles.dialogContainer}
+            visible={backDialog}
+            onDismiss={() => setBackDialog(false)}>
+            <Text style={fontStyles(22, 'bold').textStyle}>
+              설문을 종료하시겠습니까?
+            </Text>
+            <Dialog.Actions>
+              <TouchableOpacity
+                style={styles.buttonContainer}
+                activeOpacity={0.6}
+                onPress={() => setBackDialog(false)}>
+                <Icon name="play-arrow" size={22} color="#5FA2E5" />
+                <Text style={fontStyles(22, '600').textStyle}>계속</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.buttonContainer}
+                activeOpacity={0.6}
+                onPress={() => navigation.pop()}>
+                <Icon name="stop" size={22} color="#5FA2E5" />
+                <Text style={fontStyles(22, '600').textStyle}>종료</Text>
+              </TouchableOpacity>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+      </View>
+    </Provider>
   );
 }
 

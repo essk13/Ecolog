@@ -26,8 +26,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   img: {
-    width: '65%',
-    aspectRatio: 1,
+    width: 300,
+    height: 228,
     marginTop: '15%',
     marginBottom: '15%',
   },
@@ -39,9 +39,7 @@ function SurveyScreen({navigation}: any) {
       <Text style={styles.title}>에코지수 테스트</Text>
       <Image
         style={styles.img}
-        source={{
-          uri: 'https://www.kindpng.com/picc/m/63-631859_we-love-the-earth-hd-png-download.png',
-        }}
+        source={require('../assets/animation/survey_4.png')}
       />
       <Button
         mode="contained"

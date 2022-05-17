@@ -58,6 +58,7 @@ const styles = (
       borderRadius: 10,
     },
     btn: {
+      flexDirection: 'row',
       width: 220,
       height: 45,
       marginVertical: 10,
@@ -183,7 +184,7 @@ function PloggingRecordScreen() {
                 총 거리
               </Text>
               <Text style={fontStyles(20, '800', '#5FA2E5').recordText}>
-                {ploggingData.distance} km
+                {Math.round(ploggingData.distance * 100) / 100} km
               </Text>
             </View>
             <View style={{marginTop: 10}}>
@@ -225,9 +226,21 @@ function PloggingRecordScreen() {
 
       <View style={styles(null, null, 'center', 'center', 10).container}>
         <TouchableOpacity onPress={() => onShare()} style={styles().btn}>
+          <Icon
+            name="sharealt"
+            size={20}
+            color="#FFF"
+            style={{marginRight: 10}}
+          />
           <Text style={fontStyles(20, '600', '#FFF').recordText}>공유하기</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.pop()} style={styles().btn}>
+          <Icon
+            name="menufold"
+            size={20}
+            color="#FFF"
+            style={{marginRight: 10}}
+          />
           <Text style={fontStyles(20, '600', '#FFF').recordText}>목록</Text>
         </TouchableOpacity>
       </View>
