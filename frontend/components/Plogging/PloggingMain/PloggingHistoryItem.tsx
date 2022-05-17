@@ -49,10 +49,9 @@ function PloggingHistoryItem({navigation, plogging}: PloggingHistoryItemProps) {
       <Text style={fontStyles(14, 'bold', '#000000').normalText}>
         {`${ploggingDate[0]}.${ploggingDate[1]}.${ploggingDate[2]}`}
       </Text>
-      <Text
-        style={
-          fontStyles(9, 'normal', '#000000').normalText
-        }>{`${plogging.distance}km / ${hour}:${min}:${sec}`}</Text>
+      <Text style={fontStyles(9, 'normal', '#000000').normalText}>{`${
+        Math.round(plogging.distance * 100) / 100
+      }km / ${hour}:${min}:${sec}`}</Text>
     </TouchableOpacity>
   );
 }

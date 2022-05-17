@@ -96,7 +96,7 @@ function PloggingBottomRankItem({rank, rankData}: PloggingBottomRankItemProps) {
               </Text>
             </View>
             <Text style={fontStyles(11, null, '#000000').rankText}>
-              {`${rankData.cnt}회 / ${rankData.dist}km`}
+              {`${rankData.cnt}회 / ${Math.round(rankData.dist * 100) / 100}km`}
             </Text>
           </LinearGradient>
         </TouchableOpacity>
@@ -123,7 +123,7 @@ function PloggingBottomRankItem({rank, rankData}: PloggingBottomRankItemProps) {
             </Text>
           </View>
           <Text style={fontStyles(11, null, '#636363').rankText}>
-            {`${rankData.cnt}회 / ${rankData.dist}km`}
+            {`${rankData.cnt}회 / ${Math.round(rankData.dist * 100) / 100}km`}
           </Text>
         </TouchableOpacity>
       )}

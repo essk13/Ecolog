@@ -69,7 +69,8 @@ function UserPloggingItem({ploggingData}: UserPloggingItemProps) {
           {ploggingDate}
         </Text>
         <Text style={fontStyles(12).itemText}>
-          {ploggingData.distance}km / {ploggingData.calories}kcal
+          {Math.round(ploggingData.distance * 100) / 100}km /{' '}
+          {ploggingData.calories}kcal
         </Text>
         <Text style={fontStyles(12).itemText}>
           {hour > 0 && <>{hour}시간 </>}

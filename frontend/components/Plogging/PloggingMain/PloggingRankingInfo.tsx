@@ -49,10 +49,10 @@ function PloggingRankingInfo() {
 
   return (
     <View style={styles().container}>
-      {myRank.isFetching && (
+      {(myRank.isFetching || !myRank.data) && (
         <ActivityIndicator animating={true} color={Colors.blueA100} />
       )}
-      {!myRank.isFetching && (
+      {!myRank.isFetching && myRank.data && (
         <>
           <Text style={fontStyles(14, 'bold', '#000000').normalText}>{`${
             myRank.data?.ranking ? myRank.data?.ranking : ' - '
@@ -68,7 +68,9 @@ function PloggingRankingInfo() {
             />
           </LinearGradient>
           <Text style={fontStyles(12, 'normal', '#ABABAB').normalText}>
-            {`${myRank.data?.cnt}회 / ${myRank.data?.dist}km`}
+            {`${myRank.data.cnt}회 / ${
+              Math.round(myRank.data.dist * 100) / 100
+            }km`}
           </Text>
         </>
       )}
