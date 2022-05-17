@@ -15,5 +15,18 @@ services:
     restart: always
     networks:
       - ecolog_network 
+  nginx:
+    restart: always
+    container_name: "ecolog_frontend"
+    image: "ecolog_frontend:0.1"
+    build:
+      dockerfile: Dockerfile
+      context: ./promotion
+    ports:
+      - "3000:80"
+    networks:
+      - ecolog_network
+    environment:
+      - TZ=Asia/Seoul
 networks:
   ecolog_network:
