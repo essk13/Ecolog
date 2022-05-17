@@ -50,4 +50,7 @@ public class Campaign {
     )
     private Set<User> users = new HashSet<>();
 
+    @OneToMany(mappedBy = "campaign", cascade = {CascadeType.REMOVE})
+    private Set<CampaignComment> comments = new HashSet<>();
+
 }

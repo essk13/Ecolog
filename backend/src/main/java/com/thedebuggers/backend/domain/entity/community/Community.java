@@ -2,11 +2,15 @@ package com.thedebuggers.backend.domain.entity.community;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.thedebuggers.backend.domain.entity.community.campaign.Campaign;
+import com.thedebuggers.backend.domain.entity.community.post.Post;
 import com.thedebuggers.backend.domain.entity.user.User;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -56,7 +60,10 @@ public class Community {
     )
     private Set<User> users = new HashSet<>();
 
-//    @OneToMany(mappedBy = "community")
-//    private List<UserCommunity> communityList = new ArrayList<>();
+    @OneToMany(mappedBy = "community", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Post> posts = new HashSet<>();
+
+    @OneToMany(mappedBy = "community", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Campaign> campaigns = new HashSet<>();
 
 }
