@@ -10,11 +10,11 @@ import java.util.List;
 public interface CampaignService {
     CampaignResDto registCampaign(CampaignReqDto campaignReqDto, long communityNo, User user, MultipartFile imageFile);
 
-    List<CampaignResDto> getCampaignList(long communityNo);
+    List<CampaignResDto> getCampaignList(long communityNo, User user);
 
     List<User> getCampaignMember(long campaignNo);
 
-    CampaignResDto getCampaign(long campaignNo);
+    CampaignResDto getCampaign(long campaignNo, User user);
 
     CampaignResDto joinCampaign(long campaignNo, User user);
 

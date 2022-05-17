@@ -37,7 +37,7 @@ public class CampaignController {
             @RequestPart(value = "image", required = false) MultipartFile imageFile,
             @PathVariable long communityNo,
             Authentication authentication
-    ){
+    ) {
         ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
         User user = userDetails.getUser();
 
@@ -56,9 +56,13 @@ public class CampaignController {
             @ApiResponse(code = 500, message = "Server Error")
     })
     private ResponseEntity<List<CampaignResDto>> getCampaignList(
-            @PathVariable long communityNo
+            @PathVariable long communityNo,
+            @ApiIgnore Authentication authentication
     ) {
-        List<CampaignResDto> result = campaignService.getCampaignList(communityNo);
+        ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
+        User user = userDetails.getUser();
+
+        List<CampaignResDto> result = campaignService.getCampaignList(communityNo, user);
         return ResponseEntity.ok(result);
     }
 
@@ -70,9 +74,13 @@ public class CampaignController {
             @ApiResponse(code = 500, message = "Server Error")
     })
     private ResponseEntity<CampaignResDto> getCampaign(
-            @PathVariable long campaignNo
+            @PathVariable long campaignNo,
+            @ApiIgnore Authentication authentication
     ) {
-        CampaignResDto campaignResDto = campaignService.getCampaign(campaignNo);
+        ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
+        User user = userDetails.getUser();
+
+        CampaignResDto campaignResDto = campaignService.getCampaign(campaignNo, user);
         return ResponseEntity.ok(campaignResDto);
     }
 
@@ -126,7 +134,7 @@ public class CampaignController {
             @PathVariable long campaignNo,
             @ApiIgnore Authentication authentication
     ) {
-        ELUserDetails userDetails = (ELUserDetails)authentication.getDetails();
+        ELUserDetails userDetails = (ELUserDetails) authentication.getDetails();
         User user = userDetails.getUser();
 
         boolean result = campaignService.deleteCampaign(user, campaignNo);

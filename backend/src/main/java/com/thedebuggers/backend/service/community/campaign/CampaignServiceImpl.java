@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class CampaignServiceImpl implements CampaignService{
+public class CampaignServiceImpl implements CampaignService {
 
     private final CommunityService communityService;
 
@@ -68,18 +68,18 @@ public class CampaignServiceImpl implements CampaignService{
 
         List<User> userList = userCampaignRepository.findAllUserByCampaignNo(campaign.getNo());
 
-        CampaignResDto campaignResDto = CampaignResDto.of(campaign, userList);
+        CampaignResDto campaignResDto = CampaignResDto.of(campaign, userList, isUserJoiningInCampaign(campaign.getNo(), user.getNo()));
 
         return campaignResDto;
     }
 
     @Override
-    public List<CampaignResDto> getCampaignList(long communityNo) {
+    public List<CampaignResDto> getCampaignList(long communityNo, User user) {
         List<Campaign> campaignList = campaignRespository.findAllByCommunityNo(communityNo);
 
         List<CampaignResDto> result = campaignList.stream().map(campaign -> {
             List<User> userList = userCampaignRepository.findAllUserByCampaignNo(campaign.getNo());
-            return CampaignResDto.of(campaign, userList);
+            return CampaignResDto.of(campaign, userList, isUserJoiningInCampaign(campaign.getNo(), user.getNo()));
         }).collect(Collectors.toList());
 
         return result;
@@ -92,11 +92,11 @@ public class CampaignServiceImpl implements CampaignService{
     }
 
     @Override
-    public CampaignResDto getCampaign(long campaignNo) {
+    public CampaignResDto getCampaign(long campaignNo, User user) {
         Campaign campaign = campaignRespository.findByNo(campaignNo).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
         List<User> userList = userCampaignRepository.findAllUserByCampaignNo(campaignNo);
 
-        return CampaignResDto.of(campaign, userList);
+        return CampaignResDto.of(campaign, userList, isUserJoiningInCampaign(campaign.getNo(), user.getNo()));
     }
 
     @Override
@@ -109,14 +109,13 @@ public class CampaignServiceImpl implements CampaignService{
                     .user(user)
                     .build();
             userCampaignRepository.save(userCampaign);
-        }
-        else {
+        } else {
             long existNo = existUserCampaign.getNo();
             userCampaignRepository.deleteById(existNo);
         }
         List<User> userList = userCampaignRepository.findAllUserByCampaignNo(campaignNo);
 
-        return CampaignResDto.of(campaign, userList);
+        return CampaignResDto.of(campaign, userList, isUserJoiningInCampaign(campaign.getNo(), user.getNo()));
     }
 
     @Override
@@ -144,7 +143,7 @@ public class CampaignServiceImpl implements CampaignService{
 
         List<User> userList = userCampaignRepository.findAllUserByCampaignNo(campaignNo);
 
-        return CampaignResDto.of(campaign, userList);
+        return CampaignResDto.of(campaign, userList, isUserJoiningInCampaign(campaign.getNo(), user.getNo()));
 
     }
 
@@ -158,5 +157,9 @@ public class CampaignServiceImpl implements CampaignService{
 
 
         return true;
+    }
+
+    private boolean isUserJoiningInCampaign(long campaignNo, long userNo) {
+        return userCampaignRepository.existsByCampaignNoAndUserNo(campaignNo, userNo);
     }
 }

@@ -29,7 +29,9 @@ public class CampaignResDto {
 
     private BaseUserInfoResDto writer;
 
-    public static CampaignResDto of(Campaign campaign, List<User> userList){
+    private boolean isJoining;
+
+    public static CampaignResDto of(Campaign campaign, List<User> userList, boolean isJoining){
         return CampaignResDto.builder()
                 .no(campaign.getNo())
                 .title(campaign.getTitle())
@@ -41,6 +43,7 @@ public class CampaignResDto {
                 .max_personnel(campaign.getMax_personnel())
                 .writer(BaseUserInfoResDto.of(campaign.getUser()))
                 .join_personnel(userList.stream().map(BaseUserInfoResDto::of).collect(Collectors.toList()))
+                .isJoining(isJoining)
                 .build();
 
     }
