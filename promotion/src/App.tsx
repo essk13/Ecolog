@@ -8,9 +8,13 @@ import color from "./common/thema";
 import PromotionTop from './components/PromotionTop';
 import PromotionContent from './components/PromotionContent';
 import Navbar from './components/Navbar';
+import PromotionEcolog from './components/PromotionEcolog';
 
 const AppDiv = styled.div`
   backgroud-color: ${color.white.default};
+  font-family: omnigothic, sans-serif;
+  font-weight: 500;
+  font-style: normal;
 `;
 
 
@@ -19,6 +23,7 @@ function App() {
     <AppDiv>
       <Navbar />
       <PromotionTop />
+      <PromotionEcolog />
       <PromotionContent />
     </AppDiv>
   );

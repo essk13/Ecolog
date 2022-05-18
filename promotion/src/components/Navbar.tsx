@@ -8,7 +8,7 @@ const Nav = styled.div`
   position: sticky;
   display: flex;
   width: 100%;
-  height: 50px;
+  height: 70px;
   top: 0;
   background-color: ${color.gray.light};
   z-index: 10;
