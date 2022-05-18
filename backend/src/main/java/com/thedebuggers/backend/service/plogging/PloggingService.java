@@ -18,7 +18,11 @@ public interface PloggingService {
 
     RankingResDto getMyRanking(User user);
 
-    List<RankingResDto> getRanking(User user, String type, String sort);
+    List<RankingResDto> getRanking(User user, String type, String sort, int offset);
 
     List<RegionProgressResDto> getRegionProgress(String type);
+
+    void rankingRewardByMonth();
+
+    void rankingRewardByWeek();
 }

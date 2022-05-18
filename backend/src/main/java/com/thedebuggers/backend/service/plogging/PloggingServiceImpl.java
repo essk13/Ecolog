@@ -77,7 +77,7 @@ public class PloggingServiceImpl implements PloggingService {
 
     @Override
     public RankingResDto getMyRanking(User user) {
-        List<RankingResDto> rankingResDtoList = getRanking(null, "all", "all");
+        List<RankingResDto> rankingResDtoList = getRanking(null, "all", "all", 0);
         RankingResDto myRanking = null;
 
         int rank = 0;
@@ -101,10 +101,10 @@ public class PloggingServiceImpl implements PloggingService {
     }
 
     @Override
-    public List<RankingResDto> getRanking(User user, String period, String type) {
+    public List<RankingResDto> getRanking(User user, String period, String type, int offset) {
         List<RankingResDto> rankingList = new ArrayList<>();
 
-        Map<String, String> dateInfo = getDate(period);
+        Map<String, String> dateInfo = getDate(period, offset);
         String startDay = dateInfo.get("startDay");
         String endDay = dateInfo.get("endDay");
 
@@ -148,7 +148,7 @@ public class PloggingServiceImpl implements PloggingService {
     public List<RegionProgressResDto> getRegionProgress(String type) {
         List<RegionProgressResDto> regionProgressResDtoList = new ArrayList<>();
 
-        Map<String, String> dateInfo = getDate(type);
+        Map<String, String> dateInfo = getDate(type, 0);
         String startDay = dateInfo.get("startDay");
         String endDay = dateInfo.get("endDay");
 
@@ -162,22 +162,64 @@ public class PloggingServiceImpl implements PloggingService {
         return regionProgressResDtoList;
     }
 
-    private Map<String, String> getDate(String period) {
+    @Transactional
+    @Override
+    public void rankingRewardByMonth() {
+        List<RankingResDto> ranking = getRanking(null, "month", "all", -1);
+
+        for (int i = 0; i < ranking.size(); i++) {
+            if (i > 9)
+                break;
+
+            long userNo = ranking.get(i).getUser().getNo();
+
+            int reward = 0;
+            if (i == 0) reward = 800;
+            else if (i == 1) reward = 500;
+            else if (i == 2) reward = 200;
+            else reward = 100;
+
+            userRepository.updateCoinByNo(userNo, reward);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void rankingRewardByWeek() {
+        List<RankingResDto> ranking = getRanking(null, "week", "all", -1);
+
+        for (int i = 0; i < ranking.size(); i++) {
+            if (i > 9)
+                break;
+
+            long userNo = ranking.get(i).getUser().getNo();
+
+            int reward = 0;
+            if (i == 0) reward = 500;
+            else if (i == 1) reward = 200;
+            else if (i == 2) reward = 100;
+            else reward = 50;
+
+            userRepository.updateCoinByNo(userNo, reward);
+        }
+    }
+
+    private Map<String, String> getDate(String period, int offset) {
         Map<String, String> dateInfo = new HashMap<>();
         String startDay = "20000101";
 
         Calendar cal = Calendar.getInstance(Locale.KOREA);
-        cal.add(Calendar.DATE, 1);
+        cal.add(Calendar.DATE, 1 + offset); // +1 => 다음 날짜 00시까지 (현재 날짜 23:59:59까지)
         String endDay = new SimpleDateFormat("yyyyMMdd").format(cal.getTime());
 
         switch (period) {
             case "week":
-                startDay = startOfWeek();
-                endDay = endOfWeek();
+                startDay = startOfWeek(offset);
+                endDay = endOfWeek(offset);
                 break;
             case "month":
                 startDay = endDay.substring(0, 6).concat("01");
-                endDay = endOfMonth();
+                endDay = endOfMonth(offset);
                 break;
             case "all":
                 break;
@@ -185,21 +227,26 @@ public class PloggingServiceImpl implements PloggingService {
                 throw new CustomException(ErrorCode.BAD_REQUEST);
         }
 
+        System.out.println("Start day : " + startDay);
+        System.out.println("End day : " + endDay);
+
         dateInfo.put("startDay", startDay);
         dateInfo.put("endDay", endDay);
         return dateInfo;
     }
 
-    private String startOfWeek() {
+    private String startOfWeek(int offset) {
         Calendar calendar = Calendar.getInstance(Locale.KOREA);
+        calendar.add(Calendar.DATE, offset);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 
         calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
         return dateFormat.format(calendar.getTime());
     }
 
-    private String endOfWeek() {
+    private String endOfWeek(int offset) {
         Calendar calendar = Calendar.getInstance(Locale.KOREA);
+        calendar.add(Calendar.DATE, offset);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 
         calendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
@@ -207,8 +254,9 @@ public class PloggingServiceImpl implements PloggingService {
         return dateFormat.format(calendar.getTime());
     }
 
-    private String endOfMonth() {
+    private String endOfMonth(int offset) {
         Calendar calendar = Calendar.getInstance(Locale.KOREA);
+        calendar.add(Calendar.DATE, offset);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 
         calendar.set(Calendar.DATE, calendar.getActualMaximum(calendar.DAY_OF_MONTH));

@@ -89,7 +89,7 @@ public class PloggingController {
             @ApiResponse(code = 500, message = "Server Error")
     })
     private ResponseEntity<List<RankingResDto>> getRankingByTime(@ApiParam(value = "입력 키워드: all, month, week", defaultValue = "all") @RequestParam String type) {
-        List<RankingResDto> rankingResDtoList = ploggingService.getRanking(null, type, "all");
+        List<RankingResDto> rankingResDtoList = ploggingService.getRanking(null, type, "all", 0);
         return ResponseEntity.ok(rankingResDtoList);
     }
 
@@ -104,7 +104,7 @@ public class PloggingController {
                                                                    @ApiParam(value = "입력 키워드: all, month, week", defaultValue = "all") @RequestParam String type) {
         ELUserDetails userDetails = (ELUserDetails)authentication.getDetails();
         User user = userDetails.getUser();
-        List<RankingResDto> rankingResDtoList = ploggingService.getRanking(user, type, "follow");
+        List<RankingResDto> rankingResDtoList = ploggingService.getRanking(user, type, "follow", 0);
         return ResponseEntity.ok(rankingResDtoList);
     }
 
@@ -119,7 +119,7 @@ public class PloggingController {
                                                                     @ApiParam(value = "입력 키워드: all, month, week", defaultValue = "all") @RequestParam String type) {
         ELUserDetails userDetails = (ELUserDetails)authentication.getDetails();
         User user = userDetails.getUser();
-        List<RankingResDto> rankingResDtoList = ploggingService.getRanking(user, type, "address");
+        List<RankingResDto> rankingResDtoList = ploggingService.getRanking(user, type, "address", 0);
         return ResponseEntity.ok(rankingResDtoList);
     }
 
