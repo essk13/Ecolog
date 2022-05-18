@@ -33,7 +33,7 @@ function CommunityCreateScreen() {
     tag: '',
     title: '',
   });
-  const [uri, setUri] = React.useState<string>('');
+  const [uri, setUri] = React.useState<string>('https://ecolog-bucket.s3.ap-northeast-2.amazonaws.com/Ecolog_file_default_profile.jpg');
   const {mutate: createCommu} = useMutation(createCommunity, {
     onSuccess: data => {
       navigation.pop();

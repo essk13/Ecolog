@@ -33,7 +33,7 @@ function PostEditScreen({route}: any) {
   });
   const navigation = useNavigation<any>();
   const queryClient = useQueryClient();
-  const [uri, setUri] = React.useState<string>('');
+  const [uri, setUri] = React.useState<string>('https://ecolog-bucket.s3.ap-northeast-2.amazonaws.com/Ecolog_file_default_profile.jpg');
   React.useEffect(() => {
     if (route.params.data) {
       setCampaignInfo({
