@@ -51,7 +51,11 @@ export type RootStackParamList = {
   SurveyResult: undefined;
   PostEdit: undefined;
   PostCreate: undefined;
-  PostDetail: undefined;
+  PostDetail: {
+    id: number;
+    no: number;
+    type: number;
+  };
 };
 export type RootStackNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;

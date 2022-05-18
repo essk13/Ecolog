@@ -94,6 +94,7 @@ function CommunityCampaign({data}: CommunityDetailProps) {
 
   const items = campaignListData.map(post => (
     <TouchableOpacity
+      key={post.no}
       style={styles.propsContainer}
       onPress={() =>
         navigation.navigate('PostDetail', {

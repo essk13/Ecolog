@@ -5,11 +5,12 @@ import CommunityTab from '../components/Community/MainTab/CommunityTab';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'rgb(95, 162, 229)',
+    backgroundColor: 'rgb(255, 255, 255)',
   },
   topMenu: {
     width: '100%',
     padding: 10,
+    backgroundColor: 'rgb(95, 162, 229)',
   },
   topTitle: {
     color: '#ffffff',
@@ -31,7 +32,6 @@ function CommunityScreen() {
   const [inputData, setInputData] = React.useState<string>('');
   const keySubmit = () => {
     setKeyword(inputData);
-    setInputData('');
   };
 
   return (

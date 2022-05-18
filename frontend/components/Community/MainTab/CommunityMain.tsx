@@ -1,4 +1,15 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+// Hooks
+import {useQuery} from 'react-query';
+import {useNavigation} from '@react-navigation/native';
+// Api & Types
+import {
+  Community,
+  CommunityList,
+  getCommunityList,
+  getHotCommunityList,
+} from '../../../api/community';
+// Components
 import {
   Text,
   View,
@@ -7,15 +18,10 @@ import {
   TouchableOpacity,
   Image,
   ImageBackground,
+  ScrollView,
 } from 'react-native';
-import {
-  Community,
-  getCommunityList,
-  getHotCommunityList,
-} from '../../../api/community';
-import {useQuery} from 'react-query';
-import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {ActivityIndicator, Colors} from 'react-native-paper';
 
 const styles = StyleSheet.create({
   img: {
@@ -281,35 +287,35 @@ function CommunityMain({keyword}: KeywordProps) {
     '트래시태그',
   ];
 
-  const {data: communityListData} = useQuery('CommunityList', getCommunityList);
-  const {data: hotCommunity} = useQuery(
-    'hotCommunityList',
-    getHotCommunityList,
-  );
   const mainStyles = StyleSheet.create({
-    container: {
+    loadingContainer: {
       width: '100%',
       height: '100%',
+      backgroundColor: '#ffffff',
+      padding: 10,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    container: {
+      width: '100%',
       backgroundColor: '#ffffff',
       padding: 10,
       justifyContent: 'flex-start',
     },
     tagContainer: {
-      height: '6%',
+      height: 30,
       marginTop: 10,
       marginBottom: 10,
-      flexGrow: 0,
     },
     hotContainer: {
-      height: '25%',
+      height: 150,
       marginTop: 10,
       marginBottom: 10,
-      flexGrow: 0,
     },
     myListContainer: {
       marginTop: 10,
       width: '100%',
-      height: '60%',
+      flexGrow: 1,
     },
     createButton: {
       position: 'absolute',
@@ -324,43 +330,73 @@ function CommunityMain({keyword}: KeywordProps) {
       borderRadius: 100,
     },
   });
+
+  const {data: hotCommunity} = useQuery(
+    'hotCommunityList',
+    getHotCommunityList,
+  );
+  const {data: communityListData} = useQuery('CommunityList', getCommunityList);
+  const [searchCommunityList, setSearchCommunityList] = useState<CommunityList>(
+    [],
+  );
   const navigation = useNavigation<any>();
+
+  useEffect(() => {
+    if (communityListData) {
+      if (keyword !== '') {
+        setSearchCommunityList(
+          communityListData.filter(data => data.title.includes(keyword)),
+        );
+      } else {
+        setSearchCommunityList(communityListData);
+      }
+    }
+  }, [keyword, communityListData]);
+
+  if (!hotCommunity || !communityListData) {
+    return (
+      <View style={mainStyles.loadingContainer}>
+        <ActivityIndicator animating={true} size={48} color={Colors.blueA100} />
+      </View>
+    );
+  }
+
   return (
-    <View style={mainStyles.container}>
+    <>
+      <View style={mainStyles.container}>
+        <ScrollView contentContainerStyle={{flexGrow: 1}}>
+          <Text style={styles.menuTitle}>인기 태그</Text>
+          <FlatList
+            style={mainStyles.tagContainer}
+            horizontal={true}
+            data={hotCampaignData}
+            renderItem={hotItem}
+            showsHorizontalScrollIndicator={false}
+          />
+          <Text style={styles.menuTitle}>인기 커뮤니티</Text>
+          <FlatList
+            style={mainStyles.hotContainer}
+            horizontal={true}
+            data={hotCommunity}
+            showsHorizontalScrollIndicator={false}
+            renderItem={({item}: any) => (
+              <HotCommu community={item} tagSearch={searchOn} />
+            )}
+          />
+          <Text style={styles.menuTitle}>검색 결과</Text>
+          <View style={mainStyles.myListContainer}>
+            {searchCommunityList.map(item => (
+              <MyItem key={item.no} community={item} tagSearch={searchOn} />
+            ))}
+          </View>
+        </ScrollView>
+      </View>
       <TouchableOpacity
         style={mainStyles.createButton}
         onPress={() => navigation.navigate('CommunityCreate')}>
-        {/* 글쓰기 버튼 */}
         <Icon name="plus" size={23} color="#FFF" />
       </TouchableOpacity>
-      <Text style={styles.menuTitle}>인기 태그</Text>
-      <FlatList
-        style={mainStyles.tagContainer}
-        horizontal={true}
-        data={hotCampaignData}
-        renderItem={hotItem}
-        showsHorizontalScrollIndicator={false}
-      />
-      <Text style={styles.menuTitle}>인기 커뮤니티</Text>
-      <FlatList
-        style={mainStyles.hotContainer}
-        horizontal={true}
-        data={hotCommunity}
-        showsHorizontalScrollIndicator={false}
-        renderItem={({item}: any) => (
-          <HotCommu community={item} tagSearch={searchOn} />
-        )}
-      />
-      <Text style={styles.menuTitle}>검색 결과 {keyword}</Text>
-      <FlatList
-        style={mainStyles.myListContainer}
-        data={communityListData}
-        showsVerticalScrollIndicator={false}
-        renderItem={({item}: any) => (
-          <MyItem community={item} tagSearch={searchOn} />
-        )}
-      />
-    </View>
+    </>
   );
 }
 

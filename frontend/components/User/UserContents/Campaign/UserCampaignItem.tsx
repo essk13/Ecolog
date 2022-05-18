@@ -27,7 +27,13 @@ function UserCampaignItem({userPost}: UserCampaignItemProps) {
   return (
     <TouchableOpacity
       style={styles().itemContainer}
-      onPress={() => console.log(userPost.no)}>
+      onPress={() =>
+        navigation.navigate('PostDetail', {
+          id: userPost.no,
+          no: userPost.community_no,
+          type: 3,
+        })
+      }>
       <Image
         key={userPost.no}
         style={styles().img}

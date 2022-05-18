@@ -183,7 +183,6 @@ const PromListItem = ({data, commentItem, commentDelete}: CommentProps) => {
     Alert.alert('삭제가 완료되었습니다.');
   };
   const editCommentSubmit = () => {
-    console.log(prevComment);
     editCo({
       community: route.params.no,
       post: route.params.id,
@@ -212,25 +211,26 @@ const PromListItem = ({data, commentItem, commentDelete}: CommentProps) => {
           <Text style={styles.commentWriter}>
             {commentItem.writer.nickname}
           </Text>
-          {data.writer.email === myInfo.data?.email && !editCommentStart && (
-            <>
-              <TouchableOpacity
-                style={styles.commentIcon}
-                onPress={() => setEditCommentStart(true)}>
-                <Icon name="edit" size={14} color={'#ABABAB'} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.commentIcon}
-                onPress={() => deleteCo()}>
-                <Icon name="delete" size={14} color={'#ABABAB'} />
-              </TouchableOpacity>
-            </>
-          )}
+          {commentItem.writer.email === myInfo.data?.email &&
+            !editCommentStart && (
+              <>
+                <TouchableOpacity
+                  style={styles.commentIcon}
+                  onPress={() => setEditCommentStart(true)}>
+                  <Icon name="edit" size={14} color={'#ABABAB'} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.commentIcon}
+                  onPress={() => deleteCo()}>
+                  <Icon name="delete" size={14} color={'#ABABAB'} />
+                </TouchableOpacity>
+              </>
+            )}
         </View>
-        {data.writer.email === myInfo.data?.email && !editCommentStart && (
+        {!editCommentStart && (
           <Text style={styles.commentContent}>{commentItem.content}</Text>
         )}
-        {data.writer.email === myInfo.data?.email && editCommentStart && (
+        {commentItem.writer.email === myInfo.data?.email && editCommentStart && (
           <View>
             <TextInput
               placeholder="댓글을 입력해 주세요."

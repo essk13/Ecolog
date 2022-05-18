@@ -113,10 +113,12 @@ export interface Writer {
 }
 
 export interface UserPost {
+  community_no: number;
   content: string;
   created_at: string;
   image: string;
   like_count: number;
+  liked: boolean;
   no: number;
   open: boolean;
   title: string;
