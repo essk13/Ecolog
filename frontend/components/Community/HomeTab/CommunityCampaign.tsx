@@ -1,18 +1,28 @@
 import React from 'react';
+// Hooks
+import {useNavigation} from '@react-navigation/native';
+import {useQuery} from 'react-query';
+// Api & Types
+import {CommunityDetail, getPostList, Post} from '../../../api/community';
 import {
   StyleSheet,
   ScrollView,
   View,
-  Text,
   TouchableOpacity,
   Image,
 } from 'react-native';
-import {CommunityDetail, getPostList, Post} from '../../../api/community';
-import {useNavigation} from '@react-navigation/native';
-import {useQuery} from 'react-query';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {ActivityIndicator, Colors} from 'react-native-paper';
 
 const styles = StyleSheet.create({
+  loadingContainer: {
+    flexGrow: 0,
+    minHeight: '100%',
+    width: '100%',
+    backgroundColor: '#ffffff',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   Container: {
     flexGrow: 0,
     minHeight: '100%',
@@ -69,15 +79,15 @@ interface CampaignItemProps {
 
 function CommunityCampaign({data}: CommunityDetailProps) {
   const navigation = useNavigation<any>();
-
   const {data: campaignListData, isLoading} = useQuery(
     ['postList', {no: data.no, type: 'campaign'}],
     () => getPostList({no: data.no, type: 'campaign'}),
   );
+
   if (!campaignListData || isLoading) {
     return (
-      <View>
-        <Text>로딩중</Text>
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator animating={true} size={48} color={Colors.blueA100} />
       </View>
     );
   }
@@ -88,7 +98,8 @@ function CommunityCampaign({data}: CommunityDetailProps) {
       onPress={() =>
         navigation.navigate('PostDetail', {
           id: post.no,
-          no: 0,
+          no: data.no,
+          type: 3,
         })
       }>
       <Image source={{uri: post.image}} style={styles.image} />
@@ -102,7 +113,6 @@ function CommunityCampaign({data}: CommunityDetailProps) {
         onPress={() =>
           navigation.navigate('PostCreate', {data: data, type: 3})
         }>
-        {/* 글쓰기 버튼 */}
         <Icon name="plus" size={23} color="#FFF" />
       </TouchableOpacity>
       <ScrollView

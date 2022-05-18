@@ -1,16 +1,19 @@
 import React from 'react';
+// Hooks
+import {useNavigation} from '@react-navigation/native';
+import {useQuery} from 'react-query';
+// Api & Types
+import {getPostList, Post} from '../../../api/community';
+// Components
 import {
   StyleSheet,
-  FlatList,
   View,
-  Text,
   Image,
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import {CommunityDetail, getPostList, Post} from '../../../api/community';
-import {useNavigation} from '@react-navigation/native';
-import {useQuery} from 'react-query';
+import {ActivityIndicator, Colors} from 'react-native-paper';
+
 const styles = StyleSheet.create({
   CardContainer: {
     height: 200,
@@ -28,6 +31,13 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     flexDirection: 'row',
     justifyContent: 'flex-start',
+  },
+  loadingContainer: {
+    width: '100%',
+    flexGrow: 1,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   scrollContainer: {
     width: '100%',
@@ -56,11 +66,12 @@ function CommunityFeed() {
 
   if (!campaignListData || isLoading) {
     return (
-      <View>
-        <Text>로딩중</Text>
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator animating={true} size={48} color={Colors.blueA100} />
       </View>
     );
   }
+
   const items = campaignListData.map((post, index) => (
     <TouchableOpacity
       key={index}
@@ -68,7 +79,8 @@ function CommunityFeed() {
       onPress={() =>
         navigation.navigate('PostDetail', {
           id: post.no,
-          no: 0,
+          no: post.community_no,
+          type: 3,
         })
       }>
       <Image source={{uri: post.image}} style={styles.image} />

@@ -17,12 +17,13 @@ export async function getMyCommunity() {
   const response = await Api.get<CommunityList>('/community/mine');
   return response.data;
 }
+
 // 커뮤니티 멤버
 export async function getCommunityMember(no: number) {
   const response = await Api.get<JoinList>(`/community/${no}/member`);
-  console.log(response.data);
   return response.data;
 }
+
 // 커뮤니티 디테일
 export async function getCommunityDetail(communitySeq: number) {
   const response = await Api.get<CommunityDetail>(`/community/${communitySeq}`);
@@ -59,6 +60,7 @@ export async function createCommunity(communityData: CreateCommunityData) {
   });
   return response.data;
 }
+
 // 캠페인 생성
 export async function createCampaign(campaignData: CreateCampaignData) {
   const formData = new FormData();
@@ -80,6 +82,7 @@ export async function createCampaign(campaignData: CreateCampaignData) {
   );
   return response.data;
 }
+
 // 포스트 생성
 export async function createPost(postData: CreatePostData) {
   const formData = new FormData();
@@ -97,6 +100,7 @@ export async function createPost(postData: CreatePostData) {
   });
   return response.data;
 }
+
 // 포스트 좋아요
 export async function likePost(data: LikeData) {
   const response = await Api.post(
@@ -104,6 +108,7 @@ export async function likePost(data: LikeData) {
   );
   return response.data;
 }
+
 // 포스트 수정
 export async function editPost(postData: EditPostData) {
   const formData = new FormData();
@@ -125,6 +130,7 @@ export async function editPost(postData: EditPostData) {
   );
   return response.data;
 }
+
 // 포스트 삭제
 export async function deletePost(data: DeletePostData) {
   const response = await Api.delete(
@@ -132,6 +138,7 @@ export async function deletePost(data: DeletePostData) {
   );
   return response.data;
 }
+
 // 캠페인 수정
 export async function editCampaign(campaignData: EditCampaignData) {
   const formData = new FormData();
@@ -153,6 +160,7 @@ export async function editCampaign(campaignData: EditCampaignData) {
   );
   return response.data;
 }
+
 // 캠페인 삭제
 export async function deleteCampaign(data: DeleteCampaignData) {
   const response = await Api.delete(
@@ -160,6 +168,7 @@ export async function deleteCampaign(data: DeleteCampaignData) {
   );
   return response.data;
 }
+
 // 댓글 삭제
 export async function deleteComment(data: DeleteCommentData) {
   const response = await Api.delete(
@@ -167,6 +176,7 @@ export async function deleteComment(data: DeleteCommentData) {
   );
   return response.data;
 }
+
 // 커뮤니티 수정
 export async function editCommunity(communityData: EditCommunityData) {
   const formData = new FormData();
@@ -187,11 +197,10 @@ export async function editCommunity(communityData: EditCommunityData) {
   );
   return response.data;
 }
+
 // 커뮤니티 삭제
 export async function deleteCommunity(communitySeq: number) {
-  console.log(communitySeq);
   const response = await Api.delete(`/community/${communitySeq}/delete`);
-  console.log(response.data);
   return response.data;
 }
 
@@ -218,6 +227,7 @@ export async function getPostList(data: PostListData) {
   );
   return response.data;
 }
+
 // 댓글 리스트
 export async function getCommentList(data: CommentListData) {
   const response = await Api.get<PostList>(
@@ -225,6 +235,7 @@ export async function getCommentList(data: CommentListData) {
   );
   return response.data;
 }
+
 // 댓글 생성
 export async function createComment(commentData: CreateCommentData) {
   const response = await Api.post(
@@ -233,6 +244,7 @@ export async function createComment(commentData: CreateCommentData) {
   );
   return response.data;
 }
+
 // 댓글 수정
 export async function editComment(commentData: EditCommentData) {
   const response = await Api.put(
@@ -241,6 +253,7 @@ export async function editComment(commentData: EditCommentData) {
   );
   return response.data;
 }
+
 // 포스트 디테일
 export async function getPostDetail(communitySeq: number, postSeq: number) {
   const response = await Api.get<Post>(
@@ -248,6 +261,7 @@ export async function getPostDetail(communitySeq: number, postSeq: number) {
   );
   return response.data;
 }
+
 // 캠페인 디테일
 export async function getCampaignDetail(
   communitySeq: number,
@@ -271,6 +285,7 @@ export interface Community {
   join: boolean;
   join_count: number;
 }
+
 export interface Manager {
   email: string;
   image: string;
@@ -293,23 +308,28 @@ export interface CommunityEditInfo {
   title: string;
   user_no: number;
 }
+
 export interface CommunityImgData {
   name: string | undefined;
   type: string;
   uri: string;
 }
+
 export interface CreateCommunityData {
   communityImgData: CommunityImgData;
   communityInfo: CommunityInfo;
 }
+
 export interface PostListData {
   no: number;
   type: string;
 }
+
 export interface CommentListData {
   no: number;
   postNo: number;
 }
+
 export interface EditCommunityData {
   communityImgData: CommunityImgData;
   communityInfo: CommunityEditInfo;
@@ -320,59 +340,71 @@ export interface DeleteCampaignData {
   communitySeq: number;
   campaignSeq: number;
 }
+
 export interface DeleteCommentData {
   communityNo: number;
   postNo: number;
   commentNo: number;
 }
+
 export interface DeletePostData {
   communitySeq: number;
   postSeq: number;
 }
+
 export interface CreateCampaignData {
   campaignImgData: CommunityImgData;
   campaignInfo: CampaignInfo;
   no: number;
 }
+
 export interface CreatePostData {
   postImgData: CommunityImgData;
   postInfo: PostInfo;
   no: number;
 }
+
 export interface CreateCommentData {
   community: number;
   post: number;
   commentInfo: CommentInfo;
 }
+
 export interface CampaignJoinData {
   communityNo: number;
   campaignNo: number;
 }
+
 export interface EditCommentData {
   community: number;
   post: number;
   commentNo: number;
   commentInfo: CommentInfo;
 }
+
 export interface CommentInfo {
   content: string;
 }
+
 export interface EditPostData {
   postImgData: CommunityImgData;
   postInfo: PostInfo;
   no: number;
   postNo: number;
 }
+
 export interface LikeData {
   community: number;
   post: number;
 }
+
 export interface EditCampaignData {
   campaignImgData: CommunityImgData;
   campaignInfo: CampaignInfo;
   no: number;
   campaignNo: number;
 }
+
 export interface CommunityDetail {
   title: string;
   no: number;
@@ -398,11 +430,13 @@ export interface Campaign {
   end_date: string;
   start_date: string;
 }
+
 export interface Comment {
   no: number;
   content: string;
   writer: Manager;
 }
+
 export interface Post {
   community_no: string;
   content: string;
@@ -415,18 +449,21 @@ export interface Post {
   writer: Manager;
   created_at: string;
 }
+
 export interface PostInfo {
   content: string;
   open: boolean;
   title: string;
   type: number;
 }
+
 export interface CampaignInfo {
   title: string;
   location: string;
   content: string;
   max_personnel: number;
 }
+
 export interface JoinList extends Array<Manager> {}
 export interface CommunityList extends Array<Community> {}
 export interface CampaignList extends Array<Campaign> {}

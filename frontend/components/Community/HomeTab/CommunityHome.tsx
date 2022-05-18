@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 // Hooks
 import {useMutation, useQueryClient, useQuery} from 'react-query';
 import {useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 // Api & Types
-import {CommunityDetail, Manager} from '../../../api/community';
+import {CommunityDetail} from '../../../api/community';
 import {
   postCommunityJoin,
   deleteCommunityJoin,
@@ -22,8 +22,17 @@ import {
   FlatList,
 } from 'react-native';
 import IconF from 'react-native-vector-icons/FontAwesome5';
+import {ActivityIndicator, Colors} from 'react-native-paper';
 
 const styles = StyleSheet.create({
+  loadingContainer: {
+    flexGrow: 0,
+    width: '100%',
+    backgroundColor: '#ffffff',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   Container: {
     flexGrow: 0,
     width: '100%',
@@ -110,6 +119,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
+  infoText: {
+    color: '#6b6b6b',
+    fontSize: 14,
+  },
 });
 
 function UserItem({user}: any) {
@@ -171,8 +184,8 @@ function CommunityHome({data}: CommunityDetailProps) {
 
   if (!communityMember || isLoading) {
     return (
-      <View>
-        <Text>로딩중</Text>
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator animating={true} size={48} color={Colors.blueA100} />
       </View>
     );
   }
@@ -189,19 +202,18 @@ function CommunityHome({data}: CommunityDetailProps) {
           style={styles.editButton}
           onPress={() => navigation.navigate('CommunityEdit', {data: data})}>
           {data.manager.email === myInfo.data?.email && (
-            // 연필 아이콘
             <IconF name="edit" size={18} color={'#992f2f'} />
           )}
         </TouchableOpacity>
       </View>
       <View style={styles.commuInfo}>
-        <Text>관리자 : {data.manager.nickname}</Text>
-        <Text>태그 : {data.tag}</Text>
-        <Text>활동 지역 : {data.sido} </Text>
+        <Text style={styles.infoText}>관리자 : {data.manager.nickname}</Text>
+        <Text style={styles.infoText}>태그 : {data.tag}</Text>
+        <Text style={styles.infoText}>활동 지역 : {data.sido} </Text>
       </View>
       <Text style={styles.menuTitle}>커뮤니티 소개</Text>
       <View style={styles.intro}>
-        <Text>{data.description}</Text>
+        <Text style={styles.infoText}>{data.description}</Text>
       </View>
       <FlatList
         style={styles.userContainer}

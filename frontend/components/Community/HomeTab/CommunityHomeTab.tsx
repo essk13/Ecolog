@@ -38,7 +38,7 @@ function CommunityHomeTab({data}: CommunityDetailProps) {
     {key: 'home', title: '홈'},
     {key: 'notice', title: '공지사항'},
     {key: 'promotion', title: '캠페인'},
-    {key: 'free', title: '자유게시판'},
+    {key: 'free', title: '게시판'},
     {key: 'campaign', title: '피드'},
   ]);
   if (data.join) {
