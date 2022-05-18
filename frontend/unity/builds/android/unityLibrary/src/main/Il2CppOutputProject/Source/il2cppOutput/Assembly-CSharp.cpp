@@ -216,10 +216,11 @@ IL2CPP_EXTERN_C String_t* _stringLiteralBB18680A50DF83FDD54A9B1A973D21E1506D2679
 IL2CPP_EXTERN_C String_t* _stringLiteralC18C9BB6DF0D5C60CE5A5D2D3D6111BEB6F8CCEB;
 IL2CPP_EXTERN_C String_t* _stringLiteralC1B5EFC373FC821D44422DD566D2F70917E73A29;
 IL2CPP_EXTERN_C String_t* _stringLiteralCBF1EE025E1C16CCCD356E6319D761E6EB969022;
-IL2CPP_EXTERN_C String_t* _stringLiteralD6840A771A5F54B94F3A7BE725DAF59A96446B8E;
 IL2CPP_EXTERN_C String_t* _stringLiteralDA39A3EE5E6B4B0D3255BFEF95601890AFD80709;
 IL2CPP_EXTERN_C String_t* _stringLiteralDDE2976751DA4F0E8E52A81CE7C26335F3B9304D;
 IL2CPP_EXTERN_C String_t* _stringLiteralF14E49AC65569D89735881B0149B33704A718AB9;
+IL2CPP_EXTERN_C String_t* _stringLiteralF4AA0A46ED4EB099291E33211991615FF9BF8307;
+IL2CPP_EXTERN_C String_t* _stringLiteralF50E23A179D50EE414B88AEB71D9B2D0A275473E;
 IL2CPP_EXTERN_C String_t* _stringLiteralFB56ACEF402B7F39C49903334275E71617A3B8B6;
 IL2CPP_EXTERN_C const RuntimeMethod* GameObject_GetComponent_TisTextMeshProUGUI_t101091AF4B578BB534C92E9D1EEAF0611636D957_mBDBF977A8C7734F6EDD83FC65C6FDDE74427611E_RuntimeMethod_var;
 IL2CPP_EXTERN_C const RuntimeMethod* List_1_AddRange_m1A10E697703D67F6551D47C603FFE78E16CE4204_RuntimeMethod_var;
@@ -2646,7 +2647,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void CharacterSelection_ToggleLeft_mFFC917E78
 		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&List_1__ctor_m17F501B5A5C289ECE1B4F3D6EBF05DFA421433F8_RuntimeMethod_var);
 		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&List_1_t05915E9237850A58106982B7FE4BC5DA4E872E73_il2cpp_TypeInfo_var);
 		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral261B59F11EA41AC670F4FB553FA4173CAA6DA57C);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteralD6840A771A5F54B94F3A7BE725DAF59A96446B8E);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteralF50E23A179D50EE414B88AEB71D9B2D0A275473E);
 		s_Il2CppMethodInitialized = true;
 	}
 	{
@@ -2714,10 +2715,10 @@ IL_003a:
 
 IL_007c:
 	{
-		// nowConfirmText.text = "?? ??";
+		// nowConfirmText.text = "200 ????";
 		TextMeshProUGUI_t101091AF4B578BB534C92E9D1EEAF0611636D957* L_17 = __this->___nowConfirmText_15;
 		NullCheck(L_17);
-		VirtualActionInvoker1< String_t* >::Invoke(66 /* System.Void TMPro.TMP_Text::set_text(System.String) */, L_17, _stringLiteralD6840A771A5F54B94F3A7BE725DAF59A96446B8E);
+		VirtualActionInvoker1< String_t* >::Invoke(66 /* System.Void TMPro.TMP_Text::set_text(System.String) */, L_17, _stringLiteralF50E23A179D50EE414B88AEB71D9B2D0A275473E);
 		// }
 		return;
 	}
@@ -2733,7 +2734,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void CharacterSelection_ToggleRight_m3DF782B7
 		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&List_1__ctor_m17F501B5A5C289ECE1B4F3D6EBF05DFA421433F8_RuntimeMethod_var);
 		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&List_1_t05915E9237850A58106982B7FE4BC5DA4E872E73_il2cpp_TypeInfo_var);
 		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral261B59F11EA41AC670F4FB553FA4173CAA6DA57C);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteralD6840A771A5F54B94F3A7BE725DAF59A96446B8E);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteralF50E23A179D50EE414B88AEB71D9B2D0A275473E);
 		s_Il2CppMethodInitialized = true;
 	}
 	{
@@ -2801,10 +2802,10 @@ IL_0038:
 
 IL_007a:
 	{
-		// nowConfirmText.text = "?? ??";
+		// nowConfirmText.text = "200 ????";
 		TextMeshProUGUI_t101091AF4B578BB534C92E9D1EEAF0611636D957* L_17 = __this->___nowConfirmText_15;
 		NullCheck(L_17);
-		VirtualActionInvoker1< String_t* >::Invoke(66 /* System.Void TMPro.TMP_Text::set_text(System.String) */, L_17, _stringLiteralD6840A771A5F54B94F3A7BE725DAF59A96446B8E);
+		VirtualActionInvoker1< String_t* >::Invoke(66 /* System.Void TMPro.TMP_Text::set_text(System.String) */, L_17, _stringLiteralF50E23A179D50EE414B88AEB71D9B2D0A275473E);
 		// }
 		return;
 	}
@@ -2921,7 +2922,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void CharacterSelection_RoomLeft_mD6562EF3ADF
 		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&List_1__ctor_m17F501B5A5C289ECE1B4F3D6EBF05DFA421433F8_RuntimeMethod_var);
 		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&List_1_t05915E9237850A58106982B7FE4BC5DA4E872E73_il2cpp_TypeInfo_var);
 		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral261B59F11EA41AC670F4FB553FA4173CAA6DA57C);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteralD6840A771A5F54B94F3A7BE725DAF59A96446B8E);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteralF4AA0A46ED4EB099291E33211991615FF9BF8307);
 		s_Il2CppMethodInitialized = true;
 	}
 	{
@@ -2989,10 +2990,10 @@ IL_003a:
 
 IL_007c:
 	{
-		// nowConfirmText.text = "?? ??";
+		// nowConfirmText.text = "500 ????";
 		TextMeshProUGUI_t101091AF4B578BB534C92E9D1EEAF0611636D957* L_17 = __this->___nowConfirmText_15;
 		NullCheck(L_17);
-		VirtualActionInvoker1< String_t* >::Invoke(66 /* System.Void TMPro.TMP_Text::set_text(System.String) */, L_17, _stringLiteralD6840A771A5F54B94F3A7BE725DAF59A96446B8E);
+		VirtualActionInvoker1< String_t* >::Invoke(66 /* System.Void TMPro.TMP_Text::set_text(System.String) */, L_17, _stringLiteralF4AA0A46ED4EB099291E33211991615FF9BF8307);
 		// }
 		return;
 	}
@@ -3008,7 +3009,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void CharacterSelection_RoomRight_m89E18307EC
 		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&List_1__ctor_m17F501B5A5C289ECE1B4F3D6EBF05DFA421433F8_RuntimeMethod_var);
 		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&List_1_t05915E9237850A58106982B7FE4BC5DA4E872E73_il2cpp_TypeInfo_var);
 		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteral261B59F11EA41AC670F4FB553FA4173CAA6DA57C);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteralD6840A771A5F54B94F3A7BE725DAF59A96446B8E);
+		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&_stringLiteralF4AA0A46ED4EB099291E33211991615FF9BF8307);
 		s_Il2CppMethodInitialized = true;
 	}
 	{
@@ -3076,10 +3077,10 @@ IL_0038:
 
 IL_007a:
 	{
-		// nowConfirmText.text = "?? ??";
+		// nowConfirmText.text = "500 ????";
 		TextMeshProUGUI_t101091AF4B578BB534C92E9D1EEAF0611636D957* L_17 = __this->___nowConfirmText_15;
 		NullCheck(L_17);
-		VirtualActionInvoker1< String_t* >::Invoke(66 /* System.Void TMPro.TMP_Text::set_text(System.String) */, L_17, _stringLiteralD6840A771A5F54B94F3A7BE725DAF59A96446B8E);
+		VirtualActionInvoker1< String_t* >::Invoke(66 /* System.Void TMPro.TMP_Text::set_text(System.String) */, L_17, _stringLiteralF4AA0A46ED4EB099291E33211991615FF9BF8307);
 		// }
 		return;
 	}

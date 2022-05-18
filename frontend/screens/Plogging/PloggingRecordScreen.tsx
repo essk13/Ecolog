@@ -18,6 +18,8 @@ import {ActivityIndicator, Colors} from 'react-native-paper';
 import ViewShot from 'react-native-view-shot';
 import Share from 'react-native-share';
 import Icon from 'react-native-vector-icons/AntDesign';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../modules';
 
 const styles = (
   marginL?: any,
@@ -98,6 +100,12 @@ const fontStyles = (size?: any, weight?: any, color?: any, align?: any) =>
       color: color || '#000',
       marginLeft: 40,
     },
+    userNick: {
+      fontSize: size || 20,
+      fontWeight: '600',
+      color: color || '#5D5D5D',
+      marginBottom: 15,
+    },
   });
 
 type PloggingRecordScreenRouteProp = RouteProp<
@@ -106,6 +114,7 @@ type PloggingRecordScreenRouteProp = RouteProp<
 >;
 
 function PloggingRecordScreen() {
+  const myInfo = useSelector((state: RootState) => state.user.user);
   const route = useRoute<PloggingRecordScreenRouteProp>();
   const navigation = useNavigation<RootStackNavigationProp>();
   const {data: ploggingData, isLoading} = useQuery(
@@ -228,15 +237,33 @@ function PloggingRecordScreen() {
       </ViewShot>
 
       <View style={styles(null, null, 'center', 'center', 10).container}>
-        <TouchableOpacity onPress={() => onShare()} style={styles().btn}>
-          <Icon
-            name="sharealt"
-            size={20}
-            color="#FFF"
-            style={{marginRight: 10}}
-          />
-          <Text style={fontStyles(20, '600', '#FFF').recordText}>공유하기</Text>
-        </TouchableOpacity>
+        {ploggingData.user &&
+          myInfo.data &&
+          myInfo.data.no !== ploggingData.user.no && (
+            <View style={{flexDirection: 'row', alignItems: 'baseline'}}>
+              <Text style={fontStyles(null, null, '#5FA2E5', null).userNick}>
+                {ploggingData.user.nickname}
+              </Text>
+              <Text style={fontStyles(17).userNick}> 님의 로그</Text>
+            </View>
+          )}
+        {ploggingData.user &&
+          myInfo.data &&
+          myInfo.data.no === ploggingData.user.no && (
+            <>
+              <TouchableOpacity onPress={() => onShare()} style={styles().btn}>
+                <Icon
+                  name="sharealt"
+                  size={20}
+                  color="#FFF"
+                  style={{marginRight: 10}}
+                />
+                <Text style={fontStyles(20, '600', '#FFF').recordText}>
+                  공유하기
+                </Text>
+              </TouchableOpacity>
+            </>
+          )}
         <TouchableOpacity onPress={() => navigation.pop()} style={styles().btn}>
           <Icon
             name="menufold"
