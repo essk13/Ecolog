@@ -5,6 +5,8 @@ import {useNavigation} from '@react-navigation/native';
 import {useQuery} from 'react-query';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../modules';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 const styles = StyleSheet.create({
   container: {
     flexGrow: 0,
@@ -35,10 +37,16 @@ const styles = StyleSheet.create({
     color: '#919191',
   },
   create: {
+    width: 35,
+    height: 35,
+    justifyContent: 'center',
+    alignItems: 'center',
     position: 'absolute',
     bottom: 30,
     right: 30,
     zIndex: 1,
+    backgroundColor: '#5FA2E5',
+    borderRadius: 100,
   },
 });
 interface CommunityDetailProps {
@@ -88,7 +96,7 @@ function CommunityNotice({data}: CommunityDetailProps) {
             navigation.navigate('PostCreate', {data: data, type: 1})
           }>
           {/* 글쓰기 버튼 */}
-          <Text>생성</Text>
+          <Icon name="plus" size={23} color="#FFF" />
         </TouchableOpacity>
       )}
       <FlatList

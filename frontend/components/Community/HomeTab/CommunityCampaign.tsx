@@ -10,6 +10,8 @@ import {
 import {CommunityDetail, getPostList, Post} from '../../../api/community';
 import {useNavigation} from '@react-navigation/native';
 import {useQuery} from 'react-query';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 const styles = StyleSheet.create({
   Container: {
     flexGrow: 0,
@@ -50,6 +52,12 @@ const styles = StyleSheet.create({
     bottom: 30,
     right: 30,
     zIndex: 1,
+    width: 35,
+    height: 35,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#5FA2E5',
+    borderRadius: 100,
   },
 });
 interface CommunityDetailProps {
@@ -95,7 +103,7 @@ function CommunityCampaign({data}: CommunityDetailProps) {
           navigation.navigate('PostCreate', {data: data, type: 3})
         }>
         {/* 글쓰기 버튼 */}
-        <Text>생성</Text>
+        <Icon name="plus" size={23} color="#FFF" />
       </TouchableOpacity>
       <ScrollView
         showsVerticalScrollIndicator={false}

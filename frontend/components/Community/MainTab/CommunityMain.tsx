@@ -15,6 +15,8 @@ import {
 } from '../../../api/community';
 import {useQuery} from 'react-query';
 import {useNavigation} from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 const styles = StyleSheet.create({
   img: {
     width: '100%',
@@ -195,7 +197,8 @@ function CommunityMain({keyword}: KeywordProps) {
         <View style={styles.hotItemTitle}>
           <Text style={styles.hotCommuTitle}>{community.title}</Text>
           <Text style={styles.hotCommuCount}>
-            아이콘 {community.join_count}
+            <Icon name="user" size={13} color="#d4d4d4" />{' '}
+            {community.join_count}
           </Text>
         </View>
       </TouchableOpacity>
@@ -219,7 +222,8 @@ function CommunityMain({keyword}: KeywordProps) {
                 <View style={{flexDirection: 'row', height: '20%'}}>
                   <Text style={styles.commuTextTitle}>{community.title}</Text>
                   <Text style={styles.commuTextCount}>
-                    아이콘 {community.join_count}
+                    <Icon name="user" size={13} color="#d4d4d4" />{' '}
+                    {community.join_count}
                   </Text>
                 </View>
                 <View
@@ -249,7 +253,8 @@ function CommunityMain({keyword}: KeywordProps) {
                 <View style={{flexDirection: 'row', height: '20%'}}>
                   <Text style={styles.commuTextTitle}>{community.title}</Text>
                   <Text style={styles.commuTextCount}>
-                    아이콘 {community.join_count}
+                    <Icon name="user" size={13} color="#d4d4d4" />{' '}
+                    {community.join_count}
                   </Text>
                 </View>
                 <View
@@ -311,6 +316,12 @@ function CommunityMain({keyword}: KeywordProps) {
       bottom: 30,
       right: 30,
       zIndex: 1,
+      width: 35,
+      height: 35,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#5FA2E5',
+      borderRadius: 100,
     },
   });
   const navigation = useNavigation<any>();
@@ -320,7 +331,7 @@ function CommunityMain({keyword}: KeywordProps) {
         style={mainStyles.createButton}
         onPress={() => navigation.navigate('CommunityCreate')}>
         {/* 글쓰기 버튼 */}
-        <Text>생성</Text>
+        <Icon name="plus" size={23} color="#FFF" />
       </TouchableOpacity>
       <Text style={styles.menuTitle}>인기 태그</Text>
       <FlatList

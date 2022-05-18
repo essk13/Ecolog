@@ -14,6 +14,8 @@ import {
 } from '../../../api/community';
 import {useNavigation} from '@react-navigation/native';
 import {useQuery} from 'react-query';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 const styles = StyleSheet.create({
   listContainer: {
     flexGrow: 0,
@@ -37,6 +39,12 @@ const styles = StyleSheet.create({
     bottom: 30,
     right: 30,
     zIndex: 1,
+    width: 35,
+    height: 35,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#5FA2E5',
+    borderRadius: 100,
   },
   cardImg: {
     height: 180,
@@ -117,7 +125,7 @@ function CommunityPromotion({data}: CommunityDetailProps) {
         onPress={() => navigation.navigate('CampaignCreate', {data: data})}
         style={styles.create}>
         {/* 글쓰기 버튼 */}
-        <Text>생성</Text>
+        <Icon name="plus" size={23} color="#FFF" />
       </TouchableOpacity>
       <FlatList
         style={styles.Container}

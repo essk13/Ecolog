@@ -8,6 +8,8 @@ import {
   ImageBackground,
 } from 'react-native';
 import {Community} from '../../../api/community';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 const styles = StyleSheet.create({
   // 그림자 효과
   myItem: {
@@ -82,7 +84,8 @@ function CommunityMyItem({community}: CommunityItemProps) {
           <View style={{flexDirection: 'row', height: '20%'}}>
             <Text style={styles.commuTextTitle}>{community.title}</Text>
             <Text style={styles.commuTextCount}>
-              아이콘 {community.join_count}
+              <Icon name="user" size={13} color="#d4d4d4" />{' '}
+              {community.join_count}
             </Text>
           </View>
           <View style={{flexDirection: 'row', height: '80%', paddingTop: 10}}>
