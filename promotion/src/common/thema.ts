@@ -5,10 +5,11 @@ const color = {
   blue: {
     default: "#1778F2",
     dark: "#0667E1",
+    ecolog: "#5FA2E5",
   },
   gray: {
     default: "#d1d1d1",
-    light: "#eeeeee",
+    light: "#fbfbfd",
     semidark: "#c0c0c0",
     dark: "#a0a0a0",
     darker: "#767676",
