@@ -53,13 +53,15 @@ const styles = StyleSheet.create({
   locationContainer: {
     height: '100%',
     flex: 2,
+    flexDirection: 'row',
     borderRadius: 10,
     backgroundColor: 'rgb(121, 190, 36)',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
     padding: 20,
     marginTop: 10,
     marginBottom: 10,
     marginRight: 10,
+    overflow: 'hidden',
   },
   countContainer: {
     height: '100%',
@@ -117,6 +119,13 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 10,
     padding: 10,
+  },
+  personImg: {
+    position: 'absolute',
+    top: 10,
+    right: -40,
+    width: 160,
+    height: 160,
   },
 });
 
@@ -190,8 +199,14 @@ function CampaignDetailScreen({route}: any) {
       <Image source={{uri: data.image}} style={styles.img} />
       <View style={styles.contentContainer}>
         <View style={styles.locationContainer}>
-          <Text style={styles.firstFont}>장소</Text>
-          <Text style={styles.firstFont}>{data.location}</Text>
+          <View>
+            <Text style={styles.firstFont}>장소</Text>
+            <Text style={styles.firstFont}>{data.location}</Text>
+          </View>
+          <Image
+            style={styles.personImg}
+            source={require('../../assets/Community/person.png')}
+          />
         </View>
         <View style={styles.countContainer}>
           <Text style={styles.firstFont}>인원</Text>

@@ -172,7 +172,10 @@ function PloggingRecordScreen() {
       </TouchableOpacity>
 
       <Text style={fontStyles(23, '600', null).titleText}>플로깅 로그</Text>
-      <ViewShot ref={viewShot} options={{format: 'jpg', quality: 0.9}}>
+      <ViewShot
+        ref={viewShot}
+        options={{format: 'jpg', quality: 0.9}}
+        style={{backgroundColor: '#FFF'}}>
         <View style={styles(20, 20).container}>
           <Text
             style={
