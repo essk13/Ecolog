@@ -1,12 +1,15 @@
-# 뷰티플로거
+# **에코로그**
 
-**건강한 지구를 만드는 아름다운 달리기 ‘쓰레깅(플로깅)’**
+![ecolog](https://lab.ssafy.com/s06-final/S06P31D101/-/wikis/uploads/68284a6816933dfea49dcaf5947a90cb/%EC%A0%9C%EB%AA%A9_%EC%97%86%EC%9D%8C-1.png)
+
+**건강한 지구를 만드는 아름다운 기록 ‘에코로그’**
 
 > ’플로깅’ 또는 ‘용기내 챌린지’ 에 대해 들어보신 적 있으신가요?
->
-> 지구의 생태계가 훼손되기까지 약 70년 밖에 걸리지 않았습니다. 이러한 문제를 해결하기 위해 단체뿐만 아니라 개개인들도 달리면서 쓰레기를 줍는 ‘플로깅’ 과 같은 캠페인을 진행하고 있습니다.
->
-> 사용자와 지구의 건강을 동시에 책임지는 뷰티플로깅에 동참하세요.
+> 
+> 지구의 생태계가 훼손되기까지 약 70년 밖에 걸리지 않았습니다.
+> 이러한 문제를 해결하기 위해 단체뿐만 아니라 개개인들도 ‘플로깅’ 과 같은 환경 보호 캠페인에 참여하고 있습니다.
+> 
+> 우리들의 터전을 지키기 위해 아름다운 기록에 동참하세요.
 
 <br>
 
@@ -23,8 +26,8 @@
 
 ## :book: 주요 기능
 
-- 원활한 플로깅을 위한 기록, 조회 등 기능 제공
-- 환경 캠페인 이슈와 실천 여부를 공유하기 위한 커뮤니티 기능 제공
+- 원활한 플로깅을 위해 활동 정보 기록, 랭킹 조회 등 기능 제공
+- 환경 보호 캠페인을 함께 할 사람을 모으고, 실천 여부를 공유하기 위한 커뮤니티 기능 제공
 - 환경에 좋은 생활 습관을 가졌는지 알아볼 수 있는 설문 테스트 제공
 - 환경 보호 활동으로 보상을 얻어 마이룸 / 아바타를 꾸밀 수 있는 기능 제공
 
@@ -32,96 +35,74 @@
 
 ## :books: 세부 기능
 
-| 구분 | 기능                       | 설명                                                                                                                | 비고 |
-| ---- | -------------------------- | ------------------------------------------------------------------------------------------------------------------- | ---- |
-| 1    | 회원 관리                  | 회원가입 및 회원 정보 조회 및 수정을 할 수 있다.                                                                    |      |
-| 2    | 팔로우 / 언팔로우          | 다른 회원을 팔로우하여 환경 운동을 함께 할 파트너를 만들 수 있다.                                                   |      |
-| 3    | 플로깅                     | 위치 기반 이동 경로, 시간, 거리, 칼로리를 기록할 수 있고, 사진과 함께 지구 상태 등을 결과를 조회 및 공유할 수 있다. |      |
-| 4    | 지역별 플로깅 진행 현황    | 지도 상에 지역별 플로깅 진행 현황을 UI를 통해 파악할 수 있다.                                                       |      |
-| 5    | 플로깅 랭킹                | 주간 / 월간 / 누적 등 기간 별, 지역 / 지인 별 랭킹을 조회하고 리워드를 얻을 수 있다.                                |      |
-| 6    | 주변 쓰레기통 조회         | 쓰레기 배출을 위해 쓰레기통의 위치를 조회하고 등록할 수 있다.                                                       |      |
-| 7    | 환경 캠페인 커뮤니티       | 환경 운동 현황을 게시글로 공유하고, 캠페인을 함께 할 사람을 모집할 수 있다.                                         |      |
-| 8    | 생활 습관 설문조사 및 공유 | 환경을 지키는 생활 습관에 대한 설문조사를 진행하고 결과를 공유하여 사람들의 흥미를 유발할 수 있다.                  |      |
-| 9    | AR 분리수거 정보 제공      | 분리수거 마크를 통해 AR로 분리수거 정보를 제공받을 수 있다.                                                         |      |
-| 10   | 메타버스 아바타, 방 꾸미기 | 플로깅 및 환경 캠페인 참여를 통해 받은 리워드를 사용해 아바타와 방을 꾸밀 수 있다.                                  |      |
-| 11   | 지인 회원과의 교류         | 다른 회원의 방에 방문하고 환경 운동 기록을 공유할 수 있다.                                                          |      |
-
-<br>
+| 구분 | 기능 | 설명 | 비고 |
+| --- | --- | --- | --- |
+| 1 | 회원 관리 | 소셜 회원 가입 및 회원 정보 조회, 수정을 할 수 있다. |  |
+| 2 | 팔로우 / 언팔로우 | 다른 회원을 팔로우하여 환경 운동을 함께 할 파트너를 만들 수 있다. |  |
+| 3 | 플로깅 | 위치 기반 플로깅 진행 경로, 시간, 거리, 칼로리를 기록할 수 있고, 사진과 함께 결과를 조회 및 공유할 수 있다. |  |
+| 4 | 플로깅 랭킹 | 주간 / 월간 / 전체 기간 별로 전체 회원 / 내 지역 / 지인 별 랭킹을 조회하고 리워드를 얻을 수 있다. |  |
+| 5 | 주변 쓰레기통 조회 | 플로깅 중 발생한 쓰레기의 배출을 돕기 위해 쓰레기통의 위치를 조회하고 등록할 수 있다. |  |
+| 6 | 환경 캠페인 커뮤니티 | 환경 운동 현황을 게시글로 공유하고, 캠페인을 함께 할 사람을 모집할 수 있다. |  |
+| 7 | 생활 습관 설문조사 및 공유 | 환경에 관한 생활 습관 테스트를 진행하여 내 생활 습관을 돌아보고, 결과를 공유하여 사람들의 흥미를 유발할 수 있다. |  |
+| 8 | AR 분리수거 정보 제공 | 분리수거 마크를 통해 AR로 분리수거 정보를 제공받을 수 있다. |  |
+| 9 | 메타버스 아바타, 방 꾸미기 | 플로깅 및 환경 캠페인 참여를 통해 받은 리워드를 사용해 아바타와 방을 꾸밀 수 있다. |  |
 
 ## :computer: 개발 환경
 
-1. 형상관리 : GitLab
+### Frontend
 
-2. 이슈관리 : Jira
+- HTML5, CSS3, TypeScript 4.6.2
+- React-Native 0.68.1
+- React-Redux 8.0.1, Redux-Saga 1.1.3
+- Node.js 16.14.2, npm 8.5.5
+- Unity 2021.3.2f1
 
-3. 커뮤니케이션 : Mattermost, Notion, Discord
+### Backend
 
-4. 디자인 : Figma
+- Java JDK 8
+- SpringBoot 2.4.5, Spring JPA, Spring Security
+- Lombok 1.18.20, Swagger 3.0.0, jwt 3.19.1
 
-5. OS : Windows 10
+### DB
 
-6. DB : MySQL 8.0.28, Redis 6.2
+- MySQL 8.0.28
+- Redis 6.2
 
-7. Server
+### Server
 
-   가) AWS EC2, AWS S3, Ubuntu 20.04, Jenkins 2.303.2, nginx 1.18.0
+- AWS EC2, AWS S3, Ubuntu 20.04
+- Jenkins 2.303.2, nginx 1.18.0
+- Docker 20.10.14, docker-compose 1.29.2
+- Putty
 
-   나) Tool : Putty
+### Tools
 
-8. Front-End
-
-   가) HTML5, CSS3, TypeScript 4.6.2
-
-   나) React-Native 0.65.1
-
-   다) React-Redux 7.2.6, Redux-Saga 1.1.3, React-Router-Dom 6.2.2
-
-   라) MaterialUI 5.5.0, Styled-Components 5.3.3, Node-Sass 7.0.1
-
-   마) Node.js 16.14.2, npm 8.5.5
-
-   바) AR.js + Three.js
-
-9. Back-End
-
-   가) Java JDK 8
-
-   나) SpringBoot 2.4.5, Spring JPA, Spring Security
-
-   다) Lombok 1.18.20, Swagger 2.9.2, jwt 3.18.2
-
-10. Metaverse
-
-    가) Unity
-
-    나) Photon Server
-
-11. IDE
-
-    가) IntelliJ 21.3.2
-
-    나) MySQL Workbench 8.0.28
-
-    다) Visual Studio Code 1.65.2
-
-    바) Android Studio
-
-<br>
+- 형상관리 : GitLab
+- 이슈관리 : Jira
+- 커뮤니케이션 : Mattermost, Notion, Discord
+- 디자인 : Figma
+- OS : Windows 10
+- IDE
+    - IntelliJ 2021.3.2
+    - MySQL Workbench 8.0.28
+    - Visual Studio Code 1.65.2
+    - Android Studio
 
 ## :classical_building: 아키텍처
 
-![diagram](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/419d850a-169f-48a9-a788-36c615bb5887/Asset_6.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220425%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220425T055749Z&X-Amz-Expires=86400&X-Amz-Signature=ca592d5a1c8e254371b0c0760c418f9c8f8ed7d13308dcd9b91bab85eecb77f3&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Asset_6.png%22&x-id=GetObject)
-
-<br>
+![architecture](https://lab.ssafy.com/s06-final/S06P31D101/-/wikis/uploads/71521a191b9ed0cca0f7dcb2fd80633c/Artboard_1.png)
 
 ## :bookmark_tabs: 산출물
 
-1. 와이어프레임
+### 와이어프레임
 
-![wireframe1](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/677f04ae-c0ed-4191-a28d-10a8ec9e9603/unknown0.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220425%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220425T061043Z&X-Amz-Expires=86400&X-Amz-Signature=eeb4e9a43545582b7ad4346108d7f44a562e6c0afb9b36151ecf1c23ce0c4d8d&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22unknown0.png%22&x-id=GetObject)
-![wireframe2](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/00dab0c4-c184-4a0b-b10b-981ad6302bc7/unknown.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220425%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220425T061046Z&X-Amz-Expires=86400&X-Amz-Signature=a87204da759f1b1ed1572dd71e15a71fc73bc43602f9e12d3ba363304aa049c5&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22unknown.png%22&x-id=GetObject)
+![wireframe1](https://lab.ssafy.com/s06-final/S06P31D101/-/wikis/uploads/c6c0ed7946711c933ff00d562682b0dd/%ED%99%94%EB%A9%B4_%EC%BA%A1%EC%B2%98_2022-05-17_171023.png)
 
-<br>
+![wireframe2](https://lab.ssafy.com/s06-final/S06P31D101/-/wikis/uploads/bfe938b79a05d6726bdacbc32d420287/%ED%99%94%EB%A9%B4_%EC%BA%A1%EC%B2%98_2022-05-17_171102.png)
+
+### ER Diagram
+
+![erd](https://lab.ssafy.com/s06-final/S06P31D101/-/wikis/uploads/dbc2ce03adb995cdef91f306a832ff5b/%ED%99%94%EB%A9%B4_%EC%BA%A1%EC%B2%98_2022-05-17_172249.png)
 
 ## :family: 팀 소개
 
