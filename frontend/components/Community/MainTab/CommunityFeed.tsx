@@ -61,8 +61,9 @@ function CommunityFeed() {
       </View>
     );
   }
-  const items = campaignListData.map(post => (
+  const items = campaignListData.map((post, index) => (
     <TouchableOpacity
+      key={index}
       style={styles.propsContainer}
       onPress={() =>
         navigation.navigate('PostDetail', {

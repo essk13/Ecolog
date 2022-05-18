@@ -1,4 +1,18 @@
 import React from 'react';
+// Hooks
+import {useMutation, useQueryClient, useQuery} from 'react-query';
+import {useSelector} from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
+// Api & Types
+import {CommunityDetail, Manager} from '../../../api/community';
+import {
+  postCommunityJoin,
+  deleteCommunityJoin,
+  deleteCommunity,
+} from '../../../api/community';
+import {getCommunityMember} from '../../../api/community';
+import {RootState} from '../../../modules';
+// Components
 import {
   View,
   Text,
@@ -7,17 +21,8 @@ import {
   Alert,
   FlatList,
 } from 'react-native';
-import {CommunityDetail} from '../../../api/community';
-import {useMutation, useQueryClient, useQuery} from 'react-query';
-import {
-  postCommunityJoin,
-  deleteCommunityJoin,
-  deleteCommunity,
-} from '../../../api/community';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../../modules';
-import {useNavigation} from '@react-navigation/native';
-import {getCommunityMember} from '../../../api/community';
+import IconF from 'react-native-vector-icons/FontAwesome5';
+
 const styles = StyleSheet.create({
   Container: {
     flexGrow: 0,
@@ -51,22 +56,21 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: '100%',
     alignSelf: 'center',
-    borderWidth: 1,
-    borderColor: '#868686',
+    backgroundColor: '#ffffff',
     padding: 10,
     borderRadius: 10,
+    elevation: 3,
   },
   // 그림자 효과
   commuInfo: {
     width: '100%',
     backgroundColor: '#ffffff',
     alignSelf: 'center',
-    borderWidth: 1,
-    borderColor: '#868686',
     marginBottom: 30,
     marginTop: 20,
     padding: 10,
     borderRadius: 10,
+    elevation: 3,
   },
   image: {
     width: '100%',
@@ -74,6 +78,7 @@ const styles = StyleSheet.create({
   },
   editButton: {
     marginLeft: 'auto',
+    marginRight: 3,
     color: '#992f2f',
   },
   editContainer: {
@@ -106,9 +111,20 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
+
+function UserItem({user}: any) {
+  const navigation = useNavigation<any>();
+  return (
+    <View>
+      <Text style={{color: 'black'}}>{user.nickname}</Text>
+    </View>
+  );
+}
+
 interface CommunityDetailProps {
   data: CommunityDetail;
 }
+
 function CommunityHome({data}: CommunityDetailProps) {
   const navigation = useNavigation<any>();
   const queryClient = useQueryClient();
@@ -152,15 +168,6 @@ function CommunityHome({data}: CommunityDetailProps) {
     communityDelete(data.no);
     Alert.alert('삭제가 완료되었습니다.');
   };
-  // function UserItem(user: any) {
-  //   const navigation = useNavigation<any>();
-  //   console.log(user);
-  //   return (
-  //     <View>
-  //       <Text>{user.nickname}</Text>
-  //     </View>
-  //   );
-  // }
 
   if (!communityMember || isLoading) {
     return (
@@ -183,7 +190,7 @@ function CommunityHome({data}: CommunityDetailProps) {
           onPress={() => navigation.navigate('CommunityEdit', {data: data})}>
           {data.manager.email === myInfo.data?.email && (
             // 연필 아이콘
-            <Text style={styles.editButton}>수정</Text>
+            <IconF name="edit" size={18} color={'#992f2f'} />
           )}
         </TouchableOpacity>
       </View>
@@ -196,12 +203,13 @@ function CommunityHome({data}: CommunityDetailProps) {
       <View style={styles.intro}>
         <Text>{data.description}</Text>
       </View>
-      {/* <FlatList
+      <FlatList
         style={styles.userContainer}
         data={communityMember}
         showsVerticalScrollIndicator={false}
-        renderItem={({user}: any) => <UserItem user={user} />}
-      /> */}
+        renderItem={({item}: any) => <UserItem user={item} />}
+        keyExtractor={item => item.no.toString()}
+      />
       {data.join && data.manager.email !== myInfo.data?.email && (
         <TouchableOpacity onPress={() => deleteJoin()} style={styles.button}>
           <Text style={styles.menuTitle}>탈퇴하기</Text>
