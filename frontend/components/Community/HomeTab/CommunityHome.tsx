@@ -239,6 +239,7 @@ function CommunityHome({data}: CommunityDetailProps) {
       <View style={styles.intro}>
         <Text style={styles.infoText}>{data.description}</Text>
       </View>
+      <Text style={styles.menuTitle}>회원 목록</Text>
       <FlatList
         style={styles.userContainer}
         data={communityMember}

@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
   },
   img: {
     height: '100%',
+    backgroundColor: '#636363',
   },
   imageEdit: {
     height: '20%',
@@ -104,6 +105,12 @@ const styles = StyleSheet.create({
   tagContaier: {
     width: '50%',
     padding: 10,
+  },
+  imgFont: {
+    position: 'absolute',
+    color: '#ffffff',
+    top: '30%',
+    right: '35%',
   },
 });
 
@@ -165,15 +172,18 @@ function CommunityCreateScreen() {
             uri: uri,
           }}
         />
+        {uri === 'Image' && (
+          <Text style={styles.imgFont}>이미지를 추가하세요.</Text>
+        )}
         <View style={styles.imageEditMask}>
-          <Text style={{fontSize: 16, color: '#ffffff'}}>편집</Text>
+          <Text style={{fontSize: 16, color: '#ffffff'}}>이미지 추가</Text>
         </View>
       </TouchableOpacity>
       <View style={styles.formContainer}>
         <View style={styles.nameInput}>
-          <Text style={styles.label}>이름</Text>
+          <Text style={styles.label}>커뮤니티 이름</Text>
           <TextInput
-            placeholder="이름"
+            placeholder="이름을 입력해주세요."
             value={communityInfo.title}
             onChangeText={(text: string) =>
               setCommunityInfo({...communityInfo, title: text})
@@ -186,7 +196,7 @@ function CommunityCreateScreen() {
           <View style={styles.locaContaier}>
             <Text style={styles.label}>지역</Text>
             <TextInput
-              placeholder="지역"
+              placeholder="지역을 입력해주세요."
               value={communityInfo.sido}
               onChangeText={(text: string) =>
                 setCommunityInfo({...communityInfo, sido: text})
@@ -195,9 +205,9 @@ function CommunityCreateScreen() {
             />
           </View>
           <View style={styles.tagContaier}>
-            <Text style={styles.label}>태그</Text>
+            <Text style={styles.label}>캠페인 태그</Text>
             <TextInput
-              placeholder="태그"
+              placeholder="캠페인을 입력해주세요."
               value={communityInfo.tag}
               onChangeText={(text: string) =>
                 setCommunityInfo({...communityInfo, tag: text})
@@ -207,9 +217,9 @@ function CommunityCreateScreen() {
           </View>
         </View>
         <View style={styles.desInput}>
-          <Text style={styles.label}>설명</Text>
+          <Text style={styles.label}>커뮤니티 설명</Text>
           <TextInput
-            placeholder="설명"
+            placeholder="커뮤니티를 설명해주세요."
             value={communityInfo.description}
             onChangeText={(text: string) =>
               setCommunityInfo({...communityInfo, description: text})

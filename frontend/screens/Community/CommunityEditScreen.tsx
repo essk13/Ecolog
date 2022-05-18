@@ -194,9 +194,9 @@ function CommunityEditScreen({route}: any) {
       </TouchableOpacity>
       <View style={styles.formContainer}>
         <View style={styles.nameInput}>
-          <Text style={styles.label}>이름</Text>
+          <Text style={styles.label}>커뮤니티 이름</Text>
           <TextInput
-            placeholder="이름"
+            placeholder="이름을 입력해주세요."
             value={communityInfo.title}
             onChangeText={(text: string) =>
               setCommunityInfo({...communityInfo, title: text})
@@ -209,7 +209,7 @@ function CommunityEditScreen({route}: any) {
           <View style={styles.locaContaier}>
             <Text style={styles.label}>지역</Text>
             <TextInput
-              placeholder="지역"
+              placeholder="지역을 입력해주세요."
               value={communityInfo.sido}
               onChangeText={(text: string) =>
                 setCommunityInfo({...communityInfo, sido: text})
@@ -218,9 +218,9 @@ function CommunityEditScreen({route}: any) {
             />
           </View>
           <View style={styles.tagContaier}>
-            <Text style={styles.label}>태그</Text>
+            <Text style={styles.label}>캠페인 태그</Text>
             <TextInput
-              placeholder="태그"
+              placeholder="캠페인을 입력해주세요."
               value={communityInfo.tag}
               onChangeText={(text: string) =>
                 setCommunityInfo({...communityInfo, tag: text})
@@ -230,9 +230,9 @@ function CommunityEditScreen({route}: any) {
           </View>
         </View>
         <View style={styles.desInput}>
-          <Text style={styles.label}>설명</Text>
+          <Text style={styles.label}>커뮤니티 설명</Text>
           <TextInput
-            placeholder="설명"
+            placeholder="커뮤니티를 설명해주세요."
             value={communityInfo.description}
             onChangeText={(text: string) =>
               setCommunityInfo({...communityInfo, description: text})
