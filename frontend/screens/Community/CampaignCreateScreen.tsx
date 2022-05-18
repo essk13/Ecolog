@@ -6,6 +6,7 @@ import {
   TextInput,
   Alert,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import {useMutation, useQueryClient} from 'react-query';
 import {useNavigation} from '@react-navigation/native';
@@ -17,9 +18,89 @@ import {
   launchImageLibrary,
 } from 'react-native-image-picker';
 const styles = StyleSheet.create({
+  title: {
+    fontSize: 18,
+    color: '#4e4e4e',
+    marginTop: 40,
+    marginBottom: 40,
+  },
   container: {
     flex: 1,
     backgroundColor: '#ffffff',
+    padding: 10,
+  },
+  submitButton: {
+    backgroundColor: '#5FA2E5',
+    marginTop: 'auto',
+    width: '100%',
+    borderRadius: 10,
+    height: '10%',
+    alignItems: 'center',
+    elevation: 3,
+    justifyContent: 'center',
+  },
+  submitText: {
+    fontSize: 16,
+    color: '#ffffff',
+    fontWeight: '600',
+    letterSpacing: 2,
+  },
+  menuTitle: {
+    fontSize: 14,
+    color: '#4e4e4e',
+  },
+  secContainer: {
+    width: '100%',
+    flex: 1,
+    flexDirection: 'row',
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
+  titleInput: {
+    backgroundColor: '#dfdfdf',
+    borderRadius: 10,
+    flex: 1,
+    padding: 0,
+    paddingLeft: 10,
+    color: '#000000',
+  },
+  contentInput: {
+    backgroundColor: '#dfdfdf',
+    borderRadius: 10,
+    flex: 3,
+    marginBottom: 20,
+    padding: 0,
+    paddingLeft: 10,
+    color: '#000000',
+  },
+  halfInput: {
+    color: '#000000',
+    backgroundColor: '#dfdfdf',
+    borderRadius: 10,
+    width: '95%',
+  },
+  locaInput: {
+    color: '#000000',
+    backgroundColor: '#dfdfdf',
+    borderRadius: 10,
+    width: '95%',
+  },
+  img: {
+    flex: 1,
+    backgroundColor: '#636363',
+  },
+  imageEdit: {
+    flex: 2,
+  },
+  imageEditMask: {
+    position: 'absolute',
+    top: '70%',
+    width: '100%',
+    height: '30%',
+    backgroundColor: '#000000',
+    opacity: 0.7,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
@@ -30,9 +111,9 @@ function CampaignCreateScreen({route}: any) {
     title: '',
     location: '',
     content: '',
-    max_personnel: 0,
+    max_personnel: 1,
   });
-  const [uri, setUri] = React.useState<string>('https://ecolog-bucket.s3.ap-northeast-2.amazonaws.com/Ecolog_file_default_profile.jpg');
+  const [uri, setUri] = React.useState<string>('image');
   const [no, setNo] = React.useState<number>(0);
   const {mutate: createCam} = useMutation(createCampaign, {
     onSuccess: data => {
@@ -77,52 +158,76 @@ function CampaignCreateScreen({route}: any) {
   }, [route.params.data]);
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>캠페인 만들기</Text>
+      <Text style={styles.menuTitle}>이미지</Text>
       <TouchableOpacity
-        onPress={() => launchImageLibrary(imagePickerOption, onPickImage)}>
-        <Text>이미지</Text>
+        onPress={() => launchImageLibrary(imagePickerOption, onPickImage)}
+        style={styles.imageEdit}>
+        <Image
+          style={styles.img}
+          resizeMode="cover"
+          source={{
+            uri: uri,
+          }}
+        />
+        <View style={styles.imageEditMask}>
+          <Text style={{fontSize: 16, color: '#ffffff'}}>편집</Text>
+        </View>
       </TouchableOpacity>
-      <Text>이름</Text>
+      <Text style={styles.menuTitle}>이름</Text>
       <TextInput
-        placeholder="이름"
+        placeholder="캠페인 이름을 입력해주세요."
         value={campaignInfo.title}
+        style={styles.titleInput}
         onChangeText={(text: string) =>
           setCampaignInfo({...campaignInfo, title: text})
         }
         returnKeyType="done"
       />
-      <Text>최대인원</Text>
+      <View style={styles.secContainer}>
+        <View style={{flex: 1, width: '100%'}}>
+          <Text style={styles.menuTitle}>위치</Text>
+          <TextInput
+            placeholder="지역을 입력해주세요."
+            value={campaignInfo.location}
+            style={styles.locaInput}
+            onChangeText={(text: string) =>
+              setCampaignInfo({...campaignInfo, location: text})
+            }
+            returnKeyType="done"
+          />
+        </View>
+        <View style={{flex: 1}}>
+          <Text style={styles.menuTitle}>최대인원</Text>
+          <TextInput
+            placeholder="제한 인원을 입력해주세요."
+            keyboardType="numeric"
+            value={String(campaignInfo.max_personnel)}
+            style={styles.halfInput}
+            onChangeText={(text: string) =>
+              setCampaignInfo({
+                ...campaignInfo,
+                max_personnel: Number(text.replace(/[^0-9]/g, '')),
+              })
+            }
+            returnKeyType="done"
+          />
+        </View>
+      </View>
+      <Text style={styles.menuTitle}>컨텐츠</Text>
       <TextInput
-        placeholder="최대인원"
-        keyboardType="numeric"
-        value={String(campaignInfo.max_personnel)}
-        onChangeText={(text: string) =>
-          setCampaignInfo({
-            ...campaignInfo,
-            max_personnel: Number(text.replace(/[^0-9]/g, '')),
-          })
-        }
-        returnKeyType="done"
-      />
-      <Text>위치</Text>
-      <TextInput
-        placeholder="시도"
-        value={campaignInfo.location}
-        onChangeText={(text: string) =>
-          setCampaignInfo({...campaignInfo, location: text})
-        }
-        returnKeyType="done"
-      />
-      <Text>컨텐츠</Text>
-      <TextInput
-        placeholder="시군구"
+        placeholder="설명을 입력해주세요."
         value={campaignInfo.content}
+        style={styles.contentInput}
         onChangeText={(text: string) =>
           setCampaignInfo({...campaignInfo, content: text})
         }
         returnKeyType="done"
       />
-      <TouchableOpacity onPress={() => submitCreate()}>
-        <Text>생성</Text>
+      <TouchableOpacity
+        style={styles.submitButton}
+        onPress={() => submitCreate()}>
+        <Text style={styles.submitText}>생성하기</Text>
       </TouchableOpacity>
     </View>
   );

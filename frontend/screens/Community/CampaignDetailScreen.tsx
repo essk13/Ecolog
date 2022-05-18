@@ -31,12 +31,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   button: {
-    backgroundColor: 'rgb(127, 111, 255)',
+    backgroundColor: '#dddddd',
     marginTop: 'auto',
     width: '100%',
     borderRadius: 10,
     height: '10%',
     alignItems: 'center',
+    elevation: 3,
     justifyContent: 'center',
   },
   title: {
@@ -62,6 +63,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginRight: 10,
     overflow: 'hidden',
+    elevation: 3,
   },
   countContainer: {
     height: '100%',
@@ -70,8 +72,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
     padding: 20,
     marginBottom: 10,
-    backgroundColor: 'rgb(255, 122, 79)',
+    backgroundColor: 'rgb(121, 190, 36)',
     justifyContent: 'flex-end',
+    elevation: 3,
   },
   desContainer: {
     height: '15%',
@@ -81,6 +84,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 10,
     marginBottom: 10,
+    elevation: 3,
   },
   mainTitle: {
     fontSize: 20,
@@ -96,9 +100,9 @@ const styles = StyleSheet.create({
     color: '#636363',
   },
   firstFont: {
-    fontSize: 16,
-    color: '#000000',
-    fontWeight: '800',
+    fontSize: 15,
+    color: '#202020',
+    fontWeight: '700',
   },
   contentFont: {
     fontSize: 14,
@@ -106,7 +110,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
-    color: '#ffffff',
+    color: '#202020',
     fontWeight: '600',
     letterSpacing: 2,
   },
@@ -126,6 +130,9 @@ const styles = StyleSheet.create({
     right: -40,
     width: 160,
     height: 160,
+  },
+  editText: {
+    color: '#000000',
   },
 });
 
@@ -166,14 +173,18 @@ function CampaignDetailScreen({route}: any) {
     });
     Alert.alert('삭제가 완료되었습니다.');
   };
+
   return (
     <View style={styles.container}>
-      <View style={{flexDirection: 'row', width: '100%'}}>
+      <View
+        style={{
+          flexDirection: 'row',
+          width: '100%',
+          marginTop: 30,
+          marginBottom: 20,
+        }}>
         <View style={{marginRight: 'auto'}}>
           <Text style={styles.mainTitle}>{data.title}</Text>
-          <Text style={styles.date}>
-            {data.start_date} ~ {data.end_date}
-          </Text>
         </View>
         {data.writer.email === myInfo.data?.email && (
           <TouchableOpacity
@@ -184,15 +195,14 @@ function CampaignDetailScreen({route}: any) {
                 no: route.params.no,
               })
             }>
-            {/* 연필 아이콘 */}
-            <Text>수정</Text>
+            <Text style={styles.editText}>수정</Text>
           </TouchableOpacity>
         )}
         {data.writer.email === myInfo.data?.email && (
           <TouchableOpacity
             style={styles.editButton}
             onPress={() => deleteCam()}>
-            <Text>삭제</Text>
+            <Text style={styles.editText}>삭제</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -220,7 +230,7 @@ function CampaignDetailScreen({route}: any) {
       </View>
       <TouchableOpacity onPress={() => Join()} style={styles.button}>
         {data.joining && <Text style={styles.buttonText}>참가 취소하기</Text>}
-        {!data.joining && <Text style={styles.buttonText}>참가 하기</Text>}
+        {!data.joining && <Text style={styles.buttonText}>참가하기</Text>}
       </TouchableOpacity>
     </View>
   );
