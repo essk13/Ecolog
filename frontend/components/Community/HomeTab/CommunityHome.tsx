@@ -20,6 +20,7 @@ import {
   TouchableOpacity,
   Alert,
   FlatList,
+  Image,
 } from 'react-native';
 import IconF from 'react-native-vector-icons/FontAwesome5';
 import {ActivityIndicator, Colors} from 'react-native-paper';
@@ -107,7 +108,7 @@ const styles = StyleSheet.create({
   },
   userContainer: {
     width: '100%',
-    height: '40%',
+    flex: 1,
   },
   joinText: {
     color: '#ffffff',
@@ -123,14 +124,37 @@ const styles = StyleSheet.create({
     color: '#6b6b6b',
     fontSize: 14,
   },
+  userImage: {
+    height: '70%',
+    aspectRatio: 1,
+    borderRadius: 35,
+  },
+  userItem: {
+    width: '100%',
+    height: 50,
+    flexDirection: 'row',
+    marginBottom: 5,
+    borderColor: '#c0c0c0',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    paddingLeft: 10,
+  },
 });
 
 function UserItem({user}: any) {
   const navigation = useNavigation<any>();
   return (
-    <View>
-      <Text style={{color: 'black'}}>{user.nickname}</Text>
-    </View>
+    <TouchableOpacity
+      style={styles.userItem}
+      onPress={() => navigation.push('UserProfile', {id: user.no})}>
+      <Image
+        style={styles.userImage}
+        source={{
+          uri: user.image,
+        }}
+      />
+      <Text style={{color: 'black', marginLeft: 10}}>{user.nickname}</Text>
+    </TouchableOpacity>
   );
 }
 
