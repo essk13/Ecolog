@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import {Button, Card, Title} from 'react-native-paper';
 import {CommunityDetail, getPostList, Post} from '../../../api/community';
 import {useNavigation} from '@react-navigation/native';
 import {useQuery} from 'react-query';
@@ -49,6 +48,7 @@ interface CampaignItemProps {
 
 function CommunityFeed() {
   const navigation = useNavigation<any>();
+
   const {data: campaignListData, isLoading} = useQuery(
     ['postList', {no: 0, type: 'campaign'}],
     () => getPostList({no: 0, type: 'campaign'}),
@@ -61,7 +61,6 @@ function CommunityFeed() {
       </View>
     );
   }
-
   const items = campaignListData.map(post => (
     <TouchableOpacity
       style={styles.propsContainer}

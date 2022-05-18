@@ -1,8 +1,14 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  FlatList,
+} from 'react-native';
 import {CommunityDetail} from '../../../api/community';
-import {Button} from 'react-native-paper';
-import {useMutation} from 'react-query';
+import {useMutation, useQueryClient, useQuery} from 'react-query';
 import {
   postCommunityJoin,
   deleteCommunityJoin,
@@ -11,6 +17,7 @@ import {
 import {useSelector} from 'react-redux';
 import {RootState} from '../../../modules';
 import {useNavigation} from '@react-navigation/native';
+import {getCommunityMember} from '../../../api/community';
 const styles = StyleSheet.create({
   Container: {
     flexGrow: 0,
@@ -18,7 +25,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     height: '100%',
     padding: 10,
-    paddingTop: 30,
   },
   HomeNotice: {
     backgroundColor: '#6b6b6b',
@@ -76,7 +82,7 @@ const styles = StyleSheet.create({
   joinButton: {
     width: '100%',
     alignSelf: 'center',
-    backgroundColor: '#70d81b',
+    backgroundColor: 'rgba(95, 162, 229, 0.8)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 10,
@@ -85,19 +91,54 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 20,
   },
+  userContainer: {
+    width: '100%',
+    height: '40%',
+  },
   joinText: {
     color: '#ffffff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  menuTitle: {
+    color: '#000000',
+    fontSize: 14,
+    fontWeight: '600',
   },
 });
 interface CommunityDetailProps {
   data: CommunityDetail;
 }
 function CommunityHome({data}: CommunityDetailProps) {
-  console.log(data.join);
   const navigation = useNavigation<any>();
-  const {mutate: communityJoin} = useMutation(postCommunityJoin);
-  const {mutate: communityDeleteJoin} = useMutation(deleteCommunityJoin);
-  const {mutate: communityDelete} = useMutation(deleteCommunity);
+  const queryClient = useQueryClient();
+  const {data: communityMember, isLoading} = useQuery(
+    ['CommunityMember', data.no],
+    () => getCommunityMember(data.no),
+  );
+
+  const {mutate: communityJoin} = useMutation(postCommunityJoin, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('CommunityDetail');
+      queryClient.invalidateQueries('CommunityList');
+      queryClient.invalidateQueries('myCommunity');
+    },
+  });
+  const {mutate: communityDeleteJoin} = useMutation(deleteCommunityJoin, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('CommunityDetail');
+      queryClient.invalidateQueries('CommunityList');
+      queryClient.invalidateQueries('myCommunity');
+      navigation.navigate('Community');
+    },
+  });
+  const {mutate: communityDelete} = useMutation(deleteCommunity, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('CommunityList');
+      queryClient.invalidateQueries('myCommunity');
+      navigation.navigate('Community');
+    },
+  });
   const myInfo = useSelector((state: RootState) => state.user.user);
   const Join = () => {
     communityJoin(data.no);
@@ -111,7 +152,23 @@ function CommunityHome({data}: CommunityDetailProps) {
     communityDelete(data.no);
     Alert.alert('삭제가 완료되었습니다.');
   };
+  // function UserItem(user: any) {
+  //   const navigation = useNavigation<any>();
+  //   console.log(user);
+  //   return (
+  //     <View>
+  //       <Text>{user.nickname}</Text>
+  //     </View>
+  //   );
+  // }
 
+  if (!communityMember || isLoading) {
+    return (
+      <View>
+        <Text>로딩중</Text>
+      </View>
+    );
+  }
   return (
     <View style={styles.Container}>
       {!data.join && (
@@ -120,7 +177,7 @@ function CommunityHome({data}: CommunityDetailProps) {
         </TouchableOpacity>
       )}
       <View style={styles.editContainer}>
-        <Text>커뮤니티 정보</Text>
+        <Text style={styles.menuTitle}>커뮤니티 정보</Text>
         <TouchableOpacity
           style={styles.editButton}
           onPress={() => navigation.navigate('CommunityEdit', {data: data})}>
@@ -131,24 +188,28 @@ function CommunityHome({data}: CommunityDetailProps) {
         </TouchableOpacity>
       </View>
       <View style={styles.commuInfo}>
-        <Text>회원 수 </Text>
-        <Text>개설일</Text>
-        <Text>관리자 : {data.manager.email}</Text>
-        <Text>캠페인 태그 : {data.tag}</Text>
-        <Text>지역 </Text>
+        <Text>관리자 : {data.manager.nickname}</Text>
+        <Text>태그 : {data.tag}</Text>
+        <Text>활동 지역 : {data.sido} </Text>
       </View>
-      <Text>커뮤니티 소개</Text>
+      <Text style={styles.menuTitle}>커뮤니티 소개</Text>
       <View style={styles.intro}>
         <Text>{data.description}</Text>
       </View>
+      {/* <FlatList
+        style={styles.userContainer}
+        data={communityMember}
+        showsVerticalScrollIndicator={false}
+        renderItem={({user}: any) => <UserItem user={user} />}
+      /> */}
       {data.join && data.manager.email !== myInfo.data?.email && (
         <TouchableOpacity onPress={() => deleteJoin()} style={styles.button}>
-          <Text>탈퇴하기</Text>
+          <Text style={styles.menuTitle}>탈퇴하기</Text>
         </TouchableOpacity>
       )}
       {data.manager.email === myInfo.data?.email && (
         <TouchableOpacity onPress={() => deleteCommu()} style={styles.button}>
-          <Text>삭제하기</Text>
+          <Text style={styles.menuTitle}>삭제하기</Text>
         </TouchableOpacity>
       )}
     </View>

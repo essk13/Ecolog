@@ -7,9 +7,11 @@ import {
   Alert,
   TouchableOpacity,
 } from 'react-native';
-import {useMutation} from 'react-query';
+import {useMutation, useQueryClient} from 'react-query';
 import {createPost} from '../../api/community';
 import {PostInfo} from '../../api/community';
+import {useNavigation} from '@react-navigation/native';
+
 import {
   CameraOptions,
   ImagePickerResponse,
@@ -23,6 +25,8 @@ const styles = StyleSheet.create({
 });
 
 function PostCreateScreen({route}: any) {
+  const navigation = useNavigation<any>();
+  const queryClient = useQueryClient();
   const [postInfo, setCampaignInfo] = React.useState<PostInfo>({
     title: '',
     open: true,
@@ -31,7 +35,20 @@ function PostCreateScreen({route}: any) {
   });
   const [uri, setUri] = React.useState<string>('');
   const [no, setNo] = React.useState<number>(0);
-  const {mutate: createCam} = useMutation(createPost);
+  const {mutate: createCam} = useMutation(createPost, {
+    onSuccess: data => {
+      navigation.pop();
+      queryClient.invalidateQueries('CommunityList');
+      queryClient.invalidateQueries('myCommunity');
+      queryClient.invalidateQueries('postList');
+      queryClient.invalidateQueries('postDetail');
+      navigation.navigate('PostDetail', {
+        id: data.no,
+        no: data.community_no,
+        type: data.type,
+      });
+    },
+  });
   const submitCreate = () => {
     const communityImgData = {
       name: uri.split('/').pop(),

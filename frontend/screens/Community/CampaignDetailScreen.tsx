@@ -3,7 +3,7 @@ import {
   Text,
   View,
   StyleSheet,
-  ImageBackground,
+  Image,
   TouchableOpacity,
   Alert,
 } from 'react-native';
@@ -22,29 +22,18 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     alignItems: 'center',
-  },
-
-  imageContainer: {
-    height: '40%',
-    width: '100%',
-    borderBottomLeftRadius: 45,
-    borderBottomRightRadius: 45,
-    overflow: 'hidden',
-    alignItems: 'flex-end',
+    padding: 10,
+    backgroundColor: '#ffffff',
   },
   img: {
+    height: '25%',
     width: '100%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
+    borderRadius: 10,
   },
   button: {
-    position: 'absolute',
-    backgroundColor: '#d10909',
-    top: '35%',
+    backgroundColor: 'rgb(139, 139, 139)',
     width: '20%',
     height: '10%',
-    borderRadius: 35,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -55,7 +44,50 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
   contentContainer: {
-    paddingTop: '20%',
+    height: '15%',
+    width: '100%',
+    flexDirection: 'row',
+    marginBottom: 10,
+  },
+  locationContainer: {
+    height: '100%',
+    flex: 2,
+    borderRadius: 10,
+    backgroundColor: 'rgb(139, 139, 139)',
+    marginTop: 10,
+    marginBottom: 10,
+    marginRight: 10,
+  },
+  countContainer: {
+    height: '100%',
+    flex: 1,
+    borderRadius: 10,
+    marginTop: 10,
+    marginBottom: 10,
+    backgroundColor: 'rgb(139, 139, 139)',
+  },
+  desContainer: {
+    height: '15%',
+    width: '100%',
+    backgroundColor: 'rgb(139, 139, 139)',
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  mainTitle: {
+    fontSize: 20,
+    margin: 30,
+    marginLeft: 0,
+    marginBottom: 0,
+    alignSelf: 'flex-start',
+    color: '#000000',
+  },
+  date: {
+    fontSize: 16,
+    margin: 20,
+    marginTop: 0,
+    marginLeft: 0,
+    alignSelf: 'flex-start',
+    color: '#636363',
   },
 });
 
@@ -69,7 +101,7 @@ function CampaignDetailScreen({route}: any) {
   const navigation = useNavigation<any>();
   const {mutate: campaignDelete} = useMutation(deleteCampaign);
   const {data: data, isLoading} = useQuery(
-    ['campaignDetail', route.params.no, route.params.id],
+    ['campaignDetail', {no: route.params.no, id: route.params.id}],
     () => getCampaignDetail(route.params.no, route.params.id),
   );
   if (!data || isLoading) {
@@ -88,36 +120,43 @@ function CampaignDetailScreen({route}: any) {
   };
   return (
     <View style={styles.container}>
-      <View style={styles.imageContainer}>
-        <ImageBackground source={{uri: data.image}} style={styles.img}>
-          <Text style={styles.title}>{data.title}</Text>
-        </ImageBackground>
+      <Text style={styles.mainTitle}>{data.title}</Text>
+      <Text style={styles.date}>
+        {data.start_date} ~ {data.end_date}
+      </Text>
+      <Image source={{uri: data.image}} style={styles.img} />
+      <View style={styles.contentContainer}>
+        <View style={styles.locationContainer}>
+          <Text>{data.location}</Text>
+        </View>
+        <View style={styles.countContainer}>
+          <Text>{data.max_personnel}</Text>
+        </View>
+      </View>
+      <View style={styles.desContainer}>
+        <Text>{data.content}</Text>
       </View>
       <TouchableOpacity onPress={() => Join()} style={styles.button}>
         <Text>참가하기</Text>
       </TouchableOpacity>
-      <View style={styles.contentContainer}>
-        <Text>{data.content}</Text>
-        <Text>{data.location}</Text>
-        <Text>{data.max_personnel}</Text>
-        {data.writer.email === myInfo.data?.email && (
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate('CampaignEdit', {
-                data: data,
-                no: route.params.no,
-              })
-            }>
-            {/* 연필 아이콘 */}
-            <Text>수정</Text>
-          </TouchableOpacity>
-        )}
-        {data.writer.email === myInfo.data?.email && (
-          <TouchableOpacity onPress={() => deleteCam()}>
-            <Text>삭제</Text>
-          </TouchableOpacity>
-        )}
-      </View>
+
+      {data.writer.email === myInfo.data?.email && (
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('CampaignEdit', {
+              data: data,
+              no: route.params.no,
+            })
+          }>
+          {/* 연필 아이콘 */}
+          <Text>수정</Text>
+        </TouchableOpacity>
+      )}
+      {data.writer.email === myInfo.data?.email && (
+        <TouchableOpacity onPress={() => deleteCam()}>
+          <Text>삭제</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }

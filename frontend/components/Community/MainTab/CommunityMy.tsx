@@ -9,6 +9,7 @@ const styles = StyleSheet.create({
     width: '100%',
     minHeight: '100%',
     backgroundColor: '#ffffff',
+    padding: 10,
   },
 });
 

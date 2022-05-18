@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 30,
     right: 30,
+    zIndex: 1,
   },
 });
 interface CommunityDetailProps {
@@ -82,10 +83,10 @@ function CommunityNotice({data}: CommunityDetailProps) {
     <View style={styles.container}>
       {myInfo.data?.email === data.manager.email && (
         <TouchableOpacity
+          style={styles.create}
           onPress={() =>
             navigation.navigate('PostCreate', {data: data, type: 1})
-          }
-          style={styles.create}>
+          }>
           {/* 글쓰기 버튼 */}
           <Text>생성</Text>
         </TouchableOpacity>

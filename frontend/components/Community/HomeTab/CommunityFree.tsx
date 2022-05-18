@@ -41,6 +41,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 30,
     right: 30,
+    zIndex: 1,
   },
   postDate: {
     color: '#919191',
@@ -73,12 +74,12 @@ function CommunityFree({data}: CommunityDetailProps) {
           })
         }
         style={styles.CardContainer}>
-        <Text>{post.no}</Text>
+        <Text style={{color: '#a8a8a8'}}>{post.no}</Text>
         <Image source={{uri: post.image}} style={styles.image} />
         <View>
           <Text style={styles.postTitle}>{post.title}</Text>
 
-          <Text>{post.writer.nickname}</Text>
+          <Text style={{color: '#a8a8a8'}}>{post.writer.nickname}</Text>
         </View>
         <Text style={styles.postDate}>{date[0]}</Text>
       </TouchableOpacity>

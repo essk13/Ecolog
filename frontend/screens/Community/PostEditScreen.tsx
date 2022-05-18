@@ -7,8 +7,9 @@ import {
   Alert,
   TouchableOpacity,
 } from 'react-native';
-import {useMutation} from 'react-query';
+import {useMutation, useQueryClient} from 'react-query';
 import {editPost, PostInfo} from '../../api/community';
+import {useNavigation} from '@react-navigation/native';
 import {
   CameraOptions,
   ImagePickerResponse,
@@ -23,13 +24,15 @@ const styles = StyleSheet.create({
 });
 
 function PostEditScreen({route}: any) {
+  console.log(route.params.type);
   const [postInfo, setCampaignInfo] = React.useState<PostInfo>({
     title: '',
     open: false,
     content: '',
     type: route.params.type,
   });
-
+  const navigation = useNavigation<any>();
+  const queryClient = useQueryClient();
   const [uri, setUri] = React.useState<string>('');
   React.useEffect(() => {
     if (route.params.data) {
@@ -42,7 +45,19 @@ function PostEditScreen({route}: any) {
       setUri(route.params.data.image);
     }
   }, [route.params]);
-  const {mutate: editPo} = useMutation(editPost);
+  const {mutate: editPo} = useMutation(editPost, {
+    onSuccess: data => {
+      console.log(data);
+      navigation.pop();
+      queryClient.invalidateQueries('postList');
+      queryClient.invalidateQueries('postDetail');
+      navigation.navigate('PostDetail', {
+        id: route.params.data.no,
+        no: route.params.data.community_no,
+        type: route.params.type,
+      });
+    },
+  });
   const submitCreate = () => {
     const communityImgData = {
       name: uri.split('/').pop(),

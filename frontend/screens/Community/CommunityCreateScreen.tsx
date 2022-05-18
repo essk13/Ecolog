@@ -7,7 +7,7 @@ import {
   Alert,
   TouchableOpacity,
 } from 'react-native';
-import {useMutation} from 'react-query';
+import {useMutation, useQueryClient} from 'react-query';
 import {createCommunity} from '../../api/community';
 import {CommunityInfo} from '../../api/community';
 import {
@@ -15,6 +15,7 @@ import {
   ImagePickerResponse,
   launchImageLibrary,
 } from 'react-native-image-picker';
+import {useNavigation} from '@react-navigation/native';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -23,6 +24,8 @@ const styles = StyleSheet.create({
 });
 
 function CommunityCreateScreen() {
+  const navigation = useNavigation<any>();
+  const queryClient = useQueryClient();
   const [communityInfo, setCommunityInfo] = React.useState<CommunityInfo>({
     description: '',
     sido: '',
@@ -31,7 +34,14 @@ function CommunityCreateScreen() {
     title: '',
   });
   const [uri, setUri] = React.useState<string>('');
-  const {mutate: createCommu} = useMutation(createCommunity);
+  const {mutate: createCommu} = useMutation(createCommunity, {
+    onSuccess: data => {
+      navigation.pop();
+      navigation.navigate('CommunityHome', {id: data.no});
+      queryClient.invalidateQueries('CommunityList');
+      queryClient.invalidateQueries('myCommunity');
+    },
+  });
   const submitCreate = () => {
     const communityImgData = {
       name: uri.split('/').pop(),

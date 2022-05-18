@@ -24,12 +24,15 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../modules';
-import {useMutation} from 'react-query';
+import {useMutation, useQueryClient} from 'react-query';
+import NoticeDetail from '../../components/Community/Stack/NoticeDetail';
+import FreeDetail from '../../components/Community/Stack/FreeDetail';
+import CampaignDetail from '../../components/Community/Stack/CampaignDetail';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ffffff',
-    alignItems: 'center',
+    padding: 10,
   },
   image: {
     height: '30%',
@@ -40,20 +43,69 @@ const styles = StyleSheet.create({
     minHeight: '10%',
     width: '100%',
     backgroundColor: '#ffffff',
-    padding: 20,
+  },
+  commentContainer: {
+    flexDirection: 'row',
+    paddingTop: 5,
+    paddingBottom: 5,
+  },
+  textInput: {
+    backgroundColor: '#dfdfdf',
+    borderRadius: 10,
+    height: 30,
+    color: '#000000',
+    padding: 0,
+    paddingLeft: 10,
+    flex: 6,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+  },
+  submit: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
+    borderColor: '#6e6e6e',
+    borderWidth: 1,
+    marginLeft: 10,
+  },
+  submitFont: {
+    color: '#6e6e6e',
   },
 });
 interface CommentProps {
   commentItem: Comment;
 }
 function PostDetailScreen({route}: any) {
+  console.log(route.params.type);
   const myInfo = useSelector((state: RootState) => state.user.user);
   const navigation = useNavigation<any>();
-  const {mutate: postDelete} = useMutation(deletePost);
-  const {mutate: commentDelete} = useMutation(deleteComment);
+  const queryClient = useQueryClient();
+  const {mutate: postDelete} = useMutation(deletePost, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('postList');
+      navigation.pop();
+    },
+  });
+  const {mutate: commentDelete} = useMutation(deleteComment, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('postDetail');
+      queryClient.invalidateQueries('commentList');
+    },
+  });
   const [comment, setComment] = React.useState<CommentInfo>({content: ''});
-  const {mutate: createCom} = useMutation(createComment);
-  const {mutate: postLike} = useMutation(likePost);
+  const {mutate: createCom} = useMutation(createComment, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('postDetail');
+      queryClient.invalidateQueries('commentList');
+    },
+  });
+  const {mutate: postLike} = useMutation(likePost, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('postDetail');
+    },
+  });
   const like = () => {
     postLike({
       community: route.params.no,
@@ -66,7 +118,7 @@ function PostDetailScreen({route}: any) {
       post: route.params.id,
       commentInfo: comment,
     });
-    Alert.alert('생성이 완료되었습니다.');
+    setComment('');
   };
   const {data: data, isLoading} = useQuery(
     ['postDetail', route.params.no, route.params.id],
@@ -92,10 +144,17 @@ function PostDetailScreen({route}: any) {
     );
   }
   const PromListItem = ({commentItem}: CommentProps) => {
+    const [editCommentStart, setEditCommentStart] =
+      React.useState<boolean>(false);
     const [prevComment, setPrevComment] = React.useState<CommentInfo>({
       content: commentItem.content,
     });
-    const {mutate: editCo} = useMutation(editComment);
+    const {mutate: editCo} = useMutation(editComment, {
+      onSuccess: () => {
+        queryClient.invalidateQueries('postDetail');
+        queryClient.invalidateQueries('commentList');
+      },
+    });
     const deleteCo = () => {
       commentDelete({
         communityNo: route.params.no,
@@ -111,14 +170,24 @@ function PostDetailScreen({route}: any) {
         commentNo: commentItem.no,
         commentInfo: prevComment,
       });
+      setEditCommentStart(false);
       Alert.alert('수정이 완료되었습니다.');
     };
     return (
-      <View>
+      <View style={styles.commentContainer}>
+        <Text>{commentItem.writer.nickname}</Text>
         <Text>{commentItem.content}</Text>
-        <Text>{commentItem.no}</Text>
-        <Text>{commentItem.writer.email}</Text>
         {data.writer.email === myInfo.data?.email && (
+          <TouchableOpacity onPress={() => deleteCo()}>
+            <Text>삭제</Text>
+          </TouchableOpacity>
+        )}
+        {data.writer.email === myInfo.data?.email && (
+          <TouchableOpacity onPress={() => setEditCommentStart(true)}>
+            <Text>수정</Text>
+          </TouchableOpacity>
+        )}
+        {data.writer.email === myInfo.data?.email && editCommentStart && (
           <View>
             <TextInput
               placeholder="수정"
@@ -127,11 +196,7 @@ function PostDetailScreen({route}: any) {
               returnKeyType="done"
             />
             <TouchableOpacity onPress={() => editCommentSubmit()}>
-              {/* 연필 아이콘 */}
               <Text>수정</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => deleteCo()}>
-              <Text>삭제</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -145,18 +210,33 @@ function PostDetailScreen({route}: any) {
     });
     Alert.alert('삭제가 완료되었습니다.');
   };
-
+  console.log(route.params.type);
   return (
     <View style={styles.container}>
-      <Image source={{uri: data.image}} style={styles.image} />
-      <Text>{data.title}</Text>
-      <Text>{data.content}</Text>
-      <Text>커뮤니티 {route.params.no}</Text>
-      <Text>캠페인 {route.params.id}</Text>
-      <Text>{data.like_count}</Text>
+      {route.params.type === 1 && <NoticeDetail post={data} />}
+      {route.params.type === 2 && <FreeDetail post={data} />}
+      {route.params.type === 3 && <CampaignDetail post={data} />}
       <TouchableOpacity onPress={() => like()}>
         <Text>좋아요</Text>
       </TouchableOpacity>
+      <View style={styles.inputContainer}>
+        <TextInput
+          placeholder="댓글을 입력해 주세요."
+          value={comment.content}
+          onChangeText={(text: string) => setComment({content: text})}
+          returnKeyType="done"
+          clearTextOnFocus={true}
+          style={styles.textInput}
+        />
+        <TouchableOpacity style={styles.submit} onPress={() => submit()}>
+          <Text style={styles.submitFont}>작성</Text>
+        </TouchableOpacity>
+      </View>
+      <FlatList
+        style={styles.comment}
+        data={commentListData}
+        renderItem={({item}: any) => <PromListItem commentItem={item} />}
+      />
       {data.writer.email === myInfo.data?.email && (
         <TouchableOpacity
           onPress={() =>
@@ -175,20 +255,6 @@ function PostDetailScreen({route}: any) {
           <Text>삭제</Text>
         </TouchableOpacity>
       )}
-      <FlatList
-        style={styles.comment}
-        data={commentListData}
-        renderItem={({item}: any) => <PromListItem commentItem={item} />}
-      />
-      <TextInput
-        placeholder="댓글"
-        value={comment.content}
-        onChangeText={(text: string) => setComment({content: text})}
-        returnKeyType="done"
-      />
-      <TouchableOpacity onPress={() => submit()}>
-        <Text>댓글 쓰기</Text>
-      </TouchableOpacity>
     </View>
   );
 }

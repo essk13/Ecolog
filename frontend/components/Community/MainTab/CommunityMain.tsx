@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  ImageBackground,
 } from 'react-native';
 import {
   Community,
@@ -29,11 +30,11 @@ const styles = StyleSheet.create({
   },
   // 그림자 효과
   myItem: {
-    height: 150,
+    height: 120,
     backgroundColor: '#ffffff',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 10,
     borderRadius: 8,
     borderColor: '#cecece',
     borderWidth: 1,
@@ -42,7 +43,7 @@ const styles = StyleSheet.create({
   hotItem: {
     width: 100,
     height: '100%',
-    backgroundColor: '#e4e4e4',
+    backgroundColor: '#ffffff',
     marginRight: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -59,30 +60,30 @@ const styles = StyleSheet.create({
   },
 
   hotimage: {
-    height: '80%',
+    height: '65%',
     width: '100%',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 5,
     borderBottomLeftRadius: 5,
     borderBottomRightRadius: 20,
     backgroundColor: '#bbbbbb',
+    marginBottom: 0,
   },
   hotItemTitle: {
-    height: '20%',
+    height: '25%',
     width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   image: {
-    height: '40%',
+    height: '100%',
     width: '100%',
     backgroundColor: '#bbbbbb',
   },
   ItemContent: {
+    marginLeft: 'auto',
     width: '100%',
-    height: '60%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    height: '100%',
+    padding: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   hotItemSelected: {
     width: 100,
@@ -93,7 +94,58 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderColor: '#cecece',
     borderWidth: 1,
-    backgroundColor: '#28c222',
+    backgroundColor: '#5f5f5f',
+  },
+  menuTitle: {
+    color: '#000000',
+    fontWeight: '700',
+    fontSize: 14,
+  },
+  hotItemSelectedFont: {
+    color: '#ffffff',
+  },
+  hotItemFont: {
+    color: '#000000',
+    fontSize: 13,
+  },
+  hotCommuCount: {
+    color: '#797979',
+    fontSize: 12,
+  },
+  hotCommuTitle: {
+    color: '#000000',
+    fontSize: 14,
+  },
+  commuTextTitle: {
+    color: '#ffffff',
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  commuTextCount: {
+    color: '#b6b6b6',
+    fontSize: 14,
+    fontWeight: '700',
+    marginLeft: 'auto',
+  },
+  commuTextTag: {
+    color: '#ffffff',
+    fontSize: 13,
+  },
+  commuTextdes: {
+    color: '#c9c9c9',
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  commuTagBox: {
+    borderColor: '#ffffff',
+    borderWidth: 1,
+    padding: 3,
+    paddingLeft: 10,
+    paddingRight: 10,
+    marginTop: 'auto',
+    marginLeft: 'auto',
+    borderRadius: 5,
+    backgroundColor: 'rgba(97, 97, 97,0.5)',
   },
 });
 
@@ -108,7 +160,6 @@ interface KeywordProps {
 
 function CommunityMain({keyword}: KeywordProps) {
   const [searchOn, setSearchOn] = React.useState({on: false, key: ''});
-
   const hotItem = ({item}: any) => {
     const touchTag = () => {
       if (searchOn.on && item === searchOn.key) {
@@ -122,13 +173,13 @@ function CommunityMain({keyword}: KeywordProps) {
         <TouchableOpacity
           onPress={() => touchTag()}
           style={styles.hotItemSelected}>
-          <Text>{item}</Text>
+          <Text style={styles.hotItemSelectedFont}>#{item}</Text>
         </TouchableOpacity>
       );
     } else {
       return (
         <TouchableOpacity onPress={() => touchTag()} style={styles.hotItem}>
-          <Text>{item}</Text>
+          <Text style={styles.hotItemFont}>#{item}</Text>
         </TouchableOpacity>
       );
     }
@@ -142,7 +193,10 @@ function CommunityMain({keyword}: KeywordProps) {
         style={styles.hotCommu}>
         <Image source={{uri: community.image}} style={styles.hotimage} />
         <View style={styles.hotItemTitle}>
-          <Text>{community.title}</Text>
+          <Text style={styles.hotCommuTitle}>{community.title}</Text>
+          <Text style={styles.hotCommuCount}>
+            아이콘 {community.join_count}
+          </Text>
         </View>
       </TouchableOpacity>
     );
@@ -157,13 +211,28 @@ function CommunityMain({keyword}: KeywordProps) {
               navigation.navigate('CommunityHome', {id: community.no})
             }
             style={styles.myItem}>
-            <Image source={{uri: community.image}} style={styles.image} />
-            <View style={styles.ItemContent}>
-              <Text>{community.title}</Text>
-              <Text>{community.description}</Text>
-              <Text>{community.join_count}</Text>
-              <Text>{community.tag}</Text>
-            </View>
+            <ImageBackground
+              blurRadius={3}
+              source={{uri: community.image}}
+              style={styles.image}>
+              <View style={styles.ItemContent}>
+                <View style={{flexDirection: 'row', height: '20%'}}>
+                  <Text style={styles.commuTextTitle}>{community.title}</Text>
+                  <Text style={styles.commuTextCount}>
+                    아이콘 {community.join_count}
+                  </Text>
+                </View>
+                <View
+                  style={{flexDirection: 'row', height: '80%', paddingTop: 10}}>
+                  <Text style={styles.commuTextdes}>
+                    {community.description}
+                  </Text>
+                  <View style={styles.commuTagBox}>
+                    <Text style={styles.commuTextTag}>#{community.tag}</Text>
+                  </View>
+                </View>
+              </View>
+            </ImageBackground>
           </TouchableOpacity>
         )}
         {!tagSearch.on && (
@@ -172,13 +241,28 @@ function CommunityMain({keyword}: KeywordProps) {
               navigation.navigate('CommunityHome', {id: community.no})
             }
             style={styles.myItem}>
-            <Image source={{uri: community.image}} style={styles.image} />
-            <View style={styles.ItemContent}>
-              <Text>{community.title}</Text>
-              <Text>{community.description}</Text>
-              <Text>{community.join_count}</Text>
-              <Text>{community.tag}</Text>
-            </View>
+            <ImageBackground
+              blurRadius={3}
+              source={{uri: community.image}}
+              style={styles.image}>
+              <View style={styles.ItemContent}>
+                <View style={{flexDirection: 'row', height: '20%'}}>
+                  <Text style={styles.commuTextTitle}>{community.title}</Text>
+                  <Text style={styles.commuTextCount}>
+                    아이콘 {community.join_count}
+                  </Text>
+                </View>
+                <View
+                  style={{flexDirection: 'row', height: '80%', paddingTop: 10}}>
+                  <Text style={styles.commuTextdes}>
+                    {community.description}
+                  </Text>
+                  <View style={styles.commuTagBox}>
+                    <Text style={styles.commuTextTag}>#{community.tag}</Text>
+                  </View>
+                </View>
+              </View>
+            </ImageBackground>
           </TouchableOpacity>
         )}
       </View>
@@ -238,7 +322,7 @@ function CommunityMain({keyword}: KeywordProps) {
         {/* 글쓰기 버튼 */}
         <Text>생성</Text>
       </TouchableOpacity>
-      <Text>인기 태그</Text>
+      <Text style={styles.menuTitle}>인기 태그</Text>
       <FlatList
         style={mainStyles.tagContainer}
         horizontal={true}
@@ -246,7 +330,7 @@ function CommunityMain({keyword}: KeywordProps) {
         renderItem={hotItem}
         showsHorizontalScrollIndicator={false}
       />
-      <Text>인기 커뮤니티</Text>
+      <Text style={styles.menuTitle}>인기 커뮤니티</Text>
       <FlatList
         style={mainStyles.hotContainer}
         horizontal={true}
@@ -256,7 +340,7 @@ function CommunityMain({keyword}: KeywordProps) {
           <HotCommu community={item} tagSearch={searchOn} />
         )}
       />
-      <Text>{keyword}</Text>
+      <Text style={styles.menuTitle}>검색 결과 {keyword}</Text>
       <FlatList
         style={mainStyles.myListContainer}
         data={communityListData}

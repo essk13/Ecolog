@@ -5,23 +5,24 @@ import CommunityTab from '../components/Community/MainTab/CommunityTab';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#5FA2E5',
+    backgroundColor: 'rgb(95, 162, 229)',
   },
   topMenu: {
     width: '100%',
-    height: '10%',
-    color: '#ffffff',
     padding: 10,
-  },
-  topInput: {
-    backgroundColor: 'white',
-    width: '100%',
   },
   topTitle: {
     color: '#ffffff',
-    fontWeight: '700',
-    alignSelf: 'flex-start',
+    alignSelf: 'center',
     marginBottom: 10,
+  },
+  topInput: {
+    backgroundColor: '#dfdfdf',
+    borderRadius: 10,
+    height: 30,
+    padding: 0,
+    paddingLeft: 10,
+    color: '#000000',
   },
 });
 
@@ -44,6 +45,7 @@ function CommunityScreen() {
           style={styles.topInput}
           clearTextOnFocus={true}
           onSubmitEditing={keySubmit}
+          returnKeyType="done"
         />
       </View>
       <CommunityTab keyword={keyword} />

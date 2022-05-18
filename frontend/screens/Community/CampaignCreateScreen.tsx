@@ -7,7 +7,8 @@ import {
   Alert,
   TouchableOpacity,
 } from 'react-native';
-import {useMutation} from 'react-query';
+import {useMutation, useQueryClient} from 'react-query';
+import {useNavigation} from '@react-navigation/native';
 import {createCampaign} from '../../api/community';
 import {CampaignInfo} from '../../api/community';
 import {
@@ -23,6 +24,8 @@ const styles = StyleSheet.create({
 });
 
 function CampaignCreateScreen({route}: any) {
+  const navigation = useNavigation<any>();
+  const queryClient = useQueryClient();
   const [campaignInfo, setCampaignInfo] = React.useState<CampaignInfo>({
     title: '',
     location: '',
@@ -31,7 +34,16 @@ function CampaignCreateScreen({route}: any) {
   });
   const [uri, setUri] = React.useState<string>('');
   const [no, setNo] = React.useState<number>(0);
-  const {mutate: createCam} = useMutation(createCampaign);
+  const {mutate: createCam} = useMutation(createCampaign, {
+    onSuccess: data => {
+      navigation.pop();
+      queryClient.invalidateQueries('campaignList');
+      navigation.navigate('CampaignDetail', {
+        id: data.no,
+        no: no,
+      });
+    },
+  });
   const submitCreate = () => {
     const communityImgData = {
       name: uri.split('/').pop(),

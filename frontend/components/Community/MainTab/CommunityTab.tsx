@@ -1,15 +1,13 @@
 import React from 'react';
-import {View, Text, useWindowDimensions, StyleSheet} from 'react-native';
+import {Text, useWindowDimensions, StyleSheet} from 'react-native';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 import CommunityFeed from './CommunityFeed';
 import CommunityMy from './CommunityMy';
 import CommunityMain from './CommunityMain';
 
 const Styles = StyleSheet.create({
-  buttonText: {
-    fontSize: 15,
-    fontWeight: 'normal',
-    color: '#FFFFFF',
+  text: {
+    color: '#ffffff',
   },
 });
 
@@ -32,8 +30,8 @@ function CommunityTab({keyword}: KeywordProps) {
 
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
-    {key: 'main', title: '메인'},
-    {key: 'my', title: '내 캠페인'},
+    {key: 'main', title: '커뮤니티 홈'},
+    {key: 'my', title: '나의 커뮤니티'},
     {key: 'feed', title: '피드'},
   ]);
 
@@ -46,13 +44,11 @@ function CommunityTab({keyword}: KeywordProps) {
       renderTabBar={props => (
         <TabBar
           {...props}
-          indicatorStyle={{backgroundColor: '#FFF'}}
-          style={{backgroundColor: '#5FA2E5'}}
-          pressColor={'#548dc5'}
+          indicatorStyle={{backgroundColor: 'rgb(255, 255, 255)'}}
+          style={{backgroundColor: 'rgb(95, 162, 229)'}}
+          pressColor={'#6D8B74'}
           renderLabel={({route}) => (
-            <View>
-              <Text style={Styles.buttonText}>{route.title}</Text>
-            </View>
+            <Text style={Styles.text}>{route.title}</Text>
           )}
         />
       )}

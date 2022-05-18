@@ -17,7 +17,12 @@ export async function getMyCommunity() {
   const response = await Api.get<CommunityList>('/community/mine');
   return response.data;
 }
-
+// 커뮤니티 멤버
+export async function getCommunityMember(no: number) {
+  const response = await Api.get<JoinList>(`/community/${no}/member`);
+  console.log(response.data);
+  return response.data;
+}
 // 커뮤니티 디테일
 export async function getCommunityDetail(communitySeq: number) {
   const response = await Api.get<CommunityDetail>(`/community/${communitySeq}`);
@@ -63,7 +68,7 @@ export async function createCampaign(campaignData: CreateCampaignData) {
     string: JSON.stringify(campaignData.campaignInfo),
     type: 'application/json',
   });
-  const response = await Api.post(
+  const response = await Api.post<Campaign>(
     `/community/${campaignData.no}/campaign`,
     formData,
     {
@@ -108,7 +113,7 @@ export async function editPost(postData: EditPostData) {
     string: JSON.stringify(postData.postInfo),
     type: 'application/json',
   });
-  const response = await Api.put<Campaign>(
+  const response = await Api.put(
     `/community/${postData.no}/post/${postData.postNo}`,
     formData,
     {
@@ -184,7 +189,9 @@ export async function editCommunity(communityData: EditCommunityData) {
 }
 // 커뮤니티 삭제
 export async function deleteCommunity(communitySeq: number) {
+  console.log(communitySeq);
   const response = await Api.delete(`/community/${communitySeq}/delete`);
+  console.log(response.data);
   return response.data;
 }
 
@@ -400,6 +407,7 @@ export interface Post {
   community_no: string;
   content: string;
   like_count: number;
+  liked: boolean;
   no: number;
   open: boolean;
   image: string;
