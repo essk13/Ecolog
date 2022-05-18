@@ -39,7 +39,7 @@ function SurveyScreen({navigation}: any) {
       <Text style={styles.title}>에코지수 테스트</Text>
       <Image
         style={styles.img}
-        source={require('../assets/animation/survey_4.png')}
+        source={require('../assets/survey/survey_4.png')}
       />
       <Button
         mode="contained"

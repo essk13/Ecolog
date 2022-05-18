@@ -15,6 +15,7 @@ const Tab = createBottomTabNavigator<MainTabParamList>();
 function MainScreen() {
   return (
     <Tab.Navigator
+      detachInactiveScreens={false}
       screenOptions={{
         tabBarActiveTintColor: '#5FA2E5',
         headerShown: false,
@@ -33,7 +34,6 @@ function MainScreen() {
         name="User"
         component={UserScreen}
         options={{
-          unmountOnBlur: true,
           title: '내 정보',
           tabBarIcon: ({color, size}) => (
             <Icon name="person" size={size} color={color} />
@@ -44,7 +44,6 @@ function MainScreen() {
         name="Community"
         component={CommunityScreen}
         options={{
-          unmountOnBlur: true,
           title: '커뮤니티',
           tabBarIcon: ({color, size}) => (
             <IconI name="chatbubbles-sharp" size={size} color={color} />
@@ -65,7 +64,6 @@ function MainScreen() {
         name="Avatar"
         component={AvatarScreen}
         options={{
-          unmountOnBlur: true,
           title: '마이룸',
           tabBarIcon: ({color, size}) => (
             <Icon name="face-retouching-natural" size={size} color={color} />

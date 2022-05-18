@@ -30,7 +30,7 @@ function AvatarScreen() {
   const buy = useMutation(buyAsset, {
     onSuccess: () => {},
     onError: error => {
-      console.log('buy' + error);
+      console.error(error);
     },
   });
   const onChange = useMutation(changeAsset, {
@@ -38,7 +38,7 @@ function AvatarScreen() {
       dispatch(userActions.getMyInfoAsync.request(null));
     },
     onError: error => {
-      console.log('change' + error);
+      console.error(error);
     },
   });
 
@@ -58,8 +58,6 @@ function AvatarScreen() {
   });
 
   useEffect(() => {
-    console.log(assetData?.avatar_list);
-    console.log(myInfo.data?.coin);
     if (assetData && myInfo.data) {
       const newAsset: MyAsset = {
         coin: myInfo.data.coin,
@@ -69,8 +67,6 @@ function AvatarScreen() {
         myRoomList: assetData.room_list,
       };
       setMyAasset(newAsset);
-      console.log('Now asset data');
-      console.log(assetData);
     }
   }, [myInfo.data, assetData]);
 
@@ -91,7 +87,6 @@ function AvatarScreen() {
   });
 
   useEffect(() => {
-    console.log('set Msg');
     const newMessage: IMessage = {
       gameObject: 'AvatarList',
       methodName: 'MessageRN',
@@ -111,8 +106,6 @@ function AvatarScreen() {
 
   useEffect(() => {
     setTimeout(() => {
-      console.log('send msg');
-      console.log(message.message);
       if (unityRef && unityRef.current) {
         unityRef.current.postMessage(
           message.gameObject,
@@ -129,7 +122,6 @@ function AvatarScreen() {
         ref={unityRef}
         style={{flex: 1}}
         onUnityMessage={result => {
-          console.log('onUnityMessage', result.nativeEvent.message);
           const msg = result.nativeEvent.message.split(' ');
           if (msg[1] === 'Avatar') {
             if (msg[0] === 'Buy') {
@@ -141,7 +133,6 @@ function AvatarScreen() {
                 room: myAsset.roomNum,
               });
             }, 1500);
-            console.log('buy Avatar');
           } else {
             if (msg[0] === 'Buy') {
               buy.mutate({no: Number(msg[2]), type: 1});
@@ -152,7 +143,6 @@ function AvatarScreen() {
                 room: Number(msg[2]),
               });
             }, 1500);
-            console.log('buy Room');
           }
           setTimeout(() => {
             queryClient.invalidateQueries('AssetData');

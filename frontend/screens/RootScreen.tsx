@@ -50,6 +50,10 @@ function RootScreen() {
           initialRouteName="Main"
           screenOptions={{
             headerShown: false,
+            presentation: 'transparentModal',
+            contentStyle: {
+              backgroundColor: '#ffffff',
+            },
           }}>
           <Stack.Screen name="Main" component={MainScreen} />
           <Stack.Screen name="PloggingMap" component={PloggingMapScreen} />

@@ -58,6 +58,7 @@ const styles = (
       borderRadius: 10,
     },
     btn: {
+      flexDirection: 'row',
       width: 220,
       height: 45,
       marginVertical: 10,
