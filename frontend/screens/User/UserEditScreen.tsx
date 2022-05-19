@@ -311,19 +311,6 @@ function UserEditScreen() {
               returnKeyType="done"
             />
           </View>
-          {/* <View style={styles().infoEditContainer}>
-            <Text style={fontStyles(12).editTitle}>생년월일</Text>
-            <TextInput
-              placeholder="생년월일을 입력하세요."
-              placeholderTextColor="#ABABAB"
-              style={styles().infoInput}
-              value={userInfo.birth}
-              onChangeText={(text: string) =>
-                setUserInfo({...userInfo, birth: text})
-              }
-              returnKeyType="done"
-            />
-          </View> */}
           <View style={styles().statusEditContainer}>
             <View style={styles().heightEditContainer}>
               <Text style={fontStyles(12).editTitle}>키</Text>
@@ -364,19 +351,6 @@ function UserEditScreen() {
               </View>
             </View>
           </View>
-          {/* <View style={styles().infoEditContainer}>
-            <Text style={fontStyles(12).editTitle}>연락처</Text>
-            <TextInput
-              placeholder="연락처를 입력하세요."
-              placeholderTextColor="#ABABAB"
-              style={styles().infoInput}
-              value={userInfo.phone}
-              onChangeText={(text: string) =>
-                setUserInfo({...userInfo, phone: text})
-              }
-              returnKeyType="done"
-            />
-          </View> */}
           <View style={styles().infoEditContainer}>
             <Text style={fontStyles(12).editTitle}>주소지</Text>
             <TextInput

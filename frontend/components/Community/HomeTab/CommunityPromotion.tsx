@@ -1,4 +1,14 @@
 import React from 'react';
+// Hooks
+import {useNavigation} from '@react-navigation/native';
+import {useQuery} from 'react-query';
+// Api & Types
+import {
+  CommunityDetail,
+  getCampaignList,
+  Campaign,
+} from '../../../api/community';
+// Components
 import {
   StyleSheet,
   FlatList,
@@ -7,16 +17,17 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from 'react-native';
-import {
-  CommunityDetail,
-  getCampaignList,
-  Campaign,
-} from '../../../api/community';
-import {useNavigation} from '@react-navigation/native';
-import {useQuery} from 'react-query';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {ActivityIndicator, Colors} from 'react-native-paper';
 
 const styles = StyleSheet.create({
+  loadingContainer: {
+    flexGrow: 0,
+    width: '100%',
+    Height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   listContainer: {
     flexGrow: 0,
     width: '100%',
@@ -81,9 +92,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
 });
+
 interface CommunityDetailProps {
   data: CommunityDetail;
 }
+
 interface CampaignItemProps {
   campaign: Campaign;
 }
@@ -123,13 +136,15 @@ function CommunityPromotion({data}: CommunityDetailProps) {
     ['campaignList', data.no],
     () => getCampaignList(data.no),
   );
+
   if (!campaignListData || isLoading) {
     return (
-      <View>
-        <Text>로딩중</Text>
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator animating={true} size={48} color={Colors.blueA100} />
       </View>
     );
   }
+
   return (
     <View style={styles.listContainer}>
       <TouchableOpacity

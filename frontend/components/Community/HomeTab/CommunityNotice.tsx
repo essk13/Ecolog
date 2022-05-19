@@ -1,13 +1,25 @@
 import React from 'react';
-import {StyleSheet, FlatList, View, Text, TouchableOpacity} from 'react-native';
-import {CommunityDetail, getPostList, Post} from '../../../api/community';
+// Hooks
 import {useNavigation} from '@react-navigation/native';
 import {useQuery} from 'react-query';
 import {useSelector} from 'react-redux';
+// Api & Types
+import {CommunityDetail, getPostList, Post} from '../../../api/community';
 import {RootState} from '../../../modules';
+// Components
+import {StyleSheet, FlatList, View, Text, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {ActivityIndicator, Colors} from 'react-native-paper';
 
 const styles = StyleSheet.create({
+  loadingContainer: {
+    flexGrow: 0,
+    width: '100%',
+    backgroundColor: '#ffffff',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   container: {
     flexGrow: 0,
     width: '100%',
@@ -32,6 +44,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 5,
     fontWeight: '800',
+    color: '#000000',
   },
   postDate: {
     color: '#919191',
@@ -49,9 +62,11 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
 });
+
 interface CommunityDetailProps {
   data: CommunityDetail;
 }
+
 interface CampaignItemProps {
   post: Post;
 }
@@ -80,22 +95,23 @@ function CommunityNotice({data}: CommunityDetailProps) {
     ['postList', {no: data.no, type: 'notice'}],
     () => getPostList({no: data.no, type: 'notice'}),
   );
-  if (!campaignListData || isLoading) {
+
+  if (!myInfo.data || !campaignListData || isLoading) {
     return (
-      <View>
-        <Text>로딩중</Text>
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator animating={true} size={48} color={Colors.blueA100} />
       </View>
     );
   }
+
   return (
     <View style={styles.container}>
-      {myInfo.data?.email === data.manager.email && (
+      {myInfo.data.email === data.manager.email && (
         <TouchableOpacity
           style={styles.create}
           onPress={() =>
             navigation.navigate('PostCreate', {data: data, type: 1})
           }>
-          {/* 글쓰기 버튼 */}
           <Icon name="plus" size={23} color="#FFF" />
         </TouchableOpacity>
       )}

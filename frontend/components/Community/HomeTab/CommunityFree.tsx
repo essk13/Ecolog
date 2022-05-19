@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 5,
     fontWeight: '800',
+    color: '#000000',
   },
 });
 

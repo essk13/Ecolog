@@ -1,4 +1,17 @@
 import React from 'react';
+// Hooks
+import {useQuery} from 'react-query';
+import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
+import {useMutation, useQueryClient} from 'react-query';
+// Api & Types
+import {
+  deleteCampaign,
+  getCampaignDetail,
+  postCampaignJoin,
+} from '../../api/community';
+import {RootState} from '../../modules';
+// Components
 import {
   Text,
   View,
@@ -7,17 +20,17 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import {useQuery} from 'react-query';
-import {
-  deleteCampaign,
-  getCampaignDetail,
-  postCampaignJoin,
-} from '../../api/community';
-import {useNavigation} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../modules';
-import {useMutation, useQueryClient} from 'react-query';
+import {ActivityIndicator, Colors} from 'react-native-paper';
+
 const styles = StyleSheet.create({
+  loadingContainer: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#ffffff',
+  },
   container: {
     width: '100%',
     height: '100%',
@@ -140,7 +153,11 @@ function CampaignDetailScreen({route}: any) {
   const queryClient = useQueryClient();
   const {mutate: campaignJoin} = useMutation(postCampaignJoin, {
     onSuccess: () => {
-      queryClient.invalidateQueries('campaignDetail');
+      queryClient.invalidateQueries(['campaignList', route.params.no]);
+      queryClient.invalidateQueries([
+        'campaignDetail',
+        {no: route.params.no, id: route.params.id},
+      ]);
     },
   });
   const Join = () => {
@@ -150,7 +167,7 @@ function CampaignDetailScreen({route}: any) {
   const navigation = useNavigation<any>();
   const {mutate: campaignDelete} = useMutation(deleteCampaign, {
     onSuccess: () => {
-      queryClient.invalidateQueries('campaignList');
+      queryClient.invalidateQueries(['campaignList', route.params.no]);
       navigation.pop();
     },
   });
@@ -158,13 +175,15 @@ function CampaignDetailScreen({route}: any) {
     ['campaignDetail', {no: route.params.no, id: route.params.id}],
     () => getCampaignDetail(route.params.no, route.params.id),
   );
+
   if (!data || isLoading) {
     return (
-      <View>
-        <Text>로딩중</Text>
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator animating={true} size={48} color={Colors.blueA100} />
       </View>
     );
   }
+
   const nowPeople = data.join_personnel.length;
   const deleteCam = () => {
     campaignDelete({

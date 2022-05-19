@@ -1,5 +1,16 @@
 import React from 'react';
 import {
+  CameraOptions,
+  ImagePickerResponse,
+  launchImageLibrary,
+} from 'react-native-image-picker';
+// Hooks
+import {useMutation, useQueryClient} from 'react-query';
+import {useNavigation} from '@react-navigation/native';
+// Api & Types
+import {editPost, PostInfo} from '../../api/community';
+// Components
+import {
   Text,
   View,
   StyleSheet,
@@ -7,35 +18,34 @@ import {
   Alert,
   TouchableOpacity,
   Image,
+  ScrollView,
 } from 'react-native';
-import {useMutation, useQueryClient} from 'react-query';
-import {editPost, PostInfo} from '../../api/community';
-import {useNavigation} from '@react-navigation/native';
 import {Checkbox} from 'react-native-paper';
-import {
-  CameraOptions,
-  ImagePickerResponse,
-  launchImageLibrary,
-} from 'react-native-image-picker';
 
 const styles = StyleSheet.create({
-  title: {
-    fontSize: 18,
-    color: '#4e4e4e',
-    marginTop: 40,
-    marginBottom: 40,
-  },
   container: {
     flex: 1,
     backgroundColor: '#ffffff',
     padding: 10,
+  },
+  titleContainer: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#4e4e4e',
+    marginTop: 40,
+    marginBottom: 40,
+    textAlign: 'center',
   },
   submitButton: {
     backgroundColor: '#5FA2E5',
     marginTop: 'auto',
     width: '100%',
     borderRadius: 10,
-    height: '10%',
+    height: 60,
     alignItems: 'center',
     elevation: 3,
     justifyContent: 'center',
@@ -47,7 +57,7 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
   },
   menuTitle: {
-    fontSize: 14,
+    fontSize: 16,
     color: '#4e4e4e',
     marginBottom: 10,
     marginTop: 10,
@@ -60,17 +70,17 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   titleInput: {
+    minHeight: 50,
     backgroundColor: '#dfdfdf',
     borderRadius: 10,
-    flex: 1,
     padding: 0,
     paddingLeft: 10,
     color: '#000000',
   },
   contentInput: {
+    minHeight: 100,
     backgroundColor: '#dfdfdf',
     borderRadius: 10,
-    flex: 3,
     marginBottom: 20,
     padding: 0,
     paddingLeft: 10,
@@ -81,17 +91,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#636363',
   },
   imageEdit: {
-    flex: 3,
+    minHeight: 150,
     borderRadius: 10,
     overflow: 'hidden',
+    backgroundColor: '#dfdfdf',
   },
   imageEditMask: {
     position: 'absolute',
-    top: '70%',
+    bottom: 0,
     width: '100%',
-    height: '30%',
+    height: 40,
     backgroundColor: '#000000',
-    opacity: 0.7,
+    opacity: 0.8,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -115,11 +126,13 @@ function PostEditScreen({route}: any) {
         open: route.params.data.open,
         content: route.params.data.content,
       });
-      setUri(route.params.data.image);
+      if (route.params.data.image) {
+        setUri(route.params.data.image);
+      }
     }
   }, [route.params]);
   const {mutate: editPo} = useMutation(editPost, {
-    onSuccess: data => {
+    onSuccess: () => {
       queryClient.invalidateQueries('postList');
       queryClient.invalidateQueries('postDetail');
       navigation.pop();
@@ -132,7 +145,7 @@ function PostEditScreen({route}: any) {
       uri: uri,
     };
     editPo({
-      postImgData: communityImgData,
+      postImgData: uri !== '' ? communityImgData : null,
       postInfo: postInfo,
       no: route.params.no,
       postNo: route.params.data.no,
@@ -154,73 +167,82 @@ function PostEditScreen({route}: any) {
   };
   return (
     <View style={styles.container}>
-      {route.params.type === 1 && (
-        <Text style={styles.title}>공지사항 수정</Text>
-      )}
-      {route.params.type === 2 && <Text style={styles.title}>게시글 수정</Text>}
-      {route.params.type === 3 && (
-        <Text style={styles.title}>인증 게시글 수정</Text>
-      )}
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <Text style={styles.menuTitle}>제목</Text>
-        {route.params.type === 3 && (
-          <Text style={{color: '#acacac', marginLeft: 'auto'}}>
-            게시글 전체 공개
-          </Text>
+      <ScrollView contentContainerStyle={{flexGrow: 1}}>
+        <View style={styles.titleContainer}>
+          {route.params.type === 1 && (
+            <Text style={styles.title}>공지사항 수정</Text>
+          )}
+          {route.params.type === 2 && (
+            <Text style={styles.title}>게시글 수정</Text>
+          )}
+          {route.params.type === 3 && (
+            <Text style={styles.title}>인증 게시글 수정</Text>
+          )}
+        </View>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Text style={styles.menuTitle}>제목</Text>
+          {route.params.type === 3 && (
+            <Text style={{color: '#acacac', marginLeft: 'auto'}}>
+              게시글 전체 공개
+            </Text>
+          )}
+          {route.params.type === 3 && (
+            <Checkbox
+              status={postInfo.open ? 'checked' : 'unchecked'}
+              onPress={() => {
+                setCampaignInfo({...postInfo, open: !postInfo.open});
+              }}
+            />
+          )}
+        </View>
+        <TextInput
+          style={styles.titleInput}
+          placeholder="제목을 입력해주세요."
+          value={postInfo.title}
+          onChangeText={(text: string) =>
+            setCampaignInfo({...postInfo, title: text})
+          }
+          returnKeyType="done"
+        />
+        {route.params.type !== 1 && (
+          <Text style={styles.menuTitle}>이미지</Text>
         )}
-        {route.params.type === 3 && (
-          <Checkbox
-            status={postInfo.open ? 'checked' : 'unchecked'}
-            onPress={() => {
-              setCampaignInfo({...postInfo, open: !postInfo.open});
-            }}
-          />
+        {route.params.type !== 1 && (
+          <TouchableOpacity
+            onPress={() => launchImageLibrary(imagePickerOption, onPickImage)}
+            style={styles.imageEdit}>
+            {uri !== '' && (
+              <Image
+                style={styles.img}
+                resizeMode="cover"
+                source={{
+                  uri: uri,
+                }}
+              />
+            )}
+            <View style={styles.imageEditMask}>
+              <Text style={{fontSize: 16, color: '#ffffff'}}>편집</Text>
+            </View>
+          </TouchableOpacity>
         )}
-      </View>
-      <TextInput
-        style={styles.titleInput}
-        placeholder="제목을 입력해주세요."
-        value={postInfo.title}
-        onChangeText={(text: string) =>
-          setCampaignInfo({...postInfo, title: text})
-        }
-        returnKeyType="done"
-      />
-      {route.params.type !== 1 && <Text style={styles.menuTitle}>이미지</Text>}
-      {route.params.type !== 1 && (
-        <TouchableOpacity
-          onPress={() => launchImageLibrary(imagePickerOption, onPickImage)}
-          style={styles.imageEdit}>
-          <Image
-            style={styles.img}
-            resizeMode="cover"
-            source={{
-              uri: uri,
-            }}
-          />
-          <View style={styles.imageEditMask}>
-            <Text style={{fontSize: 16, color: '#ffffff'}}>편집</Text>
-          </View>
-        </TouchableOpacity>
-      )}
 
-      <Text style={styles.menuTitle}>내용</Text>
-      <TextInput
-        style={styles.contentInput}
-        placeholder="내용을 입력해주세요."
-        value={postInfo.content}
-        onChangeText={(text: string) =>
-          setCampaignInfo({...postInfo, content: text})
-        }
-        returnKeyType="done"
-      />
-      {route.params.type === 1 && <View style={{marginTop: '40%'}}></View>}
-      {route.params.type !== 1 && <View style={{marginTop: '30%'}}></View>}
-      <TouchableOpacity
-        style={styles.submitButton}
-        onPress={() => submitCreate()}>
-        <Text style={styles.submitText}>수정하기</Text>
-      </TouchableOpacity>
+        <Text style={styles.menuTitle}>내용</Text>
+        <TextInput
+          style={styles.contentInput}
+          placeholder="내용을 입력해주세요."
+          value={postInfo.content}
+          onChangeText={(text: string) =>
+            setCampaignInfo({...postInfo, content: text})
+          }
+          returnKeyType="done"
+        />
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={styles.submitButton}
+          onPress={() => submitCreate()}>
+          <Text style={styles.submitText}>수정하기</Text>
+        </TouchableOpacity>
+      </ScrollView>
     </View>
   );
 }

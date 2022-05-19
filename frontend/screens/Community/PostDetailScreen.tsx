@@ -279,11 +279,11 @@ function PostDetailScreen({route}: any) {
       queryClient.invalidateQueries('postDetail');
     },
   });
-  const {data: data, isLoading} = useQuery(
+  const {data: data} = useQuery(
     ['postDetail', {no: route.params.no, id: route.params.id}],
     () => getPostDetail(route.params.no, route.params.id),
   );
-  const {data: commentListData, isLoading: isLoadingComment} = useQuery(
+  const {data: commentListData} = useQuery(
     ['commentList', {no: route.params.no, postNo: route.params.id}],
     () => getCommentList({no: route.params.no, postNo: route.params.id}),
   );
@@ -310,7 +310,7 @@ function PostDetailScreen({route}: any) {
     Alert.alert('삭제가 완료되었습니다.');
   };
 
-  if (!data || isLoading || !commentListData || isLoadingComment) {
+  if (!data || !commentListData) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator animating={true} size={48} color={Colors.blueA100} />

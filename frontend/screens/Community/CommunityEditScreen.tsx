@@ -1,5 +1,16 @@
 import React from 'react';
 import {
+  CameraOptions,
+  ImagePickerResponse,
+  launchImageLibrary,
+} from 'react-native-image-picker';
+// Hooks
+import {useMutation, useQueryClient} from 'react-query';
+import {useNavigation} from '@react-navigation/native';
+// Api & Types
+import {editCommunity, CommunityEditInfo} from '../../api/community';
+// Components
+import {
   Text,
   View,
   StyleSheet,
@@ -7,15 +18,8 @@ import {
   Alert,
   Image,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
-import {useMutation, useQueryClient} from 'react-query';
-import {editCommunity, CommunityEditInfo} from '../../api/community';
-import {useNavigation} from '@react-navigation/native';
-import {
-  CameraOptions,
-  ImagePickerResponse,
-  launchImageLibrary,
-} from 'react-native-image-picker';
 
 const styles = StyleSheet.create({
   container: {
@@ -29,14 +33,11 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     alignSelf: 'center',
   },
-  formContainer: {
-    height: '60%',
-  },
   imageEditMask: {
     position: 'absolute',
-    top: '70%',
+    bottom: 0,
     width: '100%',
-    height: '30%',
+    height: 40,
     backgroundColor: '#000000',
     opacity: 0.7,
     justifyContent: 'center',
@@ -48,7 +49,7 @@ const styles = StyleSheet.create({
     marginTop: 'auto',
     alignItems: 'center',
     justifyContent: 'center',
-    height: '10%',
+    height: 60,
     alignSelf: 'center',
   },
   submitText: {
@@ -60,19 +61,22 @@ const styles = StyleSheet.create({
   titleContainer: {
     width: '100%',
     backgroundColor: 'rgba(95, 162, 229, 0.8)',
-    height: '10%',
+    height: 70,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  formContainer: {},
   img: {
     height: '100%',
+    backgroundColor: '#636363',
   },
   imageEdit: {
-    height: '20%',
+    height: 150,
+    backgroundColor: '#636363',
   },
   nameInput: {
     width: '100%',
-    height: '20%',
+    height: 80,
     borderBottomWidth: 1,
     borderColor: '#c4c4c4',
     padding: 10,
@@ -80,13 +84,13 @@ const styles = StyleSheet.create({
   tagInput: {
     flexDirection: 'row',
     width: '100%',
-    height: '20%',
+    height: 80,
     borderBottomWidth: 1,
     borderColor: '#c4c4c4',
   },
   desInput: {
     width: '100%',
-    height: '60%',
+    flexGrow: 1,
     padding: 10,
   },
   label: {
@@ -117,9 +121,7 @@ function CommunityEditScreen({route}: any) {
     user_no: 1,
   });
 
-  const [uri, setUri] = React.useState<string>(
-    'https://ecolog-bucket.s3.ap-northeast-2.amazonaws.com/Ecolog_file_default_profile.jpg',
-  );
+  const [uri, setUri] = React.useState<string>('');
   const [no, setNo] = React.useState<number>(0);
 
   React.useEffect(() => {
@@ -132,14 +134,18 @@ function CommunityEditScreen({route}: any) {
         tag: route.params.data.tag,
         user_no: route.params.data.manager.no,
       });
-      setUri(route.params.data.image);
+      if (route.params.data.image) {
+        setUri(route.params.data.image);
+      }
       setNo(route.params.data.no);
     }
   }, [route.params.data]);
+
   const navigation = useNavigation<any>();
   const queryClient = useQueryClient();
   const {mutate: editCommu} = useMutation(editCommunity, {
     onSuccess: () => {
+      Alert.alert('수정이 완료되었습니다.');
       navigation.pop();
       queryClient.invalidateQueries('CommunityDetail');
       queryClient.invalidateQueries('CommunityList');
@@ -153,12 +159,15 @@ function CommunityEditScreen({route}: any) {
       type: 'image/jpeg',
       uri: uri,
     };
-    editCommu({
-      communityImgData: communityImgData,
-      communityInfo: communityInfo,
-      no: no,
-    });
-    Alert.alert('수정이 완료되었습니다.');
+    if (uri === '') {
+      Alert.alert('커뮤니티 사진을 등록해주세요!');
+    } else {
+      editCommu({
+        communityImgData: communityImgData,
+        communityInfo: communityInfo,
+        no: no,
+      });
+    }
   };
   const imagePickerOption: CameraOptions = {
     mediaType: 'photo',
@@ -178,75 +187,81 @@ function CommunityEditScreen({route}: any) {
       <View style={styles.titleContainer}>
         <Text style={styles.menuTitle}>커뮤니티 정보 수정</Text>
       </View>
-      <TouchableOpacity
-        onPress={() => launchImageLibrary(imagePickerOption, onPickImage)}
-        style={styles.imageEdit}>
-        <Image
-          style={styles.img}
-          resizeMode="cover"
-          source={{
-            uri: uri,
-          }}
-        />
-        <View style={styles.imageEditMask}>
-          <Text style={{fontSize: 16, color: '#ffffff'}}>편집</Text>
-        </View>
-      </TouchableOpacity>
-      <View style={styles.formContainer}>
-        <View style={styles.nameInput}>
-          <Text style={styles.label}>커뮤니티 이름</Text>
-          <TextInput
-            placeholder="이름을 입력해주세요."
-            value={communityInfo.title}
-            onChangeText={(text: string) =>
-              setCommunityInfo({...communityInfo, title: text})
-            }
-            returnKeyType="done"
-            style={styles.textInput}
-          />
-        </View>
-        <View style={styles.tagInput}>
-          <View style={styles.locaContaier}>
-            <Text style={styles.label}>지역</Text>
+      <ScrollView contentContainerStyle={{flexGrow: 1}}>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => launchImageLibrary(imagePickerOption, onPickImage)}
+          style={styles.imageEdit}>
+          {uri !== '' && (
+            <Image
+              style={styles.img}
+              resizeMode="cover"
+              source={{
+                uri: uri,
+              }}
+            />
+          )}
+          <View style={styles.imageEditMask}>
+            <Text style={{fontSize: 16, color: '#ffffff'}}>편집</Text>
+          </View>
+        </TouchableOpacity>
+        <View style={styles.formContainer}>
+          <View style={styles.nameInput}>
+            <Text style={styles.label}>커뮤니티 이름</Text>
             <TextInput
-              placeholder="지역을 입력해주세요."
-              value={communityInfo.sido}
+              placeholder="이름을 입력해주세요."
+              value={communityInfo.title}
               onChangeText={(text: string) =>
-                setCommunityInfo({...communityInfo, sido: text})
+                setCommunityInfo({...communityInfo, title: text})
               }
               returnKeyType="done"
+              style={styles.textInput}
             />
           </View>
-          <View style={styles.tagContaier}>
-            <Text style={styles.label}>캠페인 태그</Text>
+          <View style={styles.tagInput}>
+            <View style={styles.locaContaier}>
+              <Text style={styles.label}>지역</Text>
+              <TextInput
+                placeholder="지역을 입력해주세요."
+                value={communityInfo.sido}
+                onChangeText={(text: string) =>
+                  setCommunityInfo({...communityInfo, sido: text})
+                }
+                returnKeyType="done"
+              />
+            </View>
+            <View style={styles.tagContaier}>
+              <Text style={styles.label}>캠페인 태그</Text>
+              <TextInput
+                placeholder="캠페인을 입력해주세요."
+                value={communityInfo.tag}
+                onChangeText={(text: string) =>
+                  setCommunityInfo({...communityInfo, tag: text})
+                }
+                returnKeyType="done"
+              />
+            </View>
+          </View>
+          <View style={styles.desInput}>
+            <Text style={styles.label}>커뮤니티 설명</Text>
             <TextInput
-              placeholder="캠페인을 입력해주세요."
-              value={communityInfo.tag}
+              placeholder="커뮤니티를 설명해주세요."
+              value={communityInfo.description}
               onChangeText={(text: string) =>
-                setCommunityInfo({...communityInfo, tag: text})
+                setCommunityInfo({...communityInfo, description: text})
               }
               returnKeyType="done"
+              style={styles.textInput}
             />
           </View>
         </View>
-        <View style={styles.desInput}>
-          <Text style={styles.label}>커뮤니티 설명</Text>
-          <TextInput
-            placeholder="커뮤니티를 설명해주세요."
-            value={communityInfo.description}
-            onChangeText={(text: string) =>
-              setCommunityInfo({...communityInfo, description: text})
-            }
-            returnKeyType="done"
-            style={styles.textInput}
-          />
-        </View>
-      </View>
-      <TouchableOpacity
-        style={styles.submitButton}
-        onPress={() => submitCreate()}>
-        <Text style={styles.submitText}>수정하기</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={styles.submitButton}
+          onPress={() => submitCreate()}>
+          <Text style={styles.submitText}>수정하기</Text>
+        </TouchableOpacity>
+      </ScrollView>
     </View>
   );
 }

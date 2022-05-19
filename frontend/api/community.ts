@@ -359,7 +359,7 @@ export interface CreateCampaignData {
 }
 
 export interface CreatePostData {
-  postImgData: CommunityImgData;
+  postImgData: CommunityImgData | null;
   postInfo: PostInfo;
   no: number;
 }
@@ -387,7 +387,7 @@ export interface CommentInfo {
 }
 
 export interface EditPostData {
-  postImgData: CommunityImgData;
+  postImgData: CommunityImgData | null;
   postInfo: PostInfo;
   no: number;
   postNo: number;

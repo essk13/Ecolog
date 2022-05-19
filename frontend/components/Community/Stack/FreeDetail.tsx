@@ -10,7 +10,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    minHeight: '40%',
+    minHeight: '30%',
     alignItems: 'center',
   },
   mainTitle: {
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     backgroundColor: '#ffffff',
-    marginVertical: 10,
+    marginTop: 10,
   },
   image: {
     width: '70%',
@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
     color: '#3a3a3a',
     marginLeft: 5,
     marginBottom: 5,
+    marginTop: 10,
   },
   likeContainer: {
     flexDirection: 'row',
@@ -132,9 +133,11 @@ function FreeDetail({post, like}: PostItemProps) {
         </TouchableOpacity>
       </View>
       <View style={styles.contentContainer}>
-        <View style={styles.imageBox}>
-          <Image style={styles.image} source={{uri: post.image}} />
-        </View>
+        {post.image && (
+          <View style={styles.imageBox}>
+            <Image style={styles.image} source={{uri: post.image}} />
+          </View>
+        )}
         <Text style={styles.contentText}>{post.content}</Text>
         <TouchableOpacity
           activeOpacity={0.7}
