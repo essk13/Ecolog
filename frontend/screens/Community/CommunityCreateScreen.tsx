@@ -203,6 +203,7 @@ function CommunityCreateScreen() {
               }
               returnKeyType="done"
               style={styles.textInput}
+              multiline
             />
           </View>
           <View style={styles.tagInput}>
@@ -215,6 +216,7 @@ function CommunityCreateScreen() {
                   setCommunityInfo({...communityInfo, sido: text})
                 }
                 returnKeyType="done"
+                style={styles.textInput}
               />
             </View>
             <View style={styles.tagContaier}>
@@ -226,6 +228,7 @@ function CommunityCreateScreen() {
                   setCommunityInfo({...communityInfo, tag: text})
                 }
                 returnKeyType="done"
+                style={styles.textInput}
               />
             </View>
           </View>
@@ -239,6 +242,7 @@ function CommunityCreateScreen() {
               }
               returnKeyType="done"
               style={styles.textInput}
+              multiline
             />
           </View>
         </View>

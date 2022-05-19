@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   titleBox: {
+    flex: 1,
     height: '100%',
   },
   writerBox: {

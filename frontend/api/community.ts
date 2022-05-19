@@ -273,6 +273,40 @@ export async function getCampaignDetail(
   return response.data;
 }
 
+// 캠페인 댓글 리스트
+export async function getCampaignCommentList(data: CommentListData) {
+  const response = await Api.get<PostList>(
+    `/community/${data.no}/campaign/${data.postNo}/comment`,
+  );
+  return response.data;
+}
+
+// 캠페인 댓글 생성
+export async function createCampaignComment(commentData: CreateCommentData) {
+  const response = await Api.post(
+    `/community/${commentData.community}/campaign/${commentData.post}/comment`,
+    commentData.commentInfo,
+  );
+  return response.data;
+}
+
+// 캠페인 댓글 수정
+export async function editCampaignComment(commentData: EditCommentData) {
+  const response = await Api.put(
+    `/community/${commentData.community}/campaign/${commentData.post}/comment/${commentData.commentNo}`,
+    commentData.commentInfo,
+  );
+  return response.data;
+}
+
+// 캠페인 댓글 삭제
+export async function deleteCampaignComment(data: DeleteCommentData) {
+  const response = await Api.delete(
+    `/community/${data.communityNo}/campaign/${data.postNo}/comment/${data.commentNo}`,
+  );
+  return response.data;
+}
+
 export interface Community {
   title: string;
   no: number;

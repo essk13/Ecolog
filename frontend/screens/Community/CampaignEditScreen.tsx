@@ -217,6 +217,7 @@ function CampaignEditScreen({route}: any) {
           onChangeText={(text: string) =>
             setCampaignInfo({...campaignInfo, title: text})
           }
+          multiline
           returnKeyType="done"
         />
         <View style={styles.secContainer}>
@@ -257,6 +258,7 @@ function CampaignEditScreen({route}: any) {
           onChangeText={(text: string) =>
             setCampaignInfo({...campaignInfo, content: text})
           }
+          multiline
           returnKeyType="done"
         />
         <TouchableOpacity

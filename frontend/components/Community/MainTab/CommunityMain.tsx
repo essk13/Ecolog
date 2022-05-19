@@ -201,7 +201,9 @@ function CommunityMain({keyword}: KeywordProps) {
         style={styles.hotCommu}>
         <Image source={{uri: community.image}} style={styles.hotimage} />
         <View style={styles.hotItemTitle}>
-          <Text style={styles.hotCommuTitle}>{community.title}</Text>
+          <Text style={styles.hotCommuTitle} numberOfLines={1}>
+            {community.title}
+          </Text>
           <Text style={styles.hotCommuCount}>
             <Icon name="user" size={13} color="#d4d4d4" />{' '}
             {community.join_count}

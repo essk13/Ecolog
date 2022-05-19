@@ -216,6 +216,7 @@ function CommunityEditScreen({route}: any) {
               }
               returnKeyType="done"
               style={styles.textInput}
+              multiline
             />
           </View>
           <View style={styles.tagInput}>
@@ -252,6 +253,7 @@ function CommunityEditScreen({route}: any) {
               }
               returnKeyType="done"
               style={styles.textInput}
+              multiline
             />
           </View>
         </View>

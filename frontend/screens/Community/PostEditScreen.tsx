@@ -202,6 +202,7 @@ function PostEditScreen({route}: any) {
           onChangeText={(text: string) =>
             setCampaignInfo({...postInfo, title: text})
           }
+          multiline
           returnKeyType="done"
         />
         {route.params.type !== 1 && (
@@ -234,6 +235,7 @@ function PostEditScreen({route}: any) {
           onChangeText={(text: string) =>
             setCampaignInfo({...postInfo, content: text})
           }
+          multiline
           returnKeyType="done"
         />
         <TouchableOpacity

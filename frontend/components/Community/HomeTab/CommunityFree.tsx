@@ -63,7 +63,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#5FA2E5',
     borderRadius: 100,
   },
+  titleBox: {
+    flex: 1,
+    marginRight: 5,
+  },
   postDate: {
+    fontSize: 12,
     color: '#919191',
     marginLeft: 'auto',
   },
@@ -96,8 +101,10 @@ const PromListItem = ({post, data}: CampaignItemProps) => {
       style={styles.CardContainer}>
       <Text style={{color: '#a8a8a8'}}>{post.no}</Text>
       <Image source={{uri: post.writer.image}} style={styles.image} />
-      <View>
-        <Text style={styles.postTitle}>{post.title}</Text>
+      <View style={styles.titleBox}>
+        <Text style={styles.postTitle} numberOfLines={1}>
+          {post.title}
+        </Text>
 
         <Text style={{color: '#a8a8a8'}}>{post.writer.nickname}</Text>
       </View>

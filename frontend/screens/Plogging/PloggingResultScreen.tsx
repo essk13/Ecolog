@@ -166,7 +166,7 @@ function PloggingResultScreen() {
       <TouchableOpacity
         style={styles().back}
         onPress={() => {
-          navigation.pop();
+          navigation.popToTop();
         }}>
         <Icon name="close" size={28} color="#4D4D4D" />
       </TouchableOpacity>

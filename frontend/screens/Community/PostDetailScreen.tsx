@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     flex: 6,
   },
-  editText: {
+  commentEditText: {
     color: '#000000',
     marginTop: 3,
     marginLeft: 8,
@@ -119,7 +119,6 @@ const styles = StyleSheet.create({
   textInput: {
     backgroundColor: '#dfdfdf',
     borderRadius: 10,
-    height: 30,
     color: '#000000',
     padding: 0,
     paddingLeft: 10,
@@ -132,7 +131,17 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   editPostIcon: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginRight: 8,
+  },
+  editText: {
+    fontSize: 14,
+    color: '#000000',
+  },
+  deleteText: {
+    fontSize: 14,
+    color: '#ff0000',
   },
   inputContainer: {
     flexDirection: 'row',
@@ -140,6 +149,7 @@ const styles = StyleSheet.create({
   },
   submit: {
     flex: 1,
+    maxHeight: 30,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 10,
@@ -158,7 +168,7 @@ interface CommentProps {
   commentDelete: UseMutateFunction<any, unknown, DeleteCommentData, unknown>;
 }
 
-const PromListItem = ({data, commentItem, commentDelete}: CommentProps) => {
+const PromListItem = ({commentItem, commentDelete}: CommentProps) => {
   const myInfo = useSelector((state: RootState) => state.user.user);
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
@@ -170,8 +180,15 @@ const PromListItem = ({data, commentItem, commentDelete}: CommentProps) => {
   });
   const {mutate: editCo} = useMutation(editComment, {
     onSuccess: () => {
-      queryClient.invalidateQueries('postDetail');
-      queryClient.invalidateQueries('commentList');
+      Alert.alert('수정이 완료되었습니다.');
+      queryClient.invalidateQueries([
+        'postDetail',
+        {no: route.params.no, id: route.params.id},
+      ]);
+      queryClient.invalidateQueries([
+        'commentList',
+        {no: route.params.no, postNo: route.params.id},
+      ]);
     },
   });
   const deleteCo = () => {
@@ -180,7 +197,6 @@ const PromListItem = ({data, commentItem, commentDelete}: CommentProps) => {
       postNo: route.params.id,
       commentNo: commentItem.no,
     });
-    Alert.alert('삭제가 완료되었습니다.');
   };
   const editCommentSubmit = () => {
     editCo({
@@ -190,7 +206,6 @@ const PromListItem = ({data, commentItem, commentDelete}: CommentProps) => {
       commentInfo: prevComment,
     });
     setEditCommentStart(false);
-    Alert.alert('수정이 완료되었습니다.');
   };
 
   return (
@@ -242,7 +257,7 @@ const PromListItem = ({data, commentItem, commentDelete}: CommentProps) => {
               autoFocus
             />
             <TouchableOpacity onPress={() => editCommentSubmit()}>
-              <Text style={styles.editText}>수정</Text>
+              <Text style={styles.commentEditText}>수정</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -258,25 +273,42 @@ function PostDetailScreen({route}: any) {
   const queryClient = useQueryClient();
   const {mutate: postDelete} = useMutation(deletePost, {
     onSuccess: () => {
+      Alert.alert('삭제가 완료되었습니다.');
       queryClient.invalidateQueries('postList');
       navigation.pop();
     },
   });
   const {mutate: commentDelete} = useMutation(deleteComment, {
     onSuccess: () => {
-      queryClient.invalidateQueries('postDetail');
-      queryClient.invalidateQueries('commentList');
+      Alert.alert('삭제가 완료되었습니다.');
+      queryClient.invalidateQueries([
+        'postDetail',
+        {no: route.params.no, id: route.params.id},
+      ]);
+      queryClient.invalidateQueries([
+        'commentList',
+        {no: route.params.no, postNo: route.params.id},
+      ]);
     },
   });
   const {mutate: createCom} = useMutation(createComment, {
     onSuccess: () => {
-      queryClient.invalidateQueries('postDetail');
-      queryClient.invalidateQueries('commentList');
+      queryClient.invalidateQueries([
+        'postDetail',
+        {no: route.params.no, id: route.params.id},
+      ]);
+      queryClient.invalidateQueries([
+        'commentList',
+        {no: route.params.no, postNo: route.params.id},
+      ]);
     },
   });
   const {mutate: postLike} = useMutation(likePost, {
     onSuccess: () => {
-      queryClient.invalidateQueries('postDetail');
+      queryClient.invalidateQueries([
+        'postDetail',
+        {no: route.params.no, id: route.params.id},
+      ]);
     },
   });
   const {data: data} = useQuery(
@@ -307,7 +339,6 @@ function PostDetailScreen({route}: any) {
       communitySeq: route.params.no,
       postSeq: route.params.id,
     });
-    Alert.alert('삭제가 완료되었습니다.');
   };
 
   if (!data || !commentListData) {
@@ -335,12 +366,14 @@ function PostDetailScreen({route}: any) {
                   type: route.params.type,
                 })
               }>
-              <Icon name="edit" size={18} color={'#ABABAB'} />
+              <Icon name="edit" size={18} color={'#000000'} />
+              <Text style={styles.editText}>수정</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.editPostIcon}
               onPress={() => deletePo()}>
-              <Icon name="delete" size={18} color={'#ABABAB'} />
+              <Icon name="delete" size={18} color={'#ff0000'} />
+              <Text style={styles.deleteText}>삭제</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -352,6 +385,7 @@ function PostDetailScreen({route}: any) {
             returnKeyType="done"
             clearTextOnFocus={true}
             style={styles.textInput}
+            multiline
           />
           <TouchableOpacity style={styles.submit} onPress={() => submit()}>
             <Text style={styles.submitFont}>작성</Text>

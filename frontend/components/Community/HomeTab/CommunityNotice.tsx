@@ -86,7 +86,9 @@ function CommunityNotice({data}: CommunityDetailProps) {
           })
         }
         style={styles.CardContainer}>
-        <Text style={styles.postTitle}>{post.title}</Text>
+        <Text style={styles.postTitle} numberOfLines={1}>
+          {post.title}
+        </Text>
         <Text style={styles.postDate}>{date[0]} </Text>
       </TouchableOpacity>
     );
