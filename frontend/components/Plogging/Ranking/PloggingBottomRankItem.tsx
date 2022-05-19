@@ -92,7 +92,7 @@ function PloggingBottomRankItem({rank, rankData}: PloggingBottomRankItemProps) {
                 />
               </View>
               <Text style={fontStyles(null, '600').rankText}>
-                {rankData.user.name}
+                {rankData.user.nickname}
               </Text>
             </View>
             <Text style={fontStyles(11, null, '#000000').rankText}>
@@ -119,7 +119,7 @@ function PloggingBottomRankItem({rank, rankData}: PloggingBottomRankItemProps) {
               />
             </View>
             <Text style={fontStyles(null, '600').rankText}>
-              {rankData.user.name}
+              {rankData.user.nickname}
             </Text>
           </View>
           <Text style={fontStyles(11, null, '#636363').rankText}>

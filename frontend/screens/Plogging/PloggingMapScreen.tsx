@@ -33,11 +33,13 @@ import {
   Image,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Dialog, Portal, Provider, Snackbar} from 'react-native-paper';
 import {ActivityIndicator, Colors} from 'react-native-paper';
 import TrashCanDetail from '../../components/Plogging/PloggingMap/TrashCanDetail';
+import PloggingTip from '../../components/Plogging/PloggingMap/PloggingTip';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import IconM from 'react-native-vector-icons/MaterialCommunityIcons';
+import IconF from 'react-native-vector-icons/FontAwesome5';
 
 MapboxGL.setAccessToken(
   'pk.eyJ1IjoiaGF1bCIsImEiOiJjbDI5cTV2NzMwMW9kM2JvYjF0c29sb2hkIn0.jcIu6fuVVbuJPVGaunycOw',
@@ -162,6 +164,18 @@ const styles = (color?: any) =>
       backgroundColor: color || '#BBFFD6',
       elevation: 4,
     },
+    tooltipButton: {
+      position: 'absolute',
+      left: 20,
+      bottom: '33%',
+      width: 45,
+      height: 45,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: 22.5,
+      backgroundColor: color || '#BBFFD6',
+      elevation: 4,
+    },
   });
 
 const fontStyles = (size?: number, weight?: any, align?: any, color?: any) =>
@@ -211,6 +225,7 @@ function PloggingMapScreen({navigation}: any) {
   });
 
   // 타이머
+  const startTime = Date.now();
   const [count, setCount] = useState<number>(0);
   const [currentHours, setHours] = useState<number>(0);
   const [currentMinutes, setMinutes] = useState<number>(0);
@@ -233,9 +248,15 @@ function PloggingMapScreen({navigation}: any) {
 
   // 타이머 시작
   useEffect(() => {
-    setInterval(() => {
-      setCount(c => c + 1);
+    let interval = setInterval(() => {
+      let nowDate = Date.now();
+      if (nowDate >= startTime) {
+        setCount(Math.round((nowDate - startTime) / 1000));
+      }
     }, 1000);
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   // 거리 계산
@@ -444,11 +465,11 @@ function PloggingMapScreen({navigation}: any) {
     centerCoordinate.latitude =
       (Math.max(...latitude) + Math.min(...latitude)) / 2;
     setCenterCoordinates(() => [
-      centerCoordinate.longitude,
-      centerCoordinate.latitude,
+      centerCoordinate.longitude + 0.0000000001,
+      centerCoordinate.latitude + 0.0000000001,
     ]);
-    setZoomLevel(centerCoordinate.zoom);
     setUserMarker(false);
+    setZoomLevel(15);
     onLaunchCamera();
   };
 
@@ -509,7 +530,7 @@ function PloggingMapScreen({navigation}: any) {
         const locationData = {
           lat: coordinates[1],
           lng: coordinates[0],
-          range: 20,
+          range: 1,
         };
         getTrashCan.mutate(locationData);
       }
@@ -527,7 +548,7 @@ function PloggingMapScreen({navigation}: any) {
         const locationData = {
           lat: coordinates[1],
           lng: coordinates[0],
-          range: 20,
+          range: 1,
         };
         getTrashCan.mutate(locationData);
       }
@@ -543,7 +564,7 @@ function PloggingMapScreen({navigation}: any) {
       const locationData = {
         lat: coordinates[1],
         lng: coordinates[0],
-        range: 20,
+        range: 1,
       };
       getTrashCan.mutate(locationData);
     } else {
@@ -604,6 +625,9 @@ function PloggingMapScreen({navigation}: any) {
     </MapboxGL.MarkerView>
   ));
 
+  // 사용법
+  const [visibleTip, setVisibleTip] = useState<boolean>(false);
+
   if (isLoading) {
     return (
       <View style={styles().loadingContainer}>
@@ -623,6 +647,7 @@ function PloggingMapScreen({navigation}: any) {
           <MapboxGL.Camera
             zoomLevel={zoomLevel}
             centerCoordinate={centerCoordinates}
+            animationMode={'moveTo'}
           />
           <MapboxGL.ShapeSource id="line" shape={route}>
             <MapboxGL.LineLayer
@@ -743,6 +768,13 @@ function PloggingMapScreen({navigation}: any) {
             }}
             resizeMode="contain"
           />
+        </TouchableOpacity>
+        {visibleTip && <PloggingTip />}
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={styles('#ffffff').tooltipButton}
+          onPress={() => setVisibleTip(!visibleTip)}>
+          <IconF name="question" size={30} color={'#5FA2E5'} />
         </TouchableOpacity>
         <Portal>
           <Dialog

@@ -129,7 +129,7 @@ function PloggingTopRanking({rankDataList}: PloggingTopRankingProps) {
                 <Text style={fontStyles(10, '600').normalText}>2</Text>
               </View>
               <Text style={fontStyles(16, '600').normalText}>
-                {rankDataList[1].user.name}
+                {rankDataList[1].user.nickname}
               </Text>
             </View>
             <Text style={fontStyles(10, null, '#636363').normalText}>
@@ -171,7 +171,7 @@ function PloggingTopRanking({rankDataList}: PloggingTopRankingProps) {
                 <Text style={fontStyles(10, '600').normalText}>1</Text>
               </View>
               <Text style={fontStyles(16, '600').normalText}>
-                {rankDataList[0].user.name}
+                {rankDataList[0].user.nickname}
               </Text>
             </View>
             <Text style={fontStyles(10, null, '#636363').normalText}>
@@ -213,7 +213,7 @@ function PloggingTopRanking({rankDataList}: PloggingTopRankingProps) {
                 <Text style={fontStyles(10, '600').normalText}>3</Text>
               </View>
               <Text style={fontStyles(16, '600').normalText}>
-                {rankDataList[2].user.name}
+                {rankDataList[2].user.nickname}
               </Text>
             </View>
             <Text style={fontStyles(10, null, '#636363').normalText}>
