@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    List<Post> findAllByTypeAndIsOpenTrue(int type);
-    List<Post> findAllByCommunityNoAndType(long communityNo, int type);
+    List<Post> findAllByTypeAndIsOpenTrueOrderByNoDesc(int type);
+    List<Post> findAllByCommunityNoAndTypeOrderByNoDesc(long communityNo, int type);
 
     @Modifying
     @Query("update Post p set p.likeCount = p.likeCount + :count where p.no = :postNo")

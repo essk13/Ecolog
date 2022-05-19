@@ -82,7 +82,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostResDto> getAllPost() {
-        List<PostResDto> postResDtoList = postRepository.findAllByTypeAndIsOpenTrue(PostType.CAMPAIGN.getValue()).stream().map(PostResDto::of).collect(Collectors.toList());
+        List<PostResDto> postResDtoList = postRepository.findAllByTypeAndIsOpenTrueOrderByNoDesc(PostType.CAMPAIGN.getValue()).stream().map(PostResDto::of).collect(Collectors.toList());
         return postResDtoList;
     }
 
@@ -103,7 +103,7 @@ public class PostServiceImpl implements PostService {
                 throw new CustomException(ErrorCode.BAD_REQUEST);
         }
 
-        List<PostResDto> postResDtoList = postRepository.findAllByCommunityNoAndType(communityNo, typeNum).stream().map(PostResDto::of).collect(Collectors.toList());
+        List<PostResDto> postResDtoList = postRepository.findAllByCommunityNoAndTypeOrderByNoDesc(communityNo, typeNum).stream().map(PostResDto::of).collect(Collectors.toList());
         return postResDtoList;
     }
 
