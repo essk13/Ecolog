@@ -4,6 +4,7 @@ import styled from "styled-components";
 import color from "../common/thema";
 import Typed from "typed.js";
 import BackgroundSrc from "../asset/image/bg.png";
+import './Home.css';
 
 const Container = styled.div`
   position: relative;
@@ -86,6 +87,17 @@ const PromotionTop = () => {
   const maxIndex = 3;
   const el = useRef(null);
 
+  window.addEventListener("scroll", function() {
+    const Mouse = this.document.getElementById("mouse")
+    if (this.window.scrollY > 150) {
+      Mouse?.classList.add("home-mouse-active")
+      Mouse?.classList.add("home-mouse-none")
+    } else {
+      Mouse?.classList.remove("home-mouse-none")
+      Mouse?.classList.remove("home-mouse-active")
+    }
+  })
+
   useEffect(() => {
     const typed = new Typed(el.current, {
       strings: ["플로깅을", "커뮤니티를", "설문 테스트를", "아바타 꾸미기를"],
@@ -102,7 +114,6 @@ const PromotionTop = () => {
   return (
     <Container style={{ height: window.innerHeight * 0.9 }}>
       <ContainerBox style={{ height: window.innerHeight * 0.9 }}>
-
         <HomeTextFrame>
           <TextDiv>
             <TextBox>지금 바로 에코로그에서</TextBox>
@@ -135,6 +146,9 @@ const PromotionTop = () => {
           </TextDiv>
         </HomeTextFrame>
       </ContainerBox>
+      <p className="home-mouse">
+        <span id="mouse"></span>
+      </p>
     </Container>
   );
 };

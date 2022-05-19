@@ -1,5 +1,7 @@
 import React from "react";
 
+import { AiOutlineDownload, AiOutlineFontSize } from "react-icons/ai";
+
 import styled from "styled-components";
 import color from "../common/thema";
 import logoImg from "../asset/image/earth.png";
@@ -10,16 +12,18 @@ const Nav = styled.div`
   width: 100%;
   height: 70px;
   top: 0;
-  background-color: ${color.gray.light};
+  background-color: ${color.gray.apple};
   z-index: 10;
   justify-content: space-around;
   align-items: center;
+  color: ${color.gray.light};
+  font-size: 20px;
 `;
 
 const NavItem = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-around;s
+  justify-content: center;
 `;
 
 const NavImage = styled.img`
@@ -28,6 +32,14 @@ const NavImage = styled.img`
   margin-right: 10px;
 `;
 
+const NavLink = styled.a`
+  display: flex;
+  text-decoration: none;
+  color: ${color.gray.light};
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+`;
 
 const Navbar = () => {
 
@@ -37,12 +49,12 @@ const Navbar = () => {
       <NavItem>
         <NavImage src={logoImg}>
         </NavImage>
-          지구를 지키는 우리의 아름다운 기록
+          건강한 지구를 만드는 아름다운 기록
       </NavItem>
       <NavItem>
-        <a href="https://drive.google.com/drive/folders/1x-O9MSxTCifQSHNWhfGB7Ui3AfFlYPE6?usp=sharing">
-          에코로그 하러가기
-        </a>
+        <NavLink href="https://drive.google.com/file/d/1iKZrovvz4jbafk8mQnrWQyJiH5iS7Jyf/view?usp=sharing">
+          에코로그&nbsp;&nbsp;<AiOutlineDownload size="25"></AiOutlineDownload> 
+        </NavLink>
       </NavItem>
     </Nav>
   );

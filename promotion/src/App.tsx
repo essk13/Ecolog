@@ -9,6 +9,7 @@ import PromotionTop from './components/PromotionTop';
 import PromotionContent from './components/PromotionContent';
 import Navbar from './components/Navbar';
 import PromotionEcolog from './components/PromotionEcolog';
+import Footer from './components/Footer';
 
 const AppDiv = styled.div`
   backgroud-color: ${color.white.default};
@@ -25,6 +26,7 @@ function App() {
       <PromotionTop />
       <PromotionEcolog />
       <PromotionContent />
+      <Footer />
     </AppDiv>
   );
 }

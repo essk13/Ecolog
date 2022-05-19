@@ -13,6 +13,7 @@ const color = {
     semidark: "#c0c0c0",
     dark: "#a0a0a0",
     darker: "#767676",
+    apple: "#494950",
   },
   green: {
     default: "#3CB462",
