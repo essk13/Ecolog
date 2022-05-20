@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">에코로그</string>
+    <string name="game_view_content_description">Game view</string>
+    <string name="unity_root">unity_root</string>
+</resources>
