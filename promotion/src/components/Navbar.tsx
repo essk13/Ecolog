@@ -1,6 +1,6 @@
 import React from "react";
 
-import { AiOutlineDownload, AiOutlineFontSize } from "react-icons/ai";
+import { AiOutlineDownload, AiFillYoutube } from "react-icons/ai";
 
 import styled from "styled-components";
 import color from "../common/thema";
@@ -39,6 +39,7 @@ const NavLink = styled.a`
   align-items: center;
   justify-content: center;
   font-size: 20px;
+  margin-left: 60px;
 `;
 
 const Navbar = () => {
@@ -52,8 +53,11 @@ const Navbar = () => {
           건강한 지구를 만드는 아름다운 기록
       </NavItem>
       <NavItem>
+        <NavLink href="https://www.youtube.com/watch?v=tKhrWKvrn0s">
+          광고보기&nbsp;<AiFillYoutube size="25" color="red"></AiFillYoutube> 
+        </NavLink>
         <NavLink href="https://drive.google.com/file/d/1iKZrovvz4jbafk8mQnrWQyJiH5iS7Jyf/view?usp=sharing">
-          에코로그&nbsp;&nbsp;<AiOutlineDownload size="25"></AiOutlineDownload> 
+          에코로그&nbsp;<AiOutlineDownload size="25"></AiOutlineDownload> 
         </NavLink>
       </NavItem>
     </Nav>
