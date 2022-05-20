@@ -119,7 +119,7 @@ public class PloggingController {
                                                                     @ApiParam(value = "입력 키워드: all, month, week", defaultValue = "all") @RequestParam String type) {
         ELUserDetails userDetails = (ELUserDetails)authentication.getDetails();
         User user = userDetails.getUser();
-        List<RankingResDto> rankingResDtoList = ploggingService.getRanking(user, type, "address", 0);
+        List<RankingResDto> rankingResDtoList = ploggingService.getRanking(user, type, "region", 0);
         return ResponseEntity.ok(rankingResDtoList);
     }
 
